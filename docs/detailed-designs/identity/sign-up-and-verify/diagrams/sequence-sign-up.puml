@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Sign up — create an account
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "SignUpPage" as page
+  participant "AuthApi" as client
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SignUpCommandHandler" as h
+  participant "Parent" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "PwnedPasswordsClient" as pwned
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+actor -> page : Submit name, email, password, postal code
+page -> page : Client validation; show summary on errors (L2-001)
+page -> client : POST /api/auth/sign-up
+client -> ctrl : HTTPS request (anti-forgery token)
+ctrl -> ctrl : Rate limit 10/min per IP (L2-070)
+ctrl -> h : Send SignUpCommand
+h -> h : Validate schema and password rules
+h -> pwned : Check SHA-1 prefix
+pwned --> h : Not breached
+h -> db : Email already registered?
+db --> h : No
+h -> ent : Create unverified Parent
+h -> db : Save Parent, VerificationToken, outbox event
+db --> h : Committed
+h -> bus : Publish ParentSignedUp
+h --> ctrl : Result.Created
+ctrl --> client : 201 Created
+client --> page : Navigate to /verify-email
+page --> actor : "Check your email"
+@enduml

@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Sign up and verify email
+
+class Parent {
+  +Guid Id
+  +string FirstName
+  +string Email
+  +PostalCode PostalCode
+  +bool EmailVerified
+  +bool MarketingOptIn
+  +DateTimeOffset CreatedAt
+  +MarkEmailVerified(): void
+}
+class VerificationToken {
+  +Guid Id
+  +Guid ParentId
+  +byte[] TokenHash
+  +DateTimeOffset ExpiresAt
+  +bool Used
+  +IsValid(now: DateTimeOffset): bool
+}
+class PostalCode {
+  +string Value
+  +bool IsInGta
+}
+class SignUpCommand {
+  +string FirstName
+  +string Email
+  +string Password
+  +string PostalCode
+  +bool MarketingOptIn
+}
+class SignUpCommandHandler {
+  +Handle(cmd: SignUpCommand): Task<Result<Guid>>
+}
+class VerifyEmailCommandHandler {
+  +Handle(cmd: VerifyEmailCommand): Task<Result>
+}
+interface IPwnedPasswordsClient {
+  +IsBreached(password: string): Task<bool>
+}
+SignUpCommandHandler ..> SignUpCommand : handles
+SignUpCommandHandler ..> IPwnedPasswordsClient : uses
+SignUpCommandHandler --> Parent : creates
+Parent *-- PostalCode
+Parent "1" --> "*" VerificationToken : issues
+VerifyEmailCommandHandler --> VerificationToken : consumes
+VerifyEmailCommandHandler --> Parent : verifies
+@enduml

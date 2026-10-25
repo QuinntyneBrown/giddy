@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Venues — compare up to three
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "CompareVenuesPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "VenuesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "CompareVenuesQuery" as cmp
+  participant "VenueRecommender" as rec
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Compare (2 selected)
+page -> ctrl : GET /api/venues/compare?ids=a,b
+ctrl -> ctrl : 2 <= ids <= 3 else 400
+ctrl -> cmp : Run
+cmp -> db : Venue facts and slots
+cmp -> cmp : Rows; best per row (price, capacity, distance, rating)
+cmp -> rec : Recommend for party
+rec --> cmp : "Dino Den: cheapest, closest, dino room"
+cmp --> ctrl : Table + recommendation
+ctrl --> page : 200
+page --> actor : Side-by-side table
+@enduml

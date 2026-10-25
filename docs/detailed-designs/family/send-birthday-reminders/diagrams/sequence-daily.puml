@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Birthday reminders — daily job
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Scheduler (9:00 am Toronto)" as clock
+box "Backend — Background Worker application" #ECFDF3
+  participant "BirthdayReminderJob" as job
+  participant "NotificationDispatcher" as disp
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+clock -> job : Trigger
+job -> db : Children with NextBirthday = today + 42 and no plan
+db --> job : Matches
+loop each child
+  job -> disp : Notify "Start planning <name>'s party"
+  disp -> bus : Enqueue per enabled channel
+end
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Search venues by availability and fit
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "VenuesController", "ASP.NET Core controller", "Search endpoint")
+  Component(q, "SearchVenuesQuery", "Query handler", "Filter, rank, sort")
+  Component(avail, "AvailabilityService", "Application service", "Partner fan-out + cache")
+  Component(geo, "GeoService", "Application service", "Distances and service area")
+  Component(relax, "RelaxationAdvisor", "Domain service", "No-results hints")
+}
+
+Rel(ctrl, q, "Search")
+Rel(q, geo, "Distance")
+Rel(q, avail, "Slots")
+Rel(avail, cache, "Cache 15 min", "RESP")
+Rel(avail, venues, "Availability", "HTTPS")
+Rel(q, relax, "When empty")
+Rel(q, db, "Venue catalogue", "EF Core")
+@enduml

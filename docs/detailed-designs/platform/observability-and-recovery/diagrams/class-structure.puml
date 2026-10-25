@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Observability, alerting and recovery
+
+class ReferenceCode {
+  +string Value
+  +FromTraceId(traceId: ActivityTraceId): ReferenceCode
+}
+class AgentMetrics {
+  +Histogram TurnLatency
+  +Counter InputTokens
+  +Counter OutputTokens
+  +Counter ToolFailures
+  +Counter Refusals
+}
+ReferenceCodeMiddleware ..> ReferenceCode
+@enduml

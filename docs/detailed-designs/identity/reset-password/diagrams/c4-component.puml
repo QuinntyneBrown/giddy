@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Reset a forgotten password
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PasswordController", "ASP.NET Core controller", "Forgot and reset endpoints")
+  Component(req, "RequestResetHandler", "MediatR handler", "Issues reset tokens")
+  Component(reset, "ResetPasswordHandler", "MediatR handler", "Changes the password")
+  Component(sess, "SessionService", "Application service", "Revokes other sessions")
+}
+
+Rel(ctrl, req, "RequestPasswordResetCommand")
+Rel(ctrl, reset, "ResetPasswordCommand")
+Rel(reset, sess, "RevokeAll except current")
+Rel(req, db, "Token", "EF Core")
+Rel(req, bus, "PasswordResetRequested", "AMQP")
+@enduml

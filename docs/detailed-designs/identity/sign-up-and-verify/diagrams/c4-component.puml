@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign up and verify email
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "AuthController", "ASP.NET Core controller", "Sign-up and verification endpoints")
+  Component(signup, "SignUpCommandHandler", "MediatR handler", "Creates the account")
+  Component(verify, "VerifyEmailCommandHandler", "MediatR handler", "Confirms the address")
+  Component(parent, "Parent", "Domain aggregate", "Account and verification state")
+  Component(pwned, "PwnedPasswordsClient", "HTTP adapter", "Breached-password check")
+  Component(outbox, "OutboxPublisher", "Infrastructure", "Publishes ParentSignedUp after commit")
+}
+
+Rel(ctrl, signup, "Sends SignUpCommand")
+Rel(ctrl, verify, "Sends VerifyEmailCommand")
+Rel(signup, pwned, "Checks password")
+Rel(signup, parent, "Creates")
+Rel(verify, parent, "Marks verified")
+Rel(signup, db, "Saves", "EF Core")
+Rel(outbox, bus, "Publishes", "AMQP")
+@enduml

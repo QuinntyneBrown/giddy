@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Data protection — audit and redact on sign-in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Backend — Giddy API application" #D1FADF
+  participant "SignInCommandHandler" as h
+  participant "AuditWriter" as aud
+  participant "PiiRedactingEnricher" as red
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Audit table" as adb
+  participant "Observability platform" as otel
+end box
+actor -> h : Sign in
+h -> aud : Write("sign-in", parentId, ip)
+aud -> adb : INSERT (append-only)
+h -> red : Log "Signed in {email}"
+red -> red : Replace email with hash prefix
+red -> otel : Redacted event
+@enduml

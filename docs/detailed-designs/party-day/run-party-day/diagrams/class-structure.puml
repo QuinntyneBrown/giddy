@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Run the party day
+
+class RunSheet {
+  +Guid PartyId
+  +List<RunStep> Steps
+  +CurrentIndex(now: TimeOnly): int
+}
+class RunStep {
+  +TimeOnly At
+  +string Title
+  +string Detail
+  +string Responsible
+  +string PopColour
+}
+class Contact {
+  +string Name
+  +string Role
+  +PhoneNumber Phone
+}
+RunSheet "1" *-- "*" RunStep
+RunSheet "1" *-- "*" Contact
+@enduml

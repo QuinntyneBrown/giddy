@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Localise for the GTA
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+System_Boundary(giddy, "Giddy") {
+  Container(web, "Giddy Web", "Angular SPA + service worker", "Parent and guest UI, installable PWA")
+  Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+}
+
+Rel(parent, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Manage the party checklist
+
+enum TaskGroup {
+  Overdue
+  ThisWeek
+  BeforeParty
+  Done
+}
+class PartyTask {
+  +Guid Id
+  +string Title
+  +DateOnly Due
+  +Guid OwnerId
+  +bool Done
+  +bool RemindDayBefore
+  +GiddyAction? Action
+  +Group(today: DateOnly): TaskGroup
+  +IsOverdue(today: DateOnly): bool
+}
+class ChecklistGenerator {
+  +Generate(party: Party, today: DateOnly): List<PartyTask>
+}
+class GiddyAction {
+  +string Kind
+  +bool RequiresConfirmation = true
+}
+PartyTask --> TaskGroup
+PartyTask *-- "0..1" GiddyAction
+ChecklistGenerator ..> PartyTask : creates
+@enduml

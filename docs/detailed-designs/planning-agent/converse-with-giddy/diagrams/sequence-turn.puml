@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Converse — one agent turn with live tool steps
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PlannerChatPage" as page
+  participant "AgentStreamService" as stream
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "ConversationsController" as ctrl
+  participant "AgentHub" as hub
+end box
+box "Backend — Planning Agent application" #D1FADF
+  participant "AgentTurnConsumer" as cons
+  participant "AgentLoop" as loop
+  participant "ToolRegistry" as tools
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  queue "Message bus" as bus
+  participant "Anthropic Claude API" as llm
+  database "Giddy database" as db
+end box
+actor -> page : Type message, press Enter
+page -> ctrl : POST /api/conversations/{id}/messages
+ctrl -> ctrl : Authorise party member (L2-069)
+ctrl -> db : Save parent message
+ctrl -> bus : Enqueue AgentTurn
+ctrl --> page : 202 Accepted {turnId}
+page --> actor : Message shown; typing dots; Send becomes Stop
+bus -> cons : AgentTurn
+cons -> loop : Run(turn, ct)
+loop -> llm : Messages API (system prompt, history, tools)
+llm --> loop : tool_use search_venues
+loop -> hub : step.started "Checking venues…"
+hub -> stream : event
+stream -> page : Add tool step (within 2 s, L2-016)
+loop -> tools : search_venues(date, area, kids)
+tools --> loop : 38 venues
+loop -> hub : step.done "Checked 38 venues within 8 km"
+loop -> llm : tool_result
+llm --> loop : Final text
+loop -> db : Save reply, steps, tool log (L2-022)
+loop -> hub : reply.done
+hub -> stream : event
+stream -> page : Render reply; announce once complete
+page --> actor : Giddy's reply
+@enduml

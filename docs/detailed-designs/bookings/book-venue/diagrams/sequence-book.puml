@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Book — hold, pay and confirm atomically
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "BookVenueDialog" as page
+  participant "PaymentFields" as pf
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "BookingsController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "BookVenueHandler" as h
+  participant "Booking" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Venue partner APIs" as venues
+  participant "Payment provider" as payx
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+actor -> page : Pay $100 and book
+page -> pf : Confirm card (hosted fields; 3-D Secure if required)
+pf -> payx : Tokenise
+payx --> pf : Payment method token
+page -> ctrl : POST /api/parties/{id}/bookings {slot, token, mobile, notes}
+ctrl -> h : BookVenueCommand
+h -> h : Validate mobile, notes (L2-071)
+h -> venues : Hold slot
+alt slot taken
+  venues --> h : Unavailable
+  h --> ctrl : 409 with alternatives (no charge)
+else held
+  h -> payx : Authorise $100
+  alt declined
+    payx --> h : Declined
+    h -> venues : Release hold
+    h -> ent : Fail("payment declined")
+    h --> ctrl : 402 "Nothing was charged"
+  else authorised
+    h -> venues : Confirm hold
+    venues --> h : DD-48213
+    h -> payx : Capture
+    h -> ent : Confirm(DD-48213)
+    h -> db : Save booking + outbox
+    h -> bus : BookingConfirmed
+    h --> ctrl : 201 Booking
+  end
+end
+ctrl --> page : Result
+page --> actor : Success with confirmation number, or error with inputs kept
+@enduml

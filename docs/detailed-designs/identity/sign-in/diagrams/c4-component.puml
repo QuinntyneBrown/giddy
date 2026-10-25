@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign in
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+System_Ext(idp, "Identity providers", "Google and Apple sign-in")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "AuthController", "ASP.NET Core controller", "Sign-in endpoints")
+  Component(rl, "RateLimiter", "Middleware", "10 requests/min per IP and account")
+  Component(h, "SignInCommandHandler", "MediatR handler", "Password check and pause policy")
+  Component(ext, "ExternalSignInHandler", "MediatR handler", "OIDC completion")
+  Component(sess, "SessionService", "Application service", "Session issue and rotation")
+  Component(dev, "DeviceRegistry", "Application service", "New-device detection")
+}
+
+Rel(rl, ctrl, "Admits")
+Rel(ctrl, h, "SignInCommand")
+Rel(ctrl, ext, "ExternalSignInCommand")
+Rel(h, sess, "Issue session")
+Rel(ext, sess, "Issue session")
+Rel(h, dev, "Check device")
+Rel(rl, cache, "Counters", "RESP")
+Rel(sess, db, "Sessions", "EF Core")
+Rel(ext, idp, "Token exchange", "OIDC")
+@enduml

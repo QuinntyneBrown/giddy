@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Offline — tick tasks, then sync
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "RunSheetPage" as page
+  participant "OfflineStore" as store
+  participant "SyncService" as sync
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "TasksController" as ctrl
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Tick task (offline)
+page -> store : Save change + outbox entry
+page --> actor : Offline banner; task shows done
+... connection returns ...
+sync -> store : Read outbox
+loop each entry
+  sync -> ctrl : PUT with If-Match
+  alt unchanged on server
+    ctrl -> db : Save
+    ctrl --> sync : 200
+  else changed by co-planner
+    ctrl --> sync : 412 Precondition Failed
+  end
+end
+sync --> page : SyncResult
+page --> actor : "Back online · 3 changes synced" or conflict banner with Review change
+@enduml

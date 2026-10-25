@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Propose a priced plan
+
+class PlanProposal {
+  +Guid PartyId
+  +string Theme
+  +List<PlanItem> Items
+  +Money Total
+  +Money Budget
+  +Money Difference
+}
+class PlanItem {
+  +PlanCategory Category
+  +string ProviderId
+  +string Name
+  +string Detail
+  +Money Price
+  +TimeSlot? Slot
+  +List<AllergyNote> AllergyNotes
+  +string SourceToolCallId
+}
+class ProposalValidator {
+  +Validate(p: PlanProposal, results: ToolResultSet, party: PartyContext): ValidationResult
+}
+class AllergyGuard {
+  +Annotate(option: PlanItem, allergies: List<Allergy>): PlanItem
+}
+class ToolResultSanitizer {
+  +Wrap(result: ToolResult): string
+}
+class TurnLogger {
+  +RetentionDays = 90
+  +Record(turn: AgentTurn): void
+}
+PlanProposal "1" *-- "*" PlanItem
+ProposalValidator ..> PlanProposal : checks L2-017
+ProposalValidator ..> ToolResultSet : grounding L2-022
+AllergyGuard ..> PlanItem : annotates
+@enduml

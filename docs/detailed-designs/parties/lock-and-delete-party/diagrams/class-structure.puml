@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Lock a past party and delete a party
+
+class Party {
+  +bool Locked
+  +Lock(today: DateOnly): void
+  +EnsureWritable(): void
+}
+class DeletePartyCommand {
+  +Guid PartyId
+  +string ConfirmName
+}
+class DeletePartyHandler {
+  +Handle(cmd: DeletePartyCommand): Task<Result>
+}
+class PartyLockFilter {
+  +InvokeAsync(ctx, next): ValueTask<object?>
+}
+DeletePartyHandler ..> DeletePartyCommand
+DeletePartyHandler --> Party
+PartyLockFilter ..> Party : EnsureWritable
+@enduml

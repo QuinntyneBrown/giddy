@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Invitations — send to 16 families
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "InvitationPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "InvitationsController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SendInvitationsHandler" as h
+  participant "Invitation" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+actor -> page : Send to 16 families
+page -> ctrl : POST /invitation/send
+ctrl -> h : SendInvitationsCommand
+h -> db : Parent verified? Invitation, guests
+alt unverified
+  h --> ctrl : 403 "Confirm your email first"
+else verified
+  h -> ent : Validate RsvpBy < party date
+  alt invalid
+    h --> ctrl : 400 field error
+  else valid
+    loop each NotSent guest
+      h -> h : Issue RsvpToken; status Waiting
+      h -> bus : Email and/or text job
+    end
+    h -> db : Save; schedule reminder Mon 2 Nov
+    h --> ctrl : {sent: 16}
+  end
+end
+ctrl --> page : Result
+page --> actor : "Invites sent to 16 families" + reminder date
+@enduml

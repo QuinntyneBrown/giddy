@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Send birthday reminders
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(worker_b, "Background Worker") {
+  Component(job, "BirthdayReminderJob", "Hosted service", "Daily 9:00 am scan")
+  Component(q, "UpcomingBirthdaysQuery", "Query", "Children at the reminder horizon without a plan")
+  Component(disp, "NotificationDispatcher", "Application service", "Channel selection and quiet hours")
+}
+
+Rel(job, q, "Runs")
+Rel(q, db, "Reads", "EF Core")
+Rel(job, disp, "Notify parent")
+Rel(disp, bus, "Notification jobs", "AMQP")
+@enduml

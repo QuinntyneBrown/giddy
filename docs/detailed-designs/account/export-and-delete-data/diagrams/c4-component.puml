@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Download and delete my data
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(blob, "File storage", "Azure Blob Storage (Canada Central)", "Imports, exports, photos")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(worker_b, "Background Worker") {
+  Component(exp, "ExportJob", "Service Bus consumer", "Builds archive")
+  Component(del, "DeleteAccountJob", "Service Bus consumer", "Deletes data")
+  Component(graph, "FamilyDataGraph", "Application service", "Knows every table holding family data")
+}
+
+Rel(bus, exp, "ExportRequested", "AMQP")
+Rel(bus, del, "DeletionRequested", "AMQP")
+Rel(exp, graph, "Collect")
+Rel(del, graph, "Delete")
+Rel(graph, db, "EF Core")
+Rel(exp, blob, "Write ZIP", "HTTPS")
+@enduml

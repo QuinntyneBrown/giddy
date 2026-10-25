@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Live RSVP — toast within 5 seconds
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "RsvpToastService" as toast
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartyHub" as hub
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "RsvpChangedHandler" as h
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  queue "Message bus" as bus
+  database "Giddy database" as db
+end box
+bus -> h : RsvpChanged (Arjun, coming, peanut)
+h -> db : Update counts and allergy list
+h -> hub : Send to group party:{id}
+hub -> toast : rsvp.changed
+toast --> actor : Warning toast "New allergy: peanut" + Share with Dino Den (<= 5 s)
+opt list already shared
+  h -> db : Create nudge "Send an updated allergy list"
+end
+@enduml

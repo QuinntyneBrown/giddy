@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Protect personal data and keep an audit trail
+
+System_Ext(otel, "Observability platform", "Traces, metrics, logs and alerts")
+Container_Boundary(api_b, "Giddy API") {
+  Component(red, "PiiRedactingEnricher", "Serilog enricher", "Strips PII from logs")
+  Component(aud, "AuditWriter", "Infrastructure", "Append-only audit")
+  Component(share, "DataSharingPolicy", "Domain service", "Where allergy data may go")
+  Component(tok, "RsvpTokenService", "Domain service", "Unguessable tokens")
+  ComponentDb(auditdb, "Audit table", "Azure SQL", "INSERT-only role")
+}
+
+Rel(red, otel, "Redacted events", "OTLP")
+Rel(aud, auditdb, "INSERT", "EF Core")
+@enduml

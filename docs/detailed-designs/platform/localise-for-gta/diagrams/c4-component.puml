@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Localise for the GTA
+
+Container_Boundary(api_b, "Giddy API") {
+  Component(clock, "TorontoClock", "IClock", "Toronto time")
+  Component(money, "MoneyFormatter", "Service", "CAD formatting")
+  Component(hst, "HstPolicy", "Domain service", "Tax-inclusive prices")
+}
+
+Rel(hst, money, "Formats")
+@enduml

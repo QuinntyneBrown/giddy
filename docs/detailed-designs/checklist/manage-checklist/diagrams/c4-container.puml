@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Manage the party checklist
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+Person(coplanner, "Co-planner", "Helps plan a shared party")
+System_Boundary(giddy, "Giddy") {
+  Container(web, "Giddy Web", "Angular SPA + service worker", "Parent and guest UI, installable PWA")
+  Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+  ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+  ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+}
+
+Rel(parent, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "EF Core")
+Rel(api, web, "Pushes task changes", "SignalR")
+@enduml

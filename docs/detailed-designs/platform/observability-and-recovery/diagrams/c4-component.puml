@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Observability, alerting and recovery
+
+System_Ext(otel, "Observability platform", "Traces, metrics, logs and alerts")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ti, "TraceInterceptor", "Angular interceptor", "traceparent header")
+  Component(otelsdk, "OpenTelemetry SDK", ".NET", "Instrumentation")
+  Component(ref, "ReferenceCodeMiddleware", "Middleware", "Reference codes")
+  Component(am, "AgentMetrics", "Meter", "Agent metrics")
+}
+
+Rel(ti, otelsdk, "traceparent", "HTTPS")
+Rel(otelsdk, otel, "Export", "OTLP")
+Rel(ref, otelsdk, "Reads trace ID")
+Rel(am, otel, "Metrics", "OTLP")
+@enduml

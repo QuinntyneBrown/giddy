@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Session expiry and sign-out
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "AuthController", "ASP.NET Core controller", "Re-auth and sign-out")
+  Component(mw, "SessionMiddleware", "Middleware", "Validates the session cookie on each request")
+  Component(sess, "SessionService", "Application service", "Revocation")
+}
+
+Rel(mw, sess, "Validate")
+Rel(ctrl, sess, "Reauthenticate / Revoke")
+Rel(sess, db, "Sessions", "EF Core")
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Home dashboard and nudges
+
+enum NudgePriority {
+  Overdue
+  NeedsYou
+  Idea
+}
+class Nudge {
+  +string Key
+  +NudgePriority Priority
+  +string Title
+  +string Context
+  +string ActionLabel
+  +string ActionLink
+}
+class NudgeEngine {
+  +MaxShown = 3
+  +For(partyId: Guid, today: DateOnly): List<Nudge>
+}
+Nudge --> NudgePriority
+NudgeEngine ..> Nudge : returns
+@enduml

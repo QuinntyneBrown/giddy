@@ -1,0 +1,25 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Responsive, themed application shell
+
+class BreakpointService {
+  +isPhone: Signal<boolean>  // < 640
+  +isTabletUp: Signal<boolean>  // >= 768
+  +isDesktop: Signal<boolean>  // >= 1024
+}
+class ThemeService {
+  +theme: Signal<'light'|'dark'>
+  +set(t): void
+}
+AppShell --> BreakpointService
+AppShell --> ThemeService
+@enduml

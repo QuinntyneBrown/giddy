@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Ask for push permission
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PushSubscriptionsController", "ASP.NET Core controller", "Store subscriptions")
+  Component(sub, "PushSubscription", "Domain entity", "Endpoint and keys")
+}
+
+Rel(ctrl, sub, "Creates")
+Rel(ctrl, db, "Saves", "EF Core")
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Manage children
+
+class Family {
+  +Guid Id
+  +List<Child> Children
+  +List<FamilyMember> Members
+  +AddChild(child: Child): void
+}
+class Child {
+  +Guid Id
+  +string FirstName
+  +DateOnly Birthday
+  +List<string> Interests
+  +string AllergiesOrNeeds
+  +NextBirthday(today: DateOnly): DateOnly
+  +AgeOn(date: DateOnly): int
+}
+class SaveChildCommand {
+  +Guid? ChildId
+  +string FirstName
+  +DateOnly Birthday
+  +List<string> Interests
+  +string AllergiesOrNeeds
+}
+class SaveChildHandler {
+  +Handle(cmd: SaveChildCommand): Task<Result<Guid>>
+}
+SaveChildHandler ..> SaveChildCommand
+SaveChildHandler --> Family
+Family "1" *-- "*" Child
+@enduml

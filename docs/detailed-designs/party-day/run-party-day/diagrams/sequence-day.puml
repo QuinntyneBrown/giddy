@@ -1,0 +1,41 @@
+@startuml
+title UML sequence behaviour — Party day — follow the current step
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "RunSheetPage" as page
+  participant "CurrentStepClock" as clock
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "RunSheetController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "RunSheetDrafter" as draft
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Open run sheet on Sat 14 Nov
+page -> ctrl : GET /run-sheet
+ctrl -> db : Steps, contacts, allergies
+ctrl --> page : RunSheet
+loop every 30 s
+  clock -> page : Current index from Toronto time
+end
+page --> actor : 1:30 Professor Fizz highlighted "Now"
+actor -> page : Call Bea
+page --> actor : tel:4165550142 opens dialler
+@enduml

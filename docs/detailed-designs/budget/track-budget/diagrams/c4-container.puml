@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Track the party budget
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+System_Boundary(giddy, "Giddy") {
+  Container(web, "Giddy Web", "Angular SPA + service worker", "Parent and guest UI, installable PWA")
+  Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+  ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+  ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+}
+
+Rel(parent, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "EF Core")
+Rel(bus, api, "QuoteReceived, BookingConfirmed", "AMQP")
+@enduml

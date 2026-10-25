@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Download and delete my data
+
+class FamilyDataGraph {
+  +Collect(familyId: Guid): AsyncEnumerable<DataSet>
+  +Delete(familyId: Guid): Task<DeletionReport>
+}
+class DeletionReport {
+  +int RowsDeleted
+  +int BlobsDeleted
+  +int PaymentRecordsRetained
+}
+class ExportJob
+class DeleteAccountJob
+ExportJob --> FamilyDataGraph
+DeleteAccountJob --> FamilyDataGraph
+FamilyDataGraph ..> DeletionReport
+@enduml

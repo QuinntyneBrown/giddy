@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Design and send invitations
+
+class Invitation {
+  +Guid PartyId
+  +string Design
+  +string Headline (max 60)
+  +string Message (max 280)
+  +DateOnly RsvpBy
+  +AskAbout Questions
+  +Channels Channels
+  +DateTimeOffset? SentAt
+  +Validate(partyDate: DateOnly): Result
+}
+class RsvpToken {
+  +Guid GuestId
+  +byte[] TokenHash
+  +bool Revoked
+}
+class SendInvitationsHandler {
+  +Handle(cmd: SendInvitationsCommand): Task<SendResult>
+}
+class RsvpTokenService {
+  +Issue(guestId: Guid): string
+}
+SendInvitationsHandler --> Invitation
+SendInvitationsHandler --> RsvpTokenService
+RsvpTokenService ..> RsvpToken : creates
+@enduml

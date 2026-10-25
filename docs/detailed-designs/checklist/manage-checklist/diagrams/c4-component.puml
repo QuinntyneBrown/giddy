@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage the party checklist
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "TasksController", "ASP.NET Core controller", "Task endpoints")
+  Component(gen, "ChecklistGenerator", "Domain service", "Dated tasks")
+  Component(h, "CompleteTaskHandler", "MediatR handler", "Done + push")
+  Component(task, "PartyTask", "Domain entity", "Grouping and overdue")
+  Component(hub, "PartyHub", "SignalR hub", "Co-planner updates")
+}
+
+Rel(ctrl, gen, "Make my checklist")
+Rel(ctrl, h, "CompleteTaskCommand")
+Rel(h, task, "Complete")
+Rel(h, hub, "task.changed")
+Rel(h, db, "Saves", "EF Core")
+@enduml

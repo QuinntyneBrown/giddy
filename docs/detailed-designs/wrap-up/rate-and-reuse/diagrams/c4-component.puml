@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Rate vendors and reuse the plan
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "RatingsController", "ASP.NET Core controller", "Ratings")
+  Component(rate, "RateProviderHandler", "MediatR handler", "Eligibility and rating")
+  Component(tpl, "SaveTemplateHandler", "MediatR handler", "Template and reminder")
+}
+
+Rel(ctrl, rate, "RateProviderCommand")
+Rel(ctrl, tpl, "SaveTemplateCommand")
+Rel(rate, db, "Rating", "EF Core")
+Rel(tpl, db, "Template", "EF Core")
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Notification centre
+
+class Notification {
+  +Guid Id
+  +Guid ParentId
+  +NotificationCategory Category
+  +string Title
+  +string Body
+  +string Link
+  +bool Read
+  +DateTimeOffset CreatedAt
+}
+enum NotificationCategory {
+  Rsvp
+  QuoteOrBooking
+  Reminder
+  CoPlannerChange
+  Account
+}
+class NotificationWriter {
+  +Handle(e: IDomainEvent): Task
+}
+Notification --> NotificationCategory
+NotificationWriter ..> Notification : creates
+@enduml

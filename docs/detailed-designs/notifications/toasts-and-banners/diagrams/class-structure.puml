@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Toasts and banners
+
+class ToastService {
+  +MaxVisible = 3
+  +show(t: Toast): void
+  +pause(id): void
+  +resume(id): void
+}
+class Toast {
+  +string id
+  +Tone tone
+  +string title
+  +string text
+  +Action? action
+  +number? durationMs
+}
+class BannerService {
+  +raise(c: Condition): void
+  +clear(key: string): void
+}
+class Condition {
+  +string key
+  +Tone tone
+  +bool persistent
+}
+ToastService "1" o-- "0..3" Toast
+BannerService "1" o-- "*" Condition
+@enduml

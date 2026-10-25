@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Settings — save the profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "SettingsPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "SettingsController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "UpdateProfileHandler" as h
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Save changes
+page -> ctrl : PUT /api/settings/profile
+ctrl -> h : UpdateProfileCommand
+h -> h : Validate Canadian mobile and postal code
+alt invalid
+  h --> ctrl : ValidationProblem
+  ctrl --> page : 400; summary + inline errors
+else valid
+  h -> db : Save
+  ctrl --> page : 200
+  page --> actor : "Settings saved"
+end
+@enduml

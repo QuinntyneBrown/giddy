@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Loading, empty, error and offline states
+
+Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+Container_Boundary(web_b, "Giddy Web") {
+  Component(rs, "ResourceState", "Angular signal store", "Section state")
+  Component(sk, "SkeletonDirective", "Angular directive", "Delayed skeletons")
+  Component(es, "EmptyState / ErrorBlock", "Angular components", "Messages and actions")
+  Component(guard, "UnsavedChangesGuard", "Angular guard", "Protects input")
+}
+
+Rel(rs, api, "Fetch", "HTTPS")
+Rel(rs, sk, "Loading")
+Rel(rs, es, "Empty / Error")
+@enduml

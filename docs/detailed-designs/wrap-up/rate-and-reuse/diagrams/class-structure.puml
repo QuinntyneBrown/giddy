@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Rate vendors and reuse the plan
+
+class Rating {
+  +Guid PartyId
+  +Guid ProviderId
+  +int Stars (1..5)
+  +string? Review
+}
+class PartyTemplate {
+  +Guid Id
+  +Guid ChildId
+  +string Theme
+  +List<Guid> ProviderIds
+  +List<TaskTemplate> Tasks
+}
+class RateProviderHandler {
+  +Handle(cmd: RateProviderCommand): Task<Result>
+}
+RateProviderHandler ..> Rating : creates
+SaveTemplateHandler ..> PartyTemplate : creates
+@enduml

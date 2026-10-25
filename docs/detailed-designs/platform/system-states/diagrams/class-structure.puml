@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Loading, empty, error and offline states
+
+class ResourceState<T> {
+  +status: 'loading'|'ready'|'empty'|'error'
+  +data: T?
+  +error: ProblemDetails?
+  +retry(): void
+}
+class ProblemDetails {
+  +status: number
+  +title: string
+  +reference: string
+}
+ResourceState ..> ProblemDetails
+@enduml

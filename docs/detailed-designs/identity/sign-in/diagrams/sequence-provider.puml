@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Sign in — Google or Apple
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "SignInPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "ExternalSignInHandler" as h
+  participant "SessionService" as sess
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Identity providers" as idp
+  database "Giddy database" as db
+end box
+actor -> page : Continue with Google
+page -> ctrl : GET /api/auth/external/google
+ctrl --> page : 302 to provider with state + PKCE
+page -> idp : Authenticate
+idp --> ctrl : Callback with code
+ctrl -> h : ExternalSignInCommand
+h -> idp : Exchange code, validate ID token
+idp --> h : Verified email
+h -> db : Find or create Parent (verified)
+h -> sess : Issue session
+h --> ctrl : SessionTicket
+ctrl --> page : 302 to /home or /welcome
+page --> actor : Signed in
+@enduml

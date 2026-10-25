@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Venues — search for the party date
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "VenuesPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "VenuesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SearchVenuesQuery" as q
+  participant "AvailabilityService" as avail
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Cache" as cache
+  participant "Venue partner APIs" as venues
+  database "Giddy database" as db
+end box
+actor -> page : Open Venues (filters from party)
+page -> ctrl : GET /api/venues/search?date&kids&near&radius
+ctrl -> q : Run
+q -> db : Venues within radius, capacity, price, features
+q -> avail : Slots for candidates on date
+avail -> cache : Fresh (< 15 min)?
+alt cache miss
+  avail -> venues : Availability (3 s timeout per partner)
+  venues --> avail : Slots
+  avail -> cache : Store 15 min
+end
+avail --> q : Slots
+q -> q : Keep venues with a free slot; flag capacity < kids
+alt no results
+  q -> q : RelaxationAdvisor ("Raise to $350 shows 3 venues")
+end
+q --> ctrl : Results + count
+ctrl --> page : 200 (p95 <= 1 s)
+page --> actor : Tiles with free slots, or empty state with hint
+@enduml

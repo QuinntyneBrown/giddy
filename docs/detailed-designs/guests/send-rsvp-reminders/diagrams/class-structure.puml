@@ -1,0 +1,35 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Select guests and send reminders
+
+class SendRemindersCommand {
+  +Guid PartyId
+  +List<Guid> GuestIds
+}
+class SendRemindersHandler {
+  +TimeSpan Cooldown = 48 h
+  +Handle(cmd): Task<ReminderResult>
+}
+class ReminderResult {
+  +int Scheduled
+  +List<SkippedGuest> Skipped
+}
+class DeliveryStatus {
+  +Guid GuestId
+  +Channel Channel
+  +DeliveryState State
+  +string? Reason
+}
+SendRemindersHandler ..> SendRemindersCommand
+SendRemindersHandler ..> ReminderResult
+DeliveryStatusHandler --> DeliveryStatus
+@enduml

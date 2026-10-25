@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Track the party budget
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "BudgetController", "ASP.NET Core controller", "Budget endpoints")
+  Component(h, "SaveCostLineHandler", "MediatR handler", "Add and edit lines")
+  Component(b, "Budget", "Domain aggregate", "Totals")
+  Component(proj, "BudgetProjection", "Event handler", "Lines from quotes and bookings")
+}
+
+Rel(ctrl, h, "SaveCostLineCommand")
+Rel(h, b, "Add/Update line")
+Rel(bus, proj, "Events", "AMQP")
+Rel(proj, b, "Upsert line")
+Rel(h, db, "Saves", "EF Core")
+@enduml

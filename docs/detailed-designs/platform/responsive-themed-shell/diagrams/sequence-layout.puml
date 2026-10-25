@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Shell — adapt to viewport and theme
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "AppShell" as shell
+  participant "BreakpointService" as bp
+  participant "ThemeService" as theme
+end box
+actor -> shell : Open app at 360 px, device dark
+shell -> theme : Init
+theme -> theme : Saved choice? else prefers-color-scheme
+theme --> shell : data-theme="dark"
+shell -> bp : Observe
+bp --> shell : isDesktop = false
+shell --> actor : Bottom nav, no search, sheets for dialogs
+actor -> shell : Rotate / resize to 1280 px
+bp --> shell : isDesktop = true
+shell --> actor : Sidebar with countdown card; bottom nav hidden
+@enduml

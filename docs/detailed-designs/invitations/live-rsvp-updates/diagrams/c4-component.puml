@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Live RSVP updates and the allergy list
+
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+Container_Boundary(api_b, "Giddy API") {
+  Component(h, "RsvpChangedHandler", "Event handler", "Read models, push, notifications")
+  Component(hub, "PartyHub", "SignalR hub", "Per-party groups")
+  Component(share, "ShareAllergyListHandler", "MediatR handler", "Sends to venue")
+  Component(ie, "InvitationEventsHandler", "MediatR handler", "Opens and bounces")
+}
+
+Rel(bus, h, "RsvpChanged", "AMQP")
+Rel(h, db, "Counts, allergy list", "EF Core")
+Rel(h, hub, "Push")
+Rel(share, venues, "Allergy list", "HTTPS")
+Rel(ie, hub, "Bounce toast")
+@enduml

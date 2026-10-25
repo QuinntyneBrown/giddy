@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Bookings — cancel inside or outside the window
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PartyOverviewPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "BookingsController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "CancelBookingHandler" as h
+  participant "Booking" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Venue partner APIs" as venues
+  participant "Payment provider" as payx
+  database "Giddy database" as db
+end box
+actor -> page : Cancel booking
+page -> ctrl : GET cancellation terms
+ctrl --> page : {refundable: today <= FreeCancellationUntil}
+page --> actor : Confirmation stating refund or "deposit is non-refundable"
+actor -> page : Confirm
+page -> ctrl : POST /bookings/{id}/cancel
+ctrl -> h : CancelBookingCommand
+h -> venues : Cancel booking
+alt refundable
+  h -> payx : Refund $100
+end
+h -> ent : Cancel
+h -> db : Save
+h --> ctrl : Ok
+ctrl --> page : 200
+page --> actor : Booking cancelled; venue slot released
+@enduml

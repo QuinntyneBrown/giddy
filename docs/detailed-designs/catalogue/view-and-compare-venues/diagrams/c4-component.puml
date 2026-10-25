@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View and compare venues
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "VenuesController", "ASP.NET Core controller", "Detail, compare, favourite, waitlist")
+  Component(cmp, "CompareVenuesQuery", "Query handler", "Comparison rows")
+  Component(rec, "VenueRecommender", "Domain service", "Recommended venue")
+  Component(alt, "NearestAlternatives", "Domain service", "When fully booked")
+}
+
+Rel(ctrl, cmp, "Compare")
+Rel(cmp, rec, "Recommend")
+Rel(ctrl, alt, "Fully booked")
+Rel(cmp, db, "Reads", "EF Core")
+Rel(alt, venues, "Slots", "HTTPS")
+@enduml

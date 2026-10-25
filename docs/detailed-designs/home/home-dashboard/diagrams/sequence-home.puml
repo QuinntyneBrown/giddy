@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Home — load with nudges
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "HomePage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "HomeController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "HomeQuery" as q
+  participant "NudgeEngine" as ne
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  database "Cache" as cache
+end box
+actor -> page : Open /home
+par
+  page -> ctrl : GET /api/home
+  ctrl -> q : Hero, RSVPs, next birthday
+  q -> db : Reads
+  ctrl --> page : 200
+else
+  page -> ctrl : GET /api/home/nudges
+  ctrl -> ne : For(party, today)
+  ne -> cache : Cached?
+  ne -> db : Tasks, deadlines, findings
+  ne -> ne : Order Overdue > NeedsYou > Idea; take 3
+  ctrl --> page : Nudges (or 503 → card warning)
+end
+page --> actor : Home
+@enduml

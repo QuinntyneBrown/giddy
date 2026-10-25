@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Warn and suggest when over budget
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(vendors, "Vendor directory", "Entertainers, caterers and bakeries with quotes")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "BudgetController", "ASP.NET Core controller", "Swaps")
+  Component(q, "SuggestSwapsQuery", "Query handler", "Cheaper alternatives")
+  Component(h, "ApplySwapHandler", "MediatR handler", "Apply a swap")
+  Component(b, "Budget", "Domain aggregate", "Totals")
+}
+
+Rel(ctrl, q, "Suggest")
+Rel(q, vendors, "Search", "HTTPS")
+Rel(ctrl, h, "ApplySwapCommand")
+Rel(h, b, "Replace line")
+Rel(h, db, "Saves", "EF Core")
+@enduml

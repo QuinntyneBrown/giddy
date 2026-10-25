@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage what Giddy remembers
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "MemoriesController", "ASP.NET Core controller", "List and forget")
+  Component(h, "ForgetMemoryHandler", "MediatR handler", "Delete and evict")
+  Component(mem, "FamilyMemory", "Domain entity", "Fact scoped to a family")
+}
+
+Rel(ctrl, h, "ForgetMemoryCommand")
+Rel(h, mem, "Delete")
+Rel(h, db, "Deletes", "EF Core")
+Rel(h, cache, "Evict context cache", "RESP")
+@enduml

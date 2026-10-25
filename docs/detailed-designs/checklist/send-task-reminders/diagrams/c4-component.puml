@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Send task reminders and quiet hours
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(worker_b, "Background Worker") {
+  Component(job, "TaskReminderJob", "Hosted service", "Daily 9:00 am")
+  Component(qh, "QuietHoursPolicy", "Domain service", "Send now or hold")
+  Component(disp, "NotificationDispatcher", "Application service", "Channel fan-out")
+}
+
+Rel(job, db, "Due and overdue tasks", "EF Core")
+Rel(job, disp, "Notify")
+Rel(disp, qh, "Check")
+Rel(disp, bus, "Scheduled sends", "AMQP")
+@enduml

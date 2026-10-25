@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — View and compare venues
+
+class CompareVenuesQuery {
+  +Ids: List<Guid> (2..3)
+}
+class ComparisonRow {
+  +string Feature
+  +List<string> Values
+  +int? BestIndex
+}
+class VenueRecommender {
+  +Recommend(venues, party): Recommendation
+}
+class NearestAlternatives {
+  +Find(venue, date): Alternatives
+}
+CompareVenuesQuery ..> ComparisonRow : returns
+CompareVenuesQuery --> VenueRecommender
+@enduml

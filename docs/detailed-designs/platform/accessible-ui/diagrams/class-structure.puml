@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Accessible user interface
+
+class FormErrorSummary {
+  +errors: FieldError[]
+  +focus(): void
+}
+class FieldError {
+  +controlId: string
+  +message: string
+}
+class DialogRef {
+  +restoreFocusTo: HTMLElement
+  +close(): void
+}
+FormErrorSummary "1" *-- "*" FieldError
+@enduml

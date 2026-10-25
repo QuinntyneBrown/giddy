@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Warn and suggest when over budget
+
+class Swap {
+  +string Category
+  +string FromName
+  +string ToName
+  +Money Saving
+}
+class SuggestSwapsQuery {
+  +Run(partyId: Guid): List<Swap>
+}
+class ApplySwapHandler {
+  +Handle(cmd: ApplySwapCommand): Task<Result>
+}
+SuggestSwapsQuery ..> Swap : returns
+ApplySwapHandler ..> Swap
+@enduml

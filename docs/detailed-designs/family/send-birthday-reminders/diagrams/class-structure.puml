@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Send birthday reminders
+
+class BirthdayReminderJob {
+  +ExecuteAsync(today: DateOnly): Task
+}
+class UpcomingBirthdaysQuery {
+  +int HorizonDays = 42
+  +Run(today: DateOnly): IReadOnlyList<ChildBirthday>
+}
+class ChildBirthday {
+  +Guid ChildId
+  +Guid ParentId
+  +DateOnly NextBirthday
+  +bool HasPlan
+}
+class NotificationDispatcher {
+  +Dispatch(n: Notification): Task
+}
+BirthdayReminderJob --> UpcomingBirthdaysQuery
+BirthdayReminderJob --> NotificationDispatcher
+UpcomingBirthdaysQuery ..> ChildBirthday : returns
+@enduml

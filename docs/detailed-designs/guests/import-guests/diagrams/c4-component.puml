@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Import guests in bulk
+
+ContainerDb(blob, "File storage", "Azure Blob Storage (Canada Central)", "Imports, exports, photos")
+System_Ext(av, "Malware scanner", "Scans uploaded files")
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(worker_b, "Background Worker") {
+  Component(job, "ImportJob", "Service Bus consumer", "Runs one import")
+  Component(scan, "MalwareScanClient", "HTTP adapter", "Scans the blob")
+  Component(read, "SpreadsheetReader", "Parser", "Values only, no formulas or macros")
+  Component(val, "GuestRowValidator", "Domain service", "Required fields and duplicates")
+}
+
+Rel(bus, job, "ImportRequested", "AMQP")
+Rel(job, scan, "Scan")
+Rel(scan, av, "HTTPS")
+Rel(job, read, "Parse")
+Rel(read, blob, "Read", "HTTPS")
+Rel(job, val, "Validate rows")
+Rel(job, db, "Guests + report", "EF Core")
+@enduml

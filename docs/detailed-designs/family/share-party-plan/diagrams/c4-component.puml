@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Share a party plan
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PartyMembersController", "ASP.NET Core controller", "Members and share links")
+  Component(h, "InviteMemberHandler", "MediatR handler", "Pending memberships")
+  Component(party, "Party", "Domain aggregate", "Owns memberships")
+  Component(m, "PartyMembership", "Domain entity", "Role per parent")
+}
+
+Rel(ctrl, h, "InviteMemberCommand")
+Rel(h, party, "AddMember")
+Rel(party, m, "Owns")
+Rel(h, db, "Saves", "EF Core")
+Rel(h, bus, "MemberInvited", "AMQP")
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+title UML sequence behaviour — Party overview — load with an isolated section failure
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PartyOverviewPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartiesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "GetPartyOverviewQuery" as ov
+  participant "BookingStatusQuery" as bs
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  database "Cache" as cache
+end box
+actor -> page : Open /parties/{id}
+page -> page : Render skeletons
+par
+  page -> ctrl : GET /overview
+  ctrl -> ov : Run
+  ov -> db : Party, tasks, RSVPs, budget, members
+  ov -> ov : ReadinessCalculator (L2-012)
+  ov --> ctrl : PartyOverviewDto
+  ctrl --> page : 200
+else
+  page -> ctrl : GET /bookings
+  ctrl -> bs : Run
+  bs -> cache : Cached status?
+  alt provider failure
+    bs --> ctrl : Error
+    ctrl --> page : 503
+    page --> actor : Warning in bookings card with Try again
+  else ok
+    bs --> ctrl : Statuses
+    ctrl --> page : 200
+  end
+end
+page --> actor : Overview
+@enduml

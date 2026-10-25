@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Landing page, help and legal
+
+Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+Container_Boundary(web_b, "Giddy Web") {
+  Component(land, "LandingPage", "Prerendered route", "Marketing content")
+  Component(help, "HelpPage", "Route", "FAQ and contact")
+  Component(legal, "LegalPage", "Route", "Terms and privacy")
+  Component(guard, "SignedInRedirectGuard", "Angular guard", "Signed-in → /home")
+}
+
+Rel(guard, land, "Guards")
+Rel(legal, api, "Current terms", "HTTPS")
+@enduml

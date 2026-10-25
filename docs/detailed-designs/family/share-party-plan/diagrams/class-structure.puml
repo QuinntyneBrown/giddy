@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Share a party plan
+
+enum PartyRole {
+  Owner
+  Editor
+  Viewer
+}
+class Party {
+  +Guid Id
+  +List<PartyMembership> Members
+  +AddMember(email: string, role: PartyRole): PartyMembership
+  +RemoveMember(parentId: Guid): void
+}
+class PartyMembership {
+  +Guid PartyId
+  +Guid? ParentId
+  +string InvitedEmail
+  +PartyRole Role
+  +MembershipStatus Status
+}
+class ShareLink {
+  +Guid Id
+  +byte[] TokenHash
+  +bool Revoked
+}
+Party "1" *-- "*" PartyMembership
+Party "1" *-- "0..1" ShareLink
+PartyMembership --> PartyRole
+@enduml

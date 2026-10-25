@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Track booking status and cancellations
+
+class Booking {
+  +DateTimeOffset? HoldExpiresAt
+  +Cancel(today: DateOnly): Refund?
+}
+class WebhookEnvelope {
+  +string Source
+  +string Signature
+  +string Type
+  +JsonElement Payload
+}
+class BookingEventsHandler {
+  +Handle(e: WebhookEnvelope): Task
+}
+class CancelBookingHandler {
+  +Handle(cmd: CancelBookingCommand): Task<Result>
+}
+BookingEventsHandler ..> WebhookEnvelope
+BookingEventsHandler --> Booking
+CancelBookingHandler --> Booking
+@enduml

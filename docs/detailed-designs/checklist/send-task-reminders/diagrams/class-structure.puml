@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Send task reminders and quiet hours
+
+class QuietHoursPolicy {
+  +TimeOnly Start = 21:00
+  +TimeOnly End = 07:00
+  +Decide(n: Notification, prefs: Preferences, now: ZonedDateTime): SendDecision
+}
+class SendDecision {
+  +bool SendNow
+  +DateTimeOffset? HoldUntil
+}
+class Notification {
+  +Guid ParentId
+  +NotificationCategory Category
+  +bool Urgent
+  +string Title
+  +string Body
+}
+QuietHoursPolicy ..> SendDecision
+QuietHoursPolicy ..> Notification
+@enduml
