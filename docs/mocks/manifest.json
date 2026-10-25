@@ -25,6 +25,9 @@
       "kind": "page",
       "title": "Landing",
       "route": "/",
+      "requirements": [
+        "L2-092"
+      ],
       "states": [
         "default"
       ],
@@ -40,6 +43,10 @@
       "kind": "page",
       "title": "Sign in",
       "route": "/sign-in",
+      "requirements": [
+        "L2-002",
+        "L2-004"
+      ],
       "states": [
         "default",
         "invalid",
@@ -57,6 +64,9 @@
       "kind": "page",
       "title": "Sign up",
       "route": "/sign-up",
+      "requirements": [
+        "L2-001"
+      ],
       "states": [
         "default",
         "invalid",
@@ -74,6 +84,9 @@
       "kind": "page",
       "title": "Forgot password",
       "route": "/forgot-password",
+      "requirements": [
+        "L2-005"
+      ],
       "states": [
         "default",
         "invalid",
@@ -92,6 +105,9 @@
       "kind": "page",
       "title": "Reset password",
       "route": "/reset-password",
+      "requirements": [
+        "L2-005"
+      ],
       "states": [
         "default",
         "invalid",
@@ -110,6 +126,9 @@
       "kind": "page",
       "title": "Verify email",
       "route": "/verify-email",
+      "requirements": [
+        "L2-003"
+      ],
       "states": [
         "default",
         "success",
@@ -126,6 +145,10 @@
       "kind": "page",
       "title": "Family setup",
       "route": "/welcome",
+      "requirements": [
+        "L2-007",
+        "L2-010"
+      ],
       "states": [
         "default",
         "invalid",
@@ -144,6 +167,9 @@
       "kind": "page",
       "title": "Not found (404)",
       "route": "/*",
+      "requirements": [
+        "L2-088"
+      ],
       "states": [
         "default"
       ],
@@ -159,6 +185,10 @@
       "kind": "page",
       "title": "No access (403)",
       "route": "/parties/:id (not shared)",
+      "requirements": [
+        "L2-009",
+        "L2-088"
+      ],
       "states": [
         "default"
       ],
@@ -174,6 +204,9 @@
       "kind": "page",
       "title": "Server error (500)",
       "route": "/error",
+      "requirements": [
+        "L2-088"
+      ],
       "states": [
         "default"
       ],
@@ -189,6 +222,10 @@
       "kind": "page",
       "title": "Offline",
       "route": "/offline",
+      "requirements": [
+        "L2-051",
+        "L2-088"
+      ],
       "states": [
         "default"
       ],
@@ -204,6 +241,9 @@
       "kind": "page",
       "title": "Help",
       "route": "/help",
+      "requirements": [
+        "L2-093"
+      ],
       "states": [
         "default",
         "no-results"
@@ -220,6 +260,9 @@
       "kind": "page",
       "title": "Terms & privacy",
       "route": "/legal",
+      "requirements": [
+        "L2-094"
+      ],
       "states": [
         "default"
       ],
@@ -235,6 +278,13 @@
       "kind": "page",
       "title": "Home",
       "route": "/home",
+      "requirements": [
+        "L2-008",
+        "L2-046",
+        "L2-062",
+        "L2-063",
+        "L2-064"
+      ],
       "states": [
         "default",
         "loading",
@@ -250,6 +300,14 @@
       "kind": "page",
       "title": "Ask Giddy (chat)",
       "route": "/plan/chat",
+      "requirements": [
+        "L2-015",
+        "L2-016",
+        "L2-017",
+        "L2-019",
+        "L2-020",
+        "L2-021"
+      ],
       "states": [
         "default",
         "loading",
@@ -265,6 +323,9 @@
       "kind": "page",
       "title": "New party",
       "route": "/parties/new",
+      "requirements": [
+        "L2-010"
+      ],
       "states": [
         "default",
         "invalid",
@@ -282,6 +343,10 @@
       "kind": "page",
       "title": "My parties",
       "route": "/parties",
+      "requirements": [
+        "L2-011",
+        "L2-054"
+      ],
       "states": [
         "default",
         "loading",
@@ -295,6 +360,12 @@
       "kind": "page",
       "title": "Party overview",
       "route": "/parties/zuri-7",
+      "requirements": [
+        "L2-009",
+        "L2-012",
+        "L2-013",
+        "L2-054"
+      ],
       "states": [
         "default",
         "loading",
@@ -310,6 +381,10 @@
       "kind": "page",
       "title": "Themes",
       "route": "/themes",
+      "requirements": [
+        "L2-023",
+        "L2-024"
+      ],
       "states": [
         "default",
         "loading",
@@ -327,6 +402,10 @@
       "kind": "page",
       "title": "Venues",
       "route": "/venues",
+      "requirements": [
+        "L2-025",
+        "L2-027"
+      ],
       "states": [
         "default",
         "loading",
@@ -344,6 +423,9 @@
       "kind": "page",
       "title": "Venue detail",
       "route": "/venues/dino-den",
+      "requirements": [
+        "L2-026"
+      ],
       "states": [
         "default",
         "loading",
@@ -361,6 +443,9 @@
       "kind": "page",
       "title": "Compare venues",
       "route": "/venues/compare",
+      "requirements": [
+        "L2-027"
+      ],
       "states": [
         "default",
         "loading",
@@ -374,6 +459,10 @@
       "kind": "page",
       "title": "Fun & food",
       "route": "/vendors",
+      "requirements": [
+        "L2-032",
+        "L2-033"
+      ],
       "states": [
         "default",
         "food",
@@ -391,6 +480,10 @@
       "kind": "page",
       "title": "Budget",
       "route": "/parties/zuri-7/budget",
+      "requirements": [
+        "L2-035",
+        "L2-037"
+      ],
       "states": [
         "default",
         "loading",
@@ -405,6 +498,11 @@
       "kind": "page",
       "title": "Guests",
       "route": "/parties/zuri-7/guests",
+      "requirements": [
+        "L2-038",
+        "L2-042",
+        "L2-046"
+      ],
       "states": [
         "default",
         "loading",
@@ -420,6 +518,9 @@
       "kind": "page",
       "title": "Invitations",
       "route": "/parties/zuri-7/invite",
+      "requirements": [
+        "L2-043"
+      ],
       "states": [
         "default",
         "loading",
@@ -438,6 +539,9 @@
       "kind": "page",
       "title": "RSVP (guest view)",
       "route": "/rsvp/:token",
+      "requirements": [
+        "L2-044"
+      ],
       "states": [
         "default",
         "loading",
@@ -456,6 +560,10 @@
       "kind": "page",
       "title": "Checklist",
       "route": "/parties/zuri-7/checklist",
+      "requirements": [
+        "L2-047",
+        "L2-048"
+      ],
       "states": [
         "default",
         "loading",
@@ -470,6 +578,10 @@
       "kind": "page",
       "title": "Party day run sheet",
       "route": "/parties/zuri-7/day",
+      "requirements": [
+        "L2-050",
+        "L2-051"
+      ],
       "states": [
         "default",
         "loading",
@@ -484,6 +596,12 @@
       "kind": "page",
       "title": "Wrap-up",
       "route": "/parties/zuri-7/wrap-up",
+      "requirements": [
+        "L2-013",
+        "L2-052",
+        "L2-053",
+        "L2-054"
+      ],
       "states": [
         "default",
         "loading",
@@ -498,6 +616,9 @@
       "kind": "page",
       "title": "Notifications",
       "route": "/notifications",
+      "requirements": [
+        "L2-055"
+      ],
       "states": [
         "default",
         "loading",
@@ -512,6 +633,14 @@
       "kind": "page",
       "title": "Settings",
       "route": "/settings",
+      "requirements": [
+        "L2-021",
+        "L2-058",
+        "L2-061",
+        "L2-065",
+        "L2-066",
+        "L2-067"
+      ],
       "states": [
         "default",
         "loading",
@@ -530,6 +659,11 @@
       "kind": "page",
       "title": "Family",
       "route": "/family",
+      "requirements": [
+        "L2-007",
+        "L2-008",
+        "L2-009"
+      ],
       "states": [
         "default",
         "loading",
@@ -542,6 +676,9 @@
       "id": "add-child",
       "kind": "dialog",
       "title": "Add a child",
+      "requirements": [
+        "L2-007"
+      ],
       "opens_from": "family",
       "states": [
         "default",
@@ -555,6 +692,9 @@
       "id": "add-guest",
       "kind": "dialog",
       "title": "Add a guest",
+      "requirements": [
+        "L2-039"
+      ],
       "opens_from": "guests",
       "states": [
         "default",
@@ -568,6 +708,9 @@
       "id": "import-guests",
       "kind": "dialog",
       "title": "Import guests",
+      "requirements": [
+        "L2-040"
+      ],
       "opens_from": "guests",
       "states": [
         "default",
@@ -582,6 +725,9 @@
       "id": "remove-guest",
       "kind": "dialog",
       "title": "Remove guest",
+      "requirements": [
+        "L2-041"
+      ],
       "opens_from": "guests",
       "states": [
         "default",
@@ -597,6 +743,10 @@
       "id": "book-venue",
       "kind": "dialog",
       "title": "Book a venue",
+      "requirements": [
+        "L2-028",
+        "L2-029"
+      ],
       "opens_from": "venue-detail",
       "states": [
         "default",
@@ -611,6 +761,9 @@
       "id": "request-quote",
       "kind": "dialog",
       "title": "Request a quote",
+      "requirements": [
+        "L2-034"
+      ],
       "opens_from": "vendors",
       "states": [
         "default",
@@ -625,6 +778,9 @@
       "id": "add-expense",
       "kind": "dialog",
       "title": "Add a cost",
+      "requirements": [
+        "L2-036"
+      ],
       "opens_from": "budget",
       "states": [
         "default",
@@ -638,6 +794,9 @@
       "id": "add-task",
       "kind": "dialog",
       "title": "Add a task",
+      "requirements": [
+        "L2-048"
+      ],
       "opens_from": "checklist",
       "states": [
         "default",
@@ -651,6 +810,9 @@
       "id": "accept-plan",
       "kind": "dialog",
       "title": "Use Giddy’s plan",
+      "requirements": [
+        "L2-018"
+      ],
       "opens_from": "planner-chat",
       "states": [
         "default",
@@ -666,6 +828,9 @@
       "id": "share-plan",
       "kind": "dialog",
       "title": "Share plan",
+      "requirements": [
+        "L2-009"
+      ],
       "opens_from": "party-overview",
       "states": [
         "default",
@@ -679,6 +844,9 @@
       "id": "delete-party",
       "kind": "dialog",
       "title": "Delete party",
+      "requirements": [
+        "L2-014"
+      ],
       "opens_from": "party-overview",
       "states": [
         "default",
@@ -693,6 +861,9 @@
       "id": "sign-out",
       "kind": "dialog",
       "title": "Sign out",
+      "requirements": [
+        "L2-006"
+      ],
       "opens_from": "settings",
       "states": [
         "default",
@@ -707,6 +878,9 @@
       "id": "session-expired",
       "kind": "dialog",
       "title": "Session expired",
+      "requirements": [
+        "L2-006"
+      ],
       "opens_from": "guests",
       "states": [
         "default",
@@ -719,6 +893,11 @@
       "id": "action-toast",
       "kind": "notification",
       "title": "Action toast",
+      "requirements": [
+        "L2-041",
+        "L2-042",
+        "L2-056"
+      ],
       "opens_from": "guests",
       "states": [
         "info",
@@ -734,6 +913,10 @@
       "id": "rsvp-toast",
       "kind": "notification",
       "title": "Live RSVP update",
+      "requirements": [
+        "L2-045",
+        "L2-056"
+      ],
       "opens_from": "home",
       "states": [
         "info",
@@ -747,6 +930,12 @@
       "id": "booking-banner",
       "kind": "notification",
       "title": "Booking status banner",
+      "requirements": [
+        "L2-029",
+        "L2-030",
+        "L2-031",
+        "L2-057"
+      ],
       "opens_from": "party-overview",
       "states": [
         "info",
@@ -761,6 +950,10 @@
       "id": "connection-banner",
       "kind": "notification",
       "title": "Connection banner",
+      "requirements": [
+        "L2-051",
+        "L2-057"
+      ],
       "opens_from": "home",
       "states": [
         "info",
@@ -774,6 +967,9 @@
       "id": "verify-banner",
       "kind": "notification",
       "title": "Verify email banner",
+      "requirements": [
+        "L2-057"
+      ],
       "opens_from": "home",
       "states": [
         "info",
@@ -788,6 +984,9 @@
       "id": "cookie-consent",
       "kind": "notification",
       "title": "Cookie consent",
+      "requirements": [
+        "L2-068"
+      ],
       "opens_from": "landing",
       "states": [
         "info",
@@ -803,6 +1002,9 @@
       "id": "push-prompt",
       "kind": "notification",
       "title": "Push permission prompt",
+      "requirements": [
+        "L2-059"
+      ],
       "opens_from": "home",
       "states": [
         "info",
