@@ -16,11 +16,13 @@
    page has not forced [data-theme="light"]. High-contrast tweaks apply
    under prefers-contrast: more and forced-colors.
 
-   Values below are the starter palette. Replace them with the values
-   harvested from docs/mocks, then re-run scripts/check_contrast.py.
+   Giddy: values harvested from docs/mocks (Oct 2026). Grape accent on a
+   cream canvas, night-sky dark theme, "party pop" decorative colours.
+   Re-run scripts/check_contrast.py after any change.
    ========================================================================== */
 
-:root {
+/* Light is the default; [data-theme="light"] re-applies it inside a dark page (theme previews, forced-light regions). */
+:root, [data-theme="light"] {
   /* ---------- Primitives: colour --------------------------------------- */
   --palette-white: #ffffff;
   --palette-black: #000000;
@@ -261,6 +263,13 @@
   --layout-sidebar-width: 16rem;    /* 256px */
   --layout-topbar-height: 4rem;     /* 64px */
   --layout-bottom-nav-height: 4.5rem; /* 72px mobile tab bar */
+  --layout-aside-width: 22rem;      /* 352px right-hand column in .split */
+
+  /* Illustration sizes: emoji art, mascot and empty-state artwork */
+  --size-illustration-sm: 2.25rem;  /* 36px  mascot in chat */
+  --size-illustration-md: 4rem;     /* 64px  media tiles, invitation */
+  --size-illustration-lg: 6rem;     /* 96px  hero gallery tile */
+  --size-illustration-xl: 10rem;    /* 160px landing and status pages */
 
   /* ---------- Semantic: shape ------------------------------------------ */
   --radius-xs: 0.125rem;  /* 2px  checkbox */
@@ -287,6 +296,8 @@
   --duration-base: 200ms;     /* reveal, menus, tooltips */
   --duration-slow: 320ms;     /* dialogs, sheets, page transitions */
   --duration-deliberate: 500ms;/* progress, skeleton shimmer cycles */
+  --duration-spin: 800ms;     /* one turn of a spinner (status loop) */
+  --duration-loop: 1.4s;      /* shimmer, typing dots, pulse, indeterminate bar (status loops) */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-enter: cubic-bezier(0, 0, 0, 1);
   --ease-exit: cubic-bezier(0.3, 0, 1, 1);
@@ -331,7 +342,7 @@
 
 /* Responsive layout tokens: columns, gutters and margins grow with the viewport. */
 @media (min-width: 48rem) {
-  :root {
+  :root, [data-theme] {
     --layout-columns: 8;
     --layout-gutter: var(--space-6);
     --layout-margin: var(--space-8);
@@ -339,7 +350,7 @@
 }
 
 @media (min-width: 64rem) {
-  :root {
+  :root, [data-theme] {
     --layout-columns: 12;
     --layout-gutter: var(--space-8);
     --layout-margin: var(--space-12);
@@ -415,6 +426,9 @@
   --color-hero-from: var(--palette-grape-800);
   --color-hero-to: var(--palette-pink-800);
   --color-accent-press: var(--palette-grape-500);
+  --shadow-press: 0 0.25rem 0 var(--color-accent-press);
+  --color-focus-ring-offset: var(--color-bg-surface);
+  --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
   --shadow-color: 0 0 0;
   --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.4);
   --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.45), 0 1px 2px rgb(var(--shadow-color) / 0.3);
@@ -485,6 +499,9 @@
   --color-hero-from: var(--palette-grape-800);
   --color-hero-to: var(--palette-pink-800);
   --color-accent-press: var(--palette-grape-500);
+  --shadow-press: 0 0.25rem 0 var(--color-accent-press);
+  --color-focus-ring-offset: var(--color-bg-surface);
+  --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
   --shadow-color: 0 0 0;
     --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.4);
     --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.45), 0 1px 2px rgb(var(--shadow-color) / 0.3);

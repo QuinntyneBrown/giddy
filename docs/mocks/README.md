@@ -2,7 +2,7 @@
 
 Static HTML mocks for Giddy, the agentic birthday planner for kids in Toronto and the GTA. They cover every page, dialog and notification in every state. Open [index.html](index.html) straight from disk to browse them; no server or build step needed.
 
-**Look and feel:** fun enough for kids, clear and calm for parents. The app uses a grape accent on a warm cream canvas, with "party pop" colours (sun, pink, mint, sky, orange) for tiles and avatars. Headings use rounded type, buttons are chunky and pressable, and confetti appears on hero panels. Giddy, the balloon mascot, stands in for the planning agent. Dark mode uses a night-sky palette. All of this lives in `assets/tokens.css` and `assets/ui.css`.
+**Look and feel:** fun enough for kids, clear and calm for parents. The app uses a grape accent on a warm cream canvas, with "party pop" colours (sun, pink, mint, sky, orange) for tiles and avatars. Headings use rounded type, buttons are chunky and pressable, and confetti appears on hero panels. Giddy, the balloon mascot, stands in for the planning agent. Dark mode uses a night-sky palette. All of this lives in the design system: [`../design-system/tokens/tokens.css`](../design-system/tokens/tokens.css) and [`../design-system/assets/components.css`](../design-system/assets/components.css). `assets/` keeps only the mock chrome (`mock.css`, `mock.js`).
 
 ## How to view
 
@@ -128,4 +128,4 @@ python .claude/skills/writing-html-mocks/scripts/check_mocks.py docs/mocks --wri
 python .claude/skills/writing-html-mocks/scripts/screenshot_mocks.py docs/mocks      # PNGs to docs/mocks/.cache (never commit)
 ```
 
-Next step: run `extracting-design-systems` to turn these mocks into `docs/design-system/`.
+The design system extracted from these mocks lives in [`docs/design-system/`](../design-system/README.md).
