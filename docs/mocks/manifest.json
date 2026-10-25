@@ -1,0 +1,818 @@
+{
+  "project": "Giddy",
+  "required_states": {
+    "page": [
+      "default",
+      "loading",
+      "empty",
+      "error"
+    ],
+    "dialog": [
+      "default",
+      "busy",
+      "invalid"
+    ],
+    "notification": [
+      "info",
+      "success",
+      "warning",
+      "danger"
+    ]
+  },
+  "screens": [
+    {
+      "id": "landing",
+      "kind": "page",
+      "title": "Landing",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Static content shipped with the page; there is no data request to wait for or fail.",
+        "empty": "Static content shipped with the page; there is no data request to wait for or fail.",
+        "error": "Static content shipped with the page; there is no data request to wait for or fail."
+      },
+      "journey": "Marketing"
+    },
+    {
+      "id": "sign-in",
+      "kind": "page",
+      "title": "Sign in",
+      "route": "/sign-in",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A form, not a collection; there is nothing to be empty."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "sign-up",
+      "kind": "page",
+      "title": "Sign up",
+      "route": "/sign-up",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A form, not a collection; there is nothing to be empty."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "forgot-password",
+      "kind": "page",
+      "title": "Forgot password",
+      "route": "/forgot-password",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A form, not a collection; there is nothing to be empty."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "reset-password",
+      "kind": "page",
+      "title": "Reset password",
+      "route": "/reset-password",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A form, not a collection; there is nothing to be empty."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "verify-email",
+      "kind": "page",
+      "title": "Verify email",
+      "route": "/verify-email",
+      "states": [
+        "default",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A single message, not a collection."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "onboarding",
+      "kind": "page",
+      "title": "Family setup",
+      "route": "/welcome",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders immediately; there is no data to fetch first.",
+        "empty": "A form, not a collection; there is nothing to be empty."
+      },
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "not-found",
+      "kind": "page",
+      "title": "Not found (404)",
+      "route": "/*",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is shown instantly; it never loads data.",
+        "empty": "An error page has no collection.",
+        "error": "This page is itself the error state."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "forbidden",
+      "kind": "page",
+      "title": "No access (403)",
+      "route": "/parties/:id (not shared)",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is shown instantly; it never loads data.",
+        "empty": "An error page has no collection.",
+        "error": "This page is itself the error state."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "server-error",
+      "kind": "page",
+      "title": "Server error (500)",
+      "route": "/error",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is shown instantly; it never loads data.",
+        "empty": "An error page has no collection.",
+        "error": "This page is itself the error state."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "offline",
+      "kind": "page",
+      "title": "Offline",
+      "route": "/offline",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is shown instantly; it never loads data.",
+        "empty": "An error page has no collection.",
+        "error": "This page is itself the error state."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "help",
+      "kind": "page",
+      "title": "Help",
+      "route": "/help",
+      "states": [
+        "default",
+        "no-results"
+      ],
+      "not_applicable": {
+        "loading": "Static content shipped with the page; there is no data request to wait for or fail.",
+        "empty": "The FAQ always ships with the page; the empty case is a search with no results.",
+        "error": "Static content shipped with the page; there is no data request to wait for or fail."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "legal",
+      "kind": "page",
+      "title": "Terms & privacy",
+      "route": "/legal",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Static content shipped with the page; there is no data request to wait for or fail.",
+        "empty": "Static content shipped with the page; there is no data request to wait for or fail.",
+        "error": "Static content shipped with the page; there is no data request to wait for or fail."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/home",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial",
+        "offline"
+      ],
+      "journey": "J2 Start a party plan"
+    },
+    {
+      "id": "planner-chat",
+      "kind": "page",
+      "title": "Ask Giddy (chat)",
+      "route": "/plan/chat",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "thinking",
+        "failed"
+      ],
+      "journey": "J3 Chat with the planning agent"
+    },
+    {
+      "id": "new-party",
+      "kind": "page",
+      "title": "New party",
+      "route": "/parties/new",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form renders from the family profile already in memory; nothing to fetch.",
+        "empty": "A form, not a collection."
+      },
+      "journey": "J2 Start a party plan"
+    },
+    {
+      "id": "parties",
+      "kind": "page",
+      "title": "My parties",
+      "route": "/parties",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "party-overview",
+      "kind": "page",
+      "title": "Party overview",
+      "route": "/parties/zuri-7",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial",
+        "locked"
+      ],
+      "journey": "J2 Start a party plan"
+    },
+    {
+      "id": "themes",
+      "kind": "page",
+      "title": "Themes",
+      "route": "/themes",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "no-results",
+        "selected"
+      ],
+      "not_applicable": {
+        "empty": "The theme catalogue always has themes; a filtered empty result is the no-results state."
+      },
+      "journey": "J4 Choose a theme"
+    },
+    {
+      "id": "venues",
+      "kind": "page",
+      "title": "Venues",
+      "route": "/venues",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "no-results",
+        "compare"
+      ],
+      "not_applicable": {
+        "empty": "There are always GTA venues in the catalogue; a filtered empty result is the no-results state."
+      },
+      "journey": "J5 Find and compare venues"
+    },
+    {
+      "id": "venue-detail",
+      "kind": "page",
+      "title": "Venue detail",
+      "route": "/venues/dino-den",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "unavailable",
+        "booked"
+      ],
+      "not_applicable": {
+        "empty": "A venue detail page always describes one venue; there is no collection."
+      },
+      "journey": "J5 Find and compare venues"
+    },
+    {
+      "id": "compare-venues",
+      "kind": "page",
+      "title": "Compare venues",
+      "route": "/venues/compare",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "journey": "J5 Find and compare venues"
+    },
+    {
+      "id": "vendors",
+      "kind": "page",
+      "title": "Fun & food",
+      "route": "/vendors",
+      "states": [
+        "default",
+        "food",
+        "loading",
+        "error",
+        "no-results"
+      ],
+      "not_applicable": {
+        "empty": "The GTA vendor catalogue always has entries; a filtered empty result is the no-results state."
+      },
+      "journey": "J10 Entertainers · J11 Food and cake"
+    },
+    {
+      "id": "budget",
+      "kind": "page",
+      "title": "Budget",
+      "route": "/parties/zuri-7/budget",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "over-budget"
+      ],
+      "journey": "J9 Manage budget"
+    },
+    {
+      "id": "guests",
+      "kind": "page",
+      "title": "Guests",
+      "route": "/parties/zuri-7/guests",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "no-results",
+        "selected"
+      ],
+      "journey": "J10 Build guest list"
+    },
+    {
+      "id": "invitation",
+      "kind": "page",
+      "title": "Invitations",
+      "route": "/parties/zuri-7/invite",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "empty": "The invitation always starts from a draft Giddy writes from the plan; there is no empty invitation."
+      },
+      "journey": "J11 Send invitations and track RSVPs"
+    },
+    {
+      "id": "rsvp",
+      "kind": "page",
+      "title": "RSVP (guest view)",
+      "route": "/rsvp/:token",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "empty": "An RSVP link always points to one invitation; there is no collection."
+      },
+      "journey": "J11 Send invitations and track RSVPs"
+    },
+    {
+      "id": "checklist",
+      "kind": "page",
+      "title": "Checklist",
+      "route": "/parties/zuri-7/checklist",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "all-done"
+      ],
+      "journey": "J12 Follow the party checklist and timeline"
+    },
+    {
+      "id": "run-sheet",
+      "kind": "page",
+      "title": "Party day run sheet",
+      "route": "/parties/zuri-7/day",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "offline"
+      ],
+      "journey": "J13 Party-day run sheet"
+    },
+    {
+      "id": "wrap-up",
+      "kind": "page",
+      "title": "Wrap-up",
+      "route": "/parties/zuri-7/wrap-up",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "journey": "J14 Wrap up after the party"
+    },
+    {
+      "id": "notifications",
+      "kind": "page",
+      "title": "Notifications",
+      "route": "/notifications",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "read"
+      ],
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "settings",
+      "kind": "page",
+      "title": "Settings",
+      "route": "/settings",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "empty": "Settings always have values; there is no empty collection."
+      },
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "family",
+      "kind": "page",
+      "title": "Family",
+      "route": "/family",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "add-child",
+      "kind": "dialog",
+      "title": "Add a child",
+      "opens_from": "family",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "add-guest",
+      "kind": "dialog",
+      "title": "Add a guest",
+      "opens_from": "guests",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "journey": "J10 Build guest list"
+    },
+    {
+      "id": "import-guests",
+      "kind": "dialog",
+      "title": "Import guests",
+      "opens_from": "guests",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed",
+        "success"
+      ],
+      "journey": "J10 Build guest list"
+    },
+    {
+      "id": "remove-guest",
+      "kind": "dialog",
+      "title": "Remove guest",
+      "opens_from": "guests",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "A confirmation with no inputs; there is nothing to validate."
+      },
+      "journey": "J10 Build guest list"
+    },
+    {
+      "id": "book-venue",
+      "kind": "dialog",
+      "title": "Book a venue",
+      "opens_from": "venue-detail",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed",
+        "success"
+      ],
+      "journey": "J6 Book a venue"
+    },
+    {
+      "id": "request-quote",
+      "kind": "dialog",
+      "title": "Request a quote",
+      "opens_from": "vendors",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed",
+        "success"
+      ],
+      "journey": "J10 Discover entertainers and activities"
+    },
+    {
+      "id": "add-expense",
+      "kind": "dialog",
+      "title": "Add a cost",
+      "opens_from": "budget",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "journey": "J9 Manage budget"
+    },
+    {
+      "id": "add-task",
+      "kind": "dialog",
+      "title": "Add a task",
+      "opens_from": "checklist",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "journey": "J12 Follow the party checklist and timeline"
+    },
+    {
+      "id": "accept-plan",
+      "kind": "dialog",
+      "title": "Use Giddy’s plan",
+      "opens_from": "planner-chat",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "A confirmation with no inputs; there is nothing to validate."
+      },
+      "journey": "J3 Chat with the planning agent"
+    },
+    {
+      "id": "share-plan",
+      "kind": "dialog",
+      "title": "Share plan",
+      "opens_from": "party-overview",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "delete-party",
+      "kind": "dialog",
+      "title": "Delete party",
+      "opens_from": "party-overview",
+      "states": [
+        "default",
+        "confirm",
+        "invalid",
+        "busy",
+        "failed"
+      ],
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "sign-out",
+      "kind": "dialog",
+      "title": "Sign out",
+      "opens_from": "settings",
+      "states": [
+        "default",
+        "busy"
+      ],
+      "not_applicable": {
+        "invalid": "No inputs to validate."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "session-expired",
+      "kind": "dialog",
+      "title": "Session expired",
+      "opens_from": "guests",
+      "states": [
+        "default",
+        "busy",
+        "invalid"
+      ],
+      "journey": "System"
+    },
+    {
+      "id": "action-toast",
+      "kind": "notification",
+      "title": "Action toast",
+      "opens_from": "guests",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "with-action",
+        "stacked"
+      ],
+      "journey": "J10 Build guest list"
+    },
+    {
+      "id": "rsvp-toast",
+      "kind": "notification",
+      "title": "Live RSVP update",
+      "opens_from": "home",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "journey": "J11 Send invitations and track RSVPs"
+    },
+    {
+      "id": "booking-banner",
+      "kind": "notification",
+      "title": "Booking status banner",
+      "opens_from": "party-overview",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "persistent"
+      ],
+      "journey": "J6 Book a venue"
+    },
+    {
+      "id": "connection-banner",
+      "kind": "notification",
+      "title": "Connection banner",
+      "opens_from": "home",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "journey": "J13 Party-day run sheet"
+    },
+    {
+      "id": "verify-banner",
+      "kind": "notification",
+      "title": "Verify email banner",
+      "opens_from": "home",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "persistent"
+      ],
+      "journey": "J7 Sign up and family profile"
+    },
+    {
+      "id": "cookie-consent",
+      "kind": "notification",
+      "title": "Cookie consent",
+      "opens_from": "landing",
+      "states": [
+        "info",
+        "success"
+      ],
+      "not_applicable": {
+        "warning": "Consent has no warning condition; declining is a normal choice.",
+        "danger": "Saving consent is local to the browser and cannot fail visibly."
+      },
+      "journey": "System"
+    },
+    {
+      "id": "push-prompt",
+      "kind": "notification",
+      "title": "Push permission prompt",
+      "opens_from": "home",
+      "states": [
+        "info",
+        "success",
+        "warning"
+      ],
+      "not_applicable": {
+        "danger": "Turning on push either succeeds or is blocked by the browser (the warning state); there is no failure to report."
+      },
+      "journey": "J15 Manage plans and notifications"
+    }
+  ]
+}

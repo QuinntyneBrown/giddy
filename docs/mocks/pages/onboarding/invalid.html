@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family setup · invalid — Giddy mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="onboarding">
+<meta name="mock:state" content="invalid">
+<meta name="description" content="Child form with a missing name and a future birthday.">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar"><a class="topbar__brand" href="../../pages/landing/default.html"><svg class="logo-mark" aria-hidden="true" viewBox="0 0 32 32"><path class="balloon" d="M16 2c-6 0-10 4.4-10 10 0 6.4 5.6 11 10 11s10-4.6 10-11C26 6.4 22 2 16 2z"/><ellipse class="shine" cx="12" cy="8" rx="2" ry="3.2" transform="rotate(-25 12 8)"/><path class="string" d="M16 23c0 3-3 3-2 7"/></svg>Giddy</a><span class="topbar__spacer"></span><a class="btn btn--ghost" href="../../pages/home/empty.html">Skip for now</a></header><main id="main" class="container"><div class="wizard">
+  <ol class="stepper" aria-label="Family setup progress">
+    <li aria-current="step"><span>Your kids</span></li>
+    <li><span>Neighbourhood</span></li>
+    <li><span>Notifications</span></li>
+  </ol>
+  <div class="stack">
+    <div class="cluster" style="flex-wrap: nowrap;"><svg class="mascot" role="img" aria-label="Giddy the balloon" viewBox="0 -8 64 80"><path class="balloon" d="M32 4C19 4 10 13.5 10 26c0 14 12 24 22 24s22-10 22-24C54 13.5 45 4 32 4z"/><ellipse class="shine" cx="21" cy="16" rx="4" ry="7" transform="rotate(-25 21 16)"/><circle class="cheek" cx="20" cy="33" r="3.5"/><circle class="cheek" cx="44" cy="33" r="3.5"/><circle class="face" cx="25" cy="26" r="2.8"/><circle class="face" cx="39" cy="26" r="2.8"/><path class="smile" d="M24 34c4 5 12 5 16 0"/><path class="knot" d="M28 50h8l-4 5z"/><path class="string" d="M32 55c0 6-5 7-3 14"/></svg><div><h1 style="font: var(--text-h2);">Who are we celebrating?</h1><p class="text-muted">Add each child. Giddy uses their age and interests to suggest parties they’ll love.</p></div></div>
+    <div class="alert alert--danger form-summary" role="alert" tabindex="-1" id="error-summary"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><div class="alert__body"><div class="alert__title">Let’s fix a couple of things</div><ul style="padding-left: var(--space-5);"><li><a href="#child-name">Enter your child’s first name</a></li><li><a href="#child-bday">Enter a birthday in the past, like 14 Nov 2019</a></li></ul></div></div>
+    <form class="card stack" novalidate>
+      <h2 style="font: var(--text-h4);">Child 1</h2>
+      <div class="grid-2">
+        <div class="field"><label class="field__label" for="child-name">First name</label>
+<input class="input" id="child-name" type="text" aria-describedby="child-name-error" aria-invalid="true"><span class="field__error" id="child-name-error">Enter your child’s first name</span></div>
+        <div class="field"><label class="field__label" for="child-bday">Birthday</label>
+<input class="input" id="child-bday" type="date" value="2026-11-14" aria-describedby="child-bday-error" aria-invalid="true"><span class="field__error" id="child-bday-error">Enter a birthday in the past, like 14 Nov 2019</span></div>
+      </div>
+      <fieldset><legend>What are they into right now? <span class="text-muted">Pick up to 5</span></legend><div class="choice-cards"><label class="choice-card"><input type="checkbox" checked><span class="emoji" aria-hidden="true">🦕</span><span>Dinosaurs</span></label><label class="choice-card"><input type="checkbox" checked><span class="emoji" aria-hidden="true">🔬</span><span>Science</span></label><label class="choice-card"><input type="checkbox" checked><span class="emoji" aria-hidden="true">⛏️</span><span>Digging</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🚀</span><span>Space</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🎨</span><span>Art</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">⚽</span><span>Sports</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🦄</span><span>Unicorns</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🚂</span><span>Trains</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🐠</span><span>Ocean</span></label><label class="choice-card"><input type="checkbox"><span class="emoji" aria-hidden="true">🦸</span><span>Superheroes</span></label></div></fieldset>
+      <div class="field"><label class="field__label" for="allergies">Allergies or needs <span class="optional">(optional)</span></label><input class="input" id="allergies" value="None" aria-describedby="allergies-help"><span class="field__help" id="allergies-help">We’ll flag venues and food that don’t fit.</span></div>
+    </form>
+    <div class="card cluster cluster--between" style="padding: var(--space-4);">
+      <div class="cluster"><span class="avatar avatar-- pop--sky" aria-hidden="true">KO</span><div><div class="list__title">Kofi</div><div class="list__meta">Turns 4 on Wed 3 Feb 2027 · Trains, bubbles</div></div></div>
+      <button class="btn btn--sm btn--ghost" type="button"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/></svg>Edit</button>
+    </div>
+    <button class="btn" type="button"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add another child</button>
+    <div class="form-actions"><a class="btn btn--ghost" href="../../pages/home/empty.html">Skip for now</a><button class="btn btn--primary" type="submit">Next: neighbourhood</button></div>
+  </div>
+</div></main>
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Family setup</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="invalid.html" aria-current="page">invalid</a></li><li><a href="submitting.html">submitting</a></li><li><a href="success.html">success</a></li><li><a href="error.html">error</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>
