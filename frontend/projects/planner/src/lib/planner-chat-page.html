@@ -137,10 +137,10 @@
               <giddy-typing-indicator />
             </li>
           }
-          @if (chat.failure(); as reason) {
+          @if (chat.failure()) {
             <li giddy-chat-message author="giddy">
               <div giddy-alert tone="danger" heading="Giddy can’t answer right now">
-                <div>{{ reason }}</div>
+                <div>Your message is saved; try again in a minute.</div>
               </div>
             </li>
           }

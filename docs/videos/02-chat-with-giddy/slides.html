@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 02 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="02" data-video-title="Chat with Giddy" data-parts="Introduction|Promises|A plan|Confirm|Grounded|Failures|Memories|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 02</div>
+  <h1>Chat with Giddy</h1>
+  <p class="lead">Visible work, grounded plans, confirmation and memories</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Giddy greets the parent by name and offers starter prompts.">
+  <h2>What chatting with Giddy promises</h2>
+  <div class="cols">
+    <ul>
+      <li>A greeting by name and starter prompts</li>
+      <li>Its work shown as plain steps</li>
+      <li>Prices and venues only from this request's searches</li>
+      <li>Nothing changes until the parent confirms</li>
+      <li>Memories the parent controls</li>
+    </ul>
+    <img class="shot" alt="Giddy's greeting on a phone" src="shots/phone-greeting.png">
+  </div>
+</section>
+
+<section id="plan" data-part="2" data-cue="Here is Amara on a laptop." data-clip="clips/plan-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>From a sentence to a plan</h3><p>Steps tick as each search finishes; the plan card totals $778 of $800.</p></div>
+</section>
+
+<section id="thinking" data-part="2" data-cue="Beside the chat, Party at a glance shows who, when, where">
+  <h2>While Giddy works</h2>
+  <img class="shot" alt="Giddy checking venues and comparing entertainers" src="shots/desktop-thinking.png">
+</section>
+
+<section id="confirm" data-part="3" data-cue="Use this plan opens a dialog that lists every change">
+  <h2>Nothing changes until the parent confirms</h2>
+  <div class="cols">
+    <ul>
+      <li>Theme, 5 bookings to do, budget estimates, a 10-step checklist</li>
+      <li>"Nothing is booked or paid yet"</li>
+      <li>Failure changes nothing and offers Try again</li>
+      <li>A bottom sheet on phones, centred from 640px</li>
+    </ul>
+    <img class="shot" alt="That didn't go through, with Try again" src="shots/phone-plan-failed.png">
+  </div>
+</section>
+
+<section id="grounded" data-part="4" data-cue="The server, not the model, decides what a plan contains.">
+  <h2>Grounded and safe</h2>
+  <table class="facts">
+    <tr><th>Rule</th><th>Where</th></tr>
+    <tr><td>Names and prices filled from the catalogue</td><td><code>ProposePlanTool</code></td></tr>
+    <tr><td>Only this turn's results, free that day, in the area, big enough</td><td><code>ProposalValidator</code></td></tr>
+    <tr><td>Allergy conflicts flagged on the card</td><td><code>ProposalItem.AllergyNote</code></td></tr>
+    <tr><td>Listing text quoted, instructions removed</td><td><code>ToolResultSanitizer</code></td></tr>
+    <tr><td>No book, pay, send or contact tools</td><td>9 read-or-prepare tools</td></tr>
+    <tr><td>Prompts, tool calls and replies kept 90 days</td><td><code>TurnLogs</code></td></tr>
+  </table>
+</section>
+
+<section id="stop" data-part="5" data-cue="On a phone, Amara asks Giddy to plan everything" data-clip="clips/stop-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Stop, then suggested replies</h3><p>Stop answers within a second; finished steps stay. Up to four replies in the parent's voice.</p></div>
+</section>
+
+<section id="recover" data-part="5" data-cue="If a message cannot be sent, it stays in the log" data-clip="clips/recover-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Nothing is lost</h3><p>Send again or Edit message; a model outage says so within 10 seconds.</p></div>
+</section>
+
+<section id="memories" data-part="6" data-cue="When a parent states a lasting fact" data-clip="clips/memory-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Settings</span><h3>What Giddy remembers</h3><p>One family only; never contact or payment details. Forget deletes it for the next turn.</p></div>
+</section>
+
+<section id="testing" data-part="7" data-cue="The API's integration tests run real turns against a scripted model">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 59 tests</h3><p>A scripted model drives real turns: steps, priced proposals, rejections, allergy flags, injection, Stop, outages, memories and roles.</p></div>
+    <div class="card"><h3>Browser · 69 tests</h3><p>The chat, plan and dialog against a fake API at 360 and 1280px, with axe on each state.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Giddy shows its work and stops when asked</li><li>Prices and availability come from the server</li><li>Nothing changes until the parent confirms</li><li>Memories belong to one family and can be forgotten</li></ul>
+  <p class="muted">Next: start a party plan</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
