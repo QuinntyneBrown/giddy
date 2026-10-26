@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BadgeComponent } from '../badge/badge';
 import { BadgeTone } from '../badge/badge-tone';
@@ -17,7 +17,11 @@ let nextId = 0;
   templateUrl: './tile.html',
   styleUrl: './tile.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'card card--flush tile', '[class]': "'pop--' + pop()" },
+  host: {
+    class: 'card card--flush tile',
+    '[class]': "'pop--' + pop()",
+    '[class.tile--selected]': 'selected()',
+  },
 })
 export class TileComponent {
   readonly heading = input.required<string>();
@@ -28,5 +32,7 @@ export class TileComponent {
   readonly pop = input<PopColour>('grape');
   readonly badge = input<string | null>(null);
   readonly badgeTone = input<BadgeTone>('success');
+  /** The one picked from the grid, such as the party's chosen theme. */
+  readonly selected = input(false, { transform: booleanAttribute });
   protected readonly headingId = `giddy-tile-${nextId++}`;
 }
