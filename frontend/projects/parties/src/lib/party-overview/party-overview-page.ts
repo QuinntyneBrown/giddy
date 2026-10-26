@@ -19,6 +19,7 @@ import {
   PartyBooking,
   PartyMember,
   PartyTask,
+  WRAP_UP_API,
 } from '@giddy/api';
 import {
   AlertComponent,
@@ -104,6 +105,8 @@ export class PartyOverviewPage {
   private readonly router = inject(Router);
   private readonly bookingsApi = inject(BOOKINGS_API);
   private readonly vendorsApi = inject(VENDORS_API);
+  private readonly wrapUpApi = inject(WRAP_UP_API);
+  protected readonly reusing = signal(false);
   protected readonly confirming = signal<string | null>(null);
 
   /** From the route. */
@@ -326,6 +329,17 @@ export class PartyOverviewPage {
       .closed.subscribe((deleted) => {
         if (deleted) void this.router.navigateByUrl('/parties');
       });
+  }
+
+  /** Saves the past party's plan (once) and starts a new party from it. */
+  protected async reusePlan(partyId: string): Promise<void> {
+    this.reusing.set(true);
+    try {
+      const plan = await firstValueFrom(this.wrapUpApi.saveTemplate(partyId));
+      await this.router.navigate(['/parties/new'], { queryParams: { template: plan.templateId } });
+    } finally {
+      this.reusing.set(false);
+    }
   }
 }
 

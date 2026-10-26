@@ -1,6 +1,7 @@
 import { dinoParty, zurisSixth } from './fixtures/seed-data';
 import { expect, test } from './fixtures/test';
 import { NewPartyPage } from './pages/new-party.page';
+import { PartyOverviewPage } from './pages/party-overview.page';
 import { WrapUpDialogs } from './pages/wrap-up-dialogs.page';
 import { WrapUpPage } from './pages/wrap-up.page';
 
@@ -130,6 +131,21 @@ test.describe('ratings and next year', () => {
     await expect
       .poll(() => fakeApi.partyStore.created.at(-1)?.['templateId'])
       .toBe(fakeApi.wrapUpStore.template?.templateId);
+  });
+
+  test('“Reuse this plan” on a past party saves it and starts a new party from it', async ({
+    page,
+    fakeApi,
+  }) => {
+    const overview = new PartyOverviewPage(page);
+    await overview.openParty(zurisSixth.id);
+
+    await overview.reusePlan.click();
+
+    await expect(new NewPartyPage(page).fromTemplate).toContainText(
+      'Starting from Zuri’s 6th: Mermaid Splash',
+    );
+    expect(fakeApi.wrapUpStore.template).not.toBeNull();
   });
 
   test('viewers see wrap-up but cannot send, rate or save', async ({ page, fakeApi }) => {

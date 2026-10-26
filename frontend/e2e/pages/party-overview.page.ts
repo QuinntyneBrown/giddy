@@ -12,6 +12,7 @@ export class PartyOverviewPage extends AppShellPage {
   readonly budget: Locator;
   readonly planners: Locator;
   readonly lockedAlert: Locator;
+  readonly reusePlan: Locator;
   readonly nothingBooked: Locator;
   readonly deleteButton: Locator;
   readonly shareButton: Locator;
@@ -29,6 +30,7 @@ export class PartyOverviewPage extends AppShellPage {
     this.budget = page.getByRole('region', { name: 'Budget' });
     this.planners = page.getByRole('region', { name: 'Planning together' });
     this.lockedAlert = page.getByRole('status').filter({ hasText: 'This party has happened!' });
+    this.reusePlan = this.lockedAlert.getByRole('button', { name: 'Reuse this plan' });
     this.nothingBooked = page.getByRole('region', { name: 'Nothing booked yet' });
     this.deleteButton = page.getByRole('button', { name: 'Delete this party' });
     this.shareButton = page.locator('.page-header').getByRole('button', { name: 'Share' });
