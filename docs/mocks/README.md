@@ -95,6 +95,8 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 | Use Giddy’s plan (`accept-plan`) | [✅](dialogs/accept-plan/default.html) | [✅](dialogs/accept-plan/busy.html) | ➖ | [✅](dialogs/accept-plan/failed.html) |  |  | `L2-018` |
 | Share plan (`share-plan`) | [✅](dialogs/share-plan/default.html) | [✅](dialogs/share-plan/busy.html) | [✅](dialogs/share-plan/invalid.html) | [✅](dialogs/share-plan/failed.html) |  |  | `L2-009` |
 | Delete party (`delete-party`) | [✅](dialogs/delete-party/default.html) | [✅](dialogs/delete-party/busy.html) | [✅](dialogs/delete-party/invalid.html) | [✅](dialogs/delete-party/failed.html) |  | [✅](dialogs/delete-party/confirm.html) | `L2-014` |
+| Change email (`change-email`) | [✅](dialogs/change-email/default.html) |  | [✅](dialogs/change-email/invalid.html) |  |  |  | `L2-065` |
+| Delete account (`delete-account`) | [✅](dialogs/delete-account/default.html) |  | [✅](dialogs/delete-account/invalid.html) |  |  |  | `L2-067` |
 | Sign out (`sign-out`) | [✅](dialogs/sign-out/default.html) | [✅](dialogs/sign-out/busy.html) | ➖ |  |  |  | `L2-006` |
 | Session expired (`session-expired`) | [✅](dialogs/session-expired/default.html) | [✅](dialogs/session-expired/busy.html) | [✅](dialogs/session-expired/invalid.html) |  |  |  | `L2-006` |
 

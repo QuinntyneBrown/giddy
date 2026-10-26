@@ -1039,6 +1039,34 @@
         "danger": "Turning on push either succeeds or is blocked by the browser (the warning state); there is no failure to report."
       },
       "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "change-email",
+      "kind": "dialog",
+      "title": "Change email",
+      "requirements": [
+        "L2-065"
+      ],
+      "opens_from": "settings",
+      "states": [
+        "default",
+        "invalid"
+      ],
+      "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "delete-account",
+      "kind": "dialog",
+      "title": "Delete account",
+      "requirements": [
+        "L2-067"
+      ],
+      "opens_from": "settings",
+      "states": [
+        "default",
+        "invalid"
+      ],
+      "journey": "J15 Manage plans and notifications"
     }
   ]
 }
