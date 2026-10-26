@@ -20,6 +20,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`NotificationDispatcher`** — Shared dispatcher (see notifications subsystem).
 
 
+**As built**
+
+- `TaskReminders` runs every minute from 9:00 am Toronto time (`TaskReminderWorker`). Each run queues a reminder for each unticked task due tomorrow with "remind me" on, plus one digest per planner per party listing every overdue task.
+- Messages go through `NotificationOutbox`, which keys each message so it is queued once, holds non-urgent messages through quiet hours (`QuietHours`: 9:00 pm to 7:00 am) and sends them by email when due. Messages marked urgent on the party day go straight away.
+- Quiet hours apply to every non-urgent message for now. Push, text and a quiet-hours setting arrive with the notifications journey.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

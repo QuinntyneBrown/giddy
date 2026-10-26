@@ -26,6 +26,15 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`CompleteTaskHandler`** — Marks done, updates readiness, pushes the change to co-planners within 5 s.
 
 
+**As built**
+
+- Tasks live on the party (`ChecklistTask`, stored as JSON) with a `TaskId`, an owner (the party's owner when not set), "remind me" (on by default) and the date each was ticked. `ChecklistGenerator` dates them back from the party: the cake and loot bags 10 days before, the food 2 days before and the party-day kit the day before.
+- `GET /api/parties/{id}/tasks` groups the tasks for today in Toronto: Overdue, This week (the next seven days), Before the party, and Done. It also returns progress and the planners a task can be given to. `POST`, `PUT /{taskId}` and `DELETE /{taskId}` add, change and delete tasks; a task needs a title, a date on or before the party, and an owner who is planning the party. `PUT /{taskId}/done` ticks and unticks, and `POST /generate` is "Make my checklist" (409 once there are tasks).
+- Ticking writes a `task` party event that names the planner. Live updates skip events a planner caused, so the others see it within the 3-second poll and the checklist reloads.
+- "Let Giddy do it" (`POST /{taskId}/giddy`) runs the existing allergy-list and RSVP-reminder commands after the parent confirms in a dialog, then ticks the task off.
+- The library gained `giddy-menu-button` (CDK Menu), a checkable `giddy-task` with "Giddy can do this", and a `more` icon; `giddy-progress` now renders as a block.
+- "Open the run sheet" links to `/parties/{id}/party-day`, which arrives with the party-day journey.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
