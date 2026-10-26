@@ -144,3 +144,8 @@ export function addDays(isoDate: string, days: number): string {
   const date = new Date(Date.UTC(year, month - 1, day + days));
   return date.toISOString().slice(0, 10);
 }
+
+/** "Tue 27 Oct, 4:00 pm": the date and time in Toronto at the given instant. */
+export function formatDateTime(instant: Date): string {
+  return `${formatDate(torontoToday(instant))}, ${formatClockTime(instant)}`;
+}

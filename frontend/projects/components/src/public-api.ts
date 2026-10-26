@@ -45,6 +45,7 @@ export * from './lib/spinner/spinner';
 export * from './lib/allergy-tag/allergy-tag';
 export * from './lib/breadcrumb/breadcrumb';
 export * from './lib/breadcrumb/breadcrumb-item';
+export * from './lib/choice/choice';
 export * from './lib/choice/choice-card';
 export * from './lib/choice/choice-group';
 export * from './lib/error-summary/error-message';

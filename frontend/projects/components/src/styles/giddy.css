@@ -15,3 +15,11 @@
   height: auto;
   min-height: 0;
 }
+
+.dialog > .cdk-dialog-container:has(.dialog__panel--lg) {
+  max-width: 48rem;
+}
+
+.dialog > .cdk-dialog-container:has(.dialog__panel--sm) {
+  max-width: 24rem;
+}
