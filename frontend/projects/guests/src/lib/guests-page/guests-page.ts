@@ -9,7 +9,7 @@ import {
   untracked,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GUESTS_API, Guest, PARTIES_API, RsvpStatus } from '@giddy/api';
+import { GUESTS_API, Guest, INVITATIONS_API, PARTIES_API, RsvpStatus } from '@giddy/api';
 import {
   AllergyTagComponent,
   AvatarComponent,
@@ -31,8 +31,10 @@ import {
   ToastComponent,
   ToastRegionComponent,
 } from '@giddy/components';
-import { LiveUpdates, ResourceLoader, joinNames, partySections } from '@giddy/core';
-import { firstValueFrom } from 'rxjs';
+import { LiveUpdates, ResourceLoader, joinNames, partySections, torontoToday } from '@giddy/core';
+import { catchError, firstValueFrom, of } from 'rxjs';
+import { AddGuestData } from '../add-guest-dialog/add-guest-data';
+import { AddGuestDialog } from '../add-guest-dialog/add-guest-dialog';
 import { RemoveGuestData } from '../remove-guest-dialog/remove-guest-data';
 import { RemoveGuestDialog } from '../remove-guest-dialog/remove-guest-dialog';
 import { GuestFilter } from './guest-filter';
@@ -75,6 +77,7 @@ export class GuestsPage {
   private readonly guestsApi = inject(GUESTS_API);
   private readonly partiesApi = inject(PARTIES_API);
   private readonly dialog = inject(GiddyDialog);
+  private readonly invitationsApi = inject(INVITATIONS_API);
   private nextToast = 0;
 
   /** From the route. */
@@ -88,6 +91,12 @@ export class GuestsPage {
   protected readonly list = new ResourceLoader(
     () => this.guestsApi.list(this.partyId()),
     (list) => list.guests.length === 0,
+    false,
+  );
+  /** When the invitations went out, for adding a guest; null if not yet or unknown. */
+  private readonly invitation = new ResourceLoader(
+    () => this.invitationsApi.get(this.partyId()).pipe(catchError(() => of(null))),
+    () => false,
     false,
   );
   protected readonly selected = signal<string[]>([]);
@@ -181,6 +190,7 @@ export class GuestsPage {
       untracked(() => {
         this.party.reload();
         this.list.reload();
+        this.invitation.reload();
         this.selected.set([]);
       });
     });
@@ -288,9 +298,30 @@ export class GuestsPage {
     this.search.set('');
   }
 
-  /** Overridden by the add-guest slice. */
   protected openAdd(childName = ''): void {
-    void childName;
+    const sentAt = this.invitation.value()?.sentAt;
+    const ref = this.dialog.open<Guest, AddGuestData, AddGuestDialog>(
+      AddGuestDialog,
+      {
+        partyId: this.partyId(),
+        childName,
+        invitesSentOn: sentAt ? torontoToday(new Date(sentAt)) : null,
+      },
+      { autoFocus: '[data-initial-focus]' },
+    );
+    ref.closed.subscribe((guest) => {
+      if (!guest) return;
+      this.search.set('');
+      this.list.reload();
+      this.show({
+        heading: `${guest.childName} added`,
+        text:
+          guest.rsvp === 'waiting'
+            ? 'Their invitation is on its way.'
+            : 'Send the invitation when you’re ready.',
+        tone: 'success',
+      });
+    });
   }
 
   protected openImport(): void {}
@@ -338,7 +369,10 @@ export class GuestsPage {
     toast: Omit<PageToast, 'id' | 'action' | 'persistent' | 'undo'> & Partial<PageToast>,
   ): number {
     const id = this.nextToast++;
-    this.toasts.update((toasts) => [...toasts, { action: null, persistent: false, ...toast, undo: toast.undo ?? null, id }]);
+    this.toasts.update((toasts) => [
+      ...toasts,
+      { action: null, persistent: false, ...toast, undo: toast.undo ?? null, id },
+    ]);
     if (!toast.persistent && !toast.undo) setTimeout(() => this.dismiss(id), 6000);
     return id;
   }
