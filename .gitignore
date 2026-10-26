@@ -1,2 +1,6 @@
 docs/mocks/.cache/
 docs/design-system/.cache/
+
+# .NET build output
+**/bin/
+**/obj/
