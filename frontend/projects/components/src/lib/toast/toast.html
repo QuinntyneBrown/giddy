@@ -7,7 +7,7 @@
   <ng-content select="[giddyToastAction]" />
 </div>
 <ng-content />
-@if (dismissible()) {
+@if (canDismiss()) {
   <button class="close" type="button" aria-label="Dismiss" (click)="dismissed.emit()">
     <svg giddy-icon="close"></svg>
   </button>

@@ -202,6 +202,10 @@
 
 <giddy-toast-region>
   @if (toast(); as message) {
-    <giddy-toast [heading]="message" text="Only you got it. Families haven’t been sent anything." />
+    <giddy-toast
+      [heading]="message"
+      text="Only you got it. Families haven’t been sent anything."
+      (dismissed)="toast.set(null)"
+    />
   }
 </giddy-toast-region>

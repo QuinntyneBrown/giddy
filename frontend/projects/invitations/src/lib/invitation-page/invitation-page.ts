@@ -225,7 +225,6 @@ export class InvitationPage {
       await this.save();
       await firstValueFrom(this.invitationsApi.sendTest(this.partyId()));
       this.toast.set(`Test sent to ${this.session()?.email ?? 'your email'}`);
-      setTimeout(() => this.toast.set(null), 6000);
     } catch (error) {
       this.fail(error, 'The test didn’t send');
     } finally {

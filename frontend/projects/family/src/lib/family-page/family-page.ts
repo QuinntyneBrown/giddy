@@ -75,7 +75,6 @@ export class FamilyPage {
           ? `${result.name} is ${child ? 'updated' : 'in the family'}`
           : `${result.name} is no longer in the family`,
       );
-      setTimeout(() => this.toast.set(null), 6000);
     });
   }
 

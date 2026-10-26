@@ -5,6 +5,7 @@
       [text]="toast.text"
       [tone]="toast.tone"
       [dismissible]="toast.persistent"
+      [sticky]="toast.persistent"
       (dismissed)="dismiss(toast.key)"
     >
       <ng-container ngProjectAs="[giddyToastAction]">

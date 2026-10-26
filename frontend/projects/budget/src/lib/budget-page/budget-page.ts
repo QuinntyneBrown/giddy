@@ -248,6 +248,5 @@ export class BudgetPage {
   private show(toast: Omit<BudgetToast, 'id' | 'persistent'> & { persistent?: boolean }): void {
     const id = this.nextToast++;
     this.toasts.update((toasts) => [...toasts, { persistent: false, ...toast, id }]);
-    if (!toast.persistent) setTimeout(() => this.dismiss(id), 6000);
   }
 }

@@ -160,7 +160,6 @@ export class PartyDayPage {
           ? (error.error as ApiProblem).title
           : 'Giddy couldn’t draft the run sheet. Try again in a moment.',
       );
-      setTimeout(() => this.problem.set(null), 8000);
     } finally {
       this.drafting.set(false);
     }
