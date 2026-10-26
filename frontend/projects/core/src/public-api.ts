@@ -11,3 +11,5 @@ export * from './lib/connection/connection-status';
 export * from './lib/localisation/join-names';
 export * from './lib/party/party-sections';
 export * from './lib/live/live-updates';
+export * from './lib/validation/canadian-mobile';
+export * from './lib/validation/is-email';
