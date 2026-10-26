@@ -14,9 +14,11 @@ export class GiddyDialog {
   private readonly dialog = inject(Dialog);
   private readonly overlay = inject(Overlay);
 
+  /** autoFocus is a CSS selector for the element to focus first; the first focusable by default. */
   open<TResult, TData, TComponent>(
     component: ComponentType<TComponent>,
     data: TData,
+    options: { autoFocus?: string } = {},
   ): DialogRef<TResult, TComponent> {
     const id = `giddy-dialog-${nextId++}`;
     return this.dialog.open<TResult, TData, TComponent>(component, {
@@ -33,7 +35,7 @@ export class GiddyDialog {
       width: '100%',
       height: '100%',
       maxWidth: '100%',
-      autoFocus: 'first-tabbable',
+      autoFocus: options.autoFocus ?? 'first-tabbable',
       restoreFocus: true,
     });
   }

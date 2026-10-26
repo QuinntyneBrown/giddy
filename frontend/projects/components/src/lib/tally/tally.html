@@ -1,0 +1,6 @@
+@for (item of items(); track item.label) {
+  <div class="tally__item" [class]="'pop--' + item.pop">
+    <div class="tally__value">{{ item.value }}</div>
+    <div class="tally__label">{{ item.label }}</div>
+  </div>
+}

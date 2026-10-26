@@ -1,0 +1,13 @@
+<svg giddy-icon="alert"></svg>
+<div class="alert__body">
+  <div class="alert__title">{{ heading() }}</div>
+  <ul class="error-summary__list">
+    @for (error of errors(); track error.targetId) {
+      <li>
+        <a [href]="'#' + error.targetId" (click)="goTo($event, error.targetId)">{{
+          error.message
+        }}</a>
+      </li>
+    }
+  </ul>
+</div>

@@ -1,0 +1,17 @@
+<span class="notif__icon link-card__art"
+  ><span class="emoji" aria-hidden="true">{{ emoji() }}</span></span
+>
+<span class="list__body">
+  <span class="cluster link-card__title-row">
+    <span class="list__title link-card__title"><ng-content /></span>
+    @if (badge(); as text) {
+      <giddy-badge [tone]="badgeTone()">{{ text }}</giddy-badge>
+    }
+  </span>
+  <span class="list__meta link-card__meta">{{ meta() }}</span>
+</span>
+@if (actionLabel(); as label) {
+  <span class="btn btn--sm" aria-hidden="true">{{ label }}</span>
+} @else {
+  <svg giddy-icon="chevron-right"></svg>
+}
