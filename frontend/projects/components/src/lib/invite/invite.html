@@ -1,0 +1,17 @@
+<span class="invite__emoji"
+  ><span class="emoji" aria-hidden="true">{{ look().emoji }}</span></span
+>
+<p class="overline invite__eyebrow">{{ look().eyebrow }}</p>
+@if (level() === 1) {
+  <h1 class="invite__title">{{ headline() }}</h1>
+} @else {
+  <h2 class="invite__title">{{ headline() }}</h2>
+}
+<p class="invite__details">
+  {{ when() }}
+  @if (place(); as where) {
+    <br />{{ where }}
+  }
+</p>
+<p class="invite__message">{{ message() }}</p>
+<p class="text-sm">{{ replyBy() }}</p>
