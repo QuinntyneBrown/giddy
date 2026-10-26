@@ -105,3 +105,29 @@ for (const width of [360, 600, 800, 1000, 1280]) {
     expect(await shell.scrollsSideways()).toBe(false);
   });
 }
+
+test('lets a parent switch to the dark theme and remembers it', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.preferColourScheme('light');
+  await shell.open();
+  await expect(shell.darkThemeToggle).toHaveAttribute('aria-pressed', 'false');
+
+  await shell.toggleDarkTheme();
+
+  await expect.poll(() => shell.theme()).toBe('dark');
+  await expect(shell.darkThemeToggle).toHaveAttribute('aria-pressed', 'true');
+  await shell.reload();
+  await expect.poll(() => shell.theme()).toBe('dark');
+});
+
+test('remembers a light choice on a device that prefers dark', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.preferColourScheme('dark');
+  await shell.open();
+
+  await shell.toggleDarkTheme();
+  await shell.reload();
+
+  await expect.poll(() => shell.theme()).toBe('light');
+  await expect(shell.darkThemeToggle).toHaveAttribute('aria-pressed', 'false');
+});

@@ -16,7 +16,7 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - **`AppShell`** — Sidebar, top bar, bottom nav, banner host and toast region.
 - **`BreakpointService`** — Angular CDK `BreakpointObserver` with the design-system breakpoints (640, 768, 1024, 1280 px).
-- **`ThemeService`** — Applies `data-theme` from saved choice or `prefers-color-scheme`.
+- **`ThemeService`** — Applies `data-theme` from saved choice or `prefers-color-scheme`; the top bar's “Dark theme” toggle button saves the parent's choice on the device.
 - **`Stylelint rules`** — Reject raw colours and z-index values in component styles.
 - **`Visual regression`** — Playwright screenshots vs mocks at 360 and 1280 px in both themes.
 

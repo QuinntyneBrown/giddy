@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppShellComponent } from './components/app-shell/app-shell';
-import { ThemeService } from './theme.service';
+import { ThemeService } from './theme/theme.service';
 
 @Component({
   imports: [AppShellComponent, RouterOutlet],

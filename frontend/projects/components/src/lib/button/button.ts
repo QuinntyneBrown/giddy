@@ -21,6 +21,7 @@ import { ButtonVariant } from './button-variant';
     '[class.btn--block]': 'block()',
     '[class.btn--icon]': 'iconOnly()',
     '[attr.aria-busy]': 'busy() || null',
+    '[attr.aria-pressed]': 'pressed()',
   },
 })
 export class ButtonComponent {
@@ -29,4 +30,6 @@ export class ButtonComponent {
   readonly block = input(false, { transform: booleanAttribute });
   readonly iconOnly = input(false, { transform: booleanAttribute });
   readonly busy = input(false, { transform: booleanAttribute });
+  /** Makes the button a toggle button; null leaves it a plain button. */
+  readonly pressed = input<boolean | null>(null);
 }

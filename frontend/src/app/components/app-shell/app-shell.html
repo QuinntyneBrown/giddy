@@ -14,7 +14,19 @@
       searchLabel="Search venues, fun and food"
       searchPlaceholder="Search venues, entertainers, cakes…"
       (searched)="search($event)"
-    ></header>
+    >
+      <button
+        giddy-button
+        type="button"
+        variant="ghost"
+        iconOnly
+        aria-label="Dark theme"
+        [pressed]="themeService.theme() === 'dark'"
+        (click)="themeService.toggle()"
+      >
+        <svg giddy-icon="moon"></svg>
+      </button>
+    </header>
     <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
     <footer
       giddy-footer

@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ThemeService } from '../../theme/theme.service';
 import {
   BottomNavComponent,
+  ButtonComponent,
   FooterComponent,
+  IconComponent,
   NavGroup,
   NavItem,
   SidebarNavComponent,
@@ -14,6 +17,8 @@ import {
   selector: 'giddy-app-shell',
   imports: [
     BottomNavComponent,
+    ButtonComponent,
+    IconComponent,
     FooterComponent,
     SidebarNavComponent,
     SkipLinkComponent,
@@ -26,6 +31,7 @@ import {
 })
 export class AppShellComponent {
   private readonly router = inject(Router);
+  protected readonly themeService = inject(ThemeService);
 
   protected readonly sidebarGroups: NavGroup[] = [
     {

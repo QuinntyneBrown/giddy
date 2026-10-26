@@ -8,6 +8,7 @@ export class AppShellPage {
   readonly sidebar: Locator;
   readonly bottomBar: Locator;
   readonly search: Locator;
+  readonly darkThemeToggle: Locator;
   readonly main: Locator;
   readonly footer: Locator;
   readonly pageHeadings: Locator;
@@ -20,6 +21,7 @@ export class AppShellPage {
       .locator('visible=true');
     this.sidebar = page.getByRole('navigation', { name: 'Primary', exact: true });
     this.bottomBar = page.getByRole('navigation', { name: 'Primary, mobile' });
+    this.darkThemeToggle = page.getByRole('button', { name: 'Dark theme' });
     this.search = page.getByRole('searchbox', { name: 'Search venues, fun and food' });
     this.main = page.getByRole('main');
     this.footer = page.getByRole('contentinfo');
@@ -40,6 +42,14 @@ export class AppShellPage {
 
   async saveThemeBeforeLoad(theme: 'dark' | 'light'): Promise<void> {
     await this.page.addInitScript((value) => localStorage.setItem('giddy-theme', value), theme);
+  }
+
+  async toggleDarkTheme(): Promise<void> {
+    await this.darkThemeToggle.click();
+  }
+
+  async reload(): Promise<void> {
+    await this.page.reload();
   }
 
   async skipToContent(): Promise<void> {
