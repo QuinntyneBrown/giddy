@@ -33,6 +33,7 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
 
         if (await db.Parties.AnyAsync(p => p.Id == DemoParents.DinoParty, cancellationToken))
         {
+            await SeedGuestsAsync(cancellationToken);
             return;
         }
 
@@ -53,6 +54,18 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
         party.NoteAllergy("peanut");
         party.Share(DemoParents.Kemi, PartyRole.CoPlanner);
         db.Parties.Add(party);
+        await db.SaveChangesAsync(cancellationToken);
+        await SeedGuestsAsync(cancellationToken);
+    }
+
+    private async Task SeedGuestsAsync(CancellationToken cancellationToken)
+    {
+        if (await db.Guests.AnyAsync(g => g.PartyId == DemoParents.DinoParty, cancellationToken))
+        {
+            return;
+        }
+
+        db.Guests.AddRange(DemoGuests.For(DemoParents.DinoParty));
         await db.SaveChangesAsync(cancellationToken);
     }
 }

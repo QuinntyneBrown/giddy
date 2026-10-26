@@ -6,7 +6,8 @@ namespace Giddy.Domain.Home;
 
 /// <summary>
 /// Picks Giddy's nudges: overdue tasks first, then tasks due this week, then ideas, at most three.
-/// A nudge disappears when its task is done.
+/// A nudge disappears when its task is done. An allergy that arrives after the list was shared
+/// comes first, until the update is sent.
 /// </summary>
 public static class NudgeEngine
 {
@@ -25,7 +26,16 @@ public static class NudgeEngine
         var thisWeek = open.Where(x => x.task.Due >= today && x.task.Due <= today + ThisWeek)
             .OrderBy(x => x.task.Due)
             .Select(x => new Nudge(x.party.Id, x.party.Name, x.task.Title, NudgeKind.NeedsYou, $"Due {Format(x.task.Due)}.", "Open the plan"));
-        return overdue.Concat(thisWeek).Take(Limit).ToList();
+        var allergyUpdates = parties
+            .Where(p => !p.IsLockedOn(today) && p.AllergyUpdateFor is not null)
+            .Select(p => new Nudge(
+                p.Id,
+                p.Name,
+                $"Send the allergy update to {p.BookingsToDo.FirstOrDefault(b => b.Category == "Venue")?.Name ?? "the venue"}",
+                NudgeKind.NeedsYou,
+                $"{p.AllergyUpdateFor} has a new allergy since you shared the list.",
+                "Send update"));
+        return allergyUpdates.Concat(overdue).Concat(thisWeek).Take(Limit).ToList();
     }
 
     public static int NeedingAttention(IEnumerable<Party> parties, LocalDate today) =>

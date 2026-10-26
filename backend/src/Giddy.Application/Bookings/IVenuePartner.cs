@@ -18,4 +18,7 @@ public interface IVenuePartner
     Task ReleaseAsync(VenueHold hold, CancellationToken cancellationToken);
 
     Task CancelAsync(string confirmationNumber, CancellationToken cancellationToken);
+
+    /// <summary>Sends the children's first names and allergies; never parents' details.</summary>
+    Task ShareAllergyListAsync(string venueName, Guid? venueId, IReadOnlyList<Guests.AllergyEntry> entries, CancellationToken cancellationToken);
 }

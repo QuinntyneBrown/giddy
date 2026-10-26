@@ -27,4 +27,7 @@ public sealed class CatalogueVenuePartner(IClock clock) : IVenuePartner
     public Task ReleaseAsync(VenueHold hold, CancellationToken cancellationToken) => Task.CompletedTask;
 
     public Task CancelAsync(string confirmationNumber, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    public Task ShareAllergyListAsync(string venueName, Guid? venueId, IReadOnlyList<Application.Guests.AllergyEntry> entries, CancellationToken cancellationToken) =>
+        Task.CompletedTask;
 }

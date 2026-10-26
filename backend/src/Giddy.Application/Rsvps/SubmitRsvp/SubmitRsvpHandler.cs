@@ -39,6 +39,7 @@ public sealed class SubmitRsvpHandler(IGiddyDbContext db, RsvpLinks links, ICloc
             if (!string.Equals(allergy, earlierAllergies, StringComparison.OrdinalIgnoreCase))
             {
                 db.PartyEvents.Add(PartyEvents.NewAllergy(guest, party, now));
+                party.AllergyArrivedAfterSharing(guest.ChildFirstName);
             }
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Giddy.Application.Bookings;
+using Giddy.Application.Guests;
 using Giddy.Domain.Catalogue;
 using NodaTime;
 
@@ -17,6 +18,8 @@ public sealed class FakeVenuePartner(IClock clock) : IVenuePartner
     public ConcurrentBag<string> Released { get; } = [];
 
     public ConcurrentBag<string> Cancelled { get; } = [];
+
+    public ConcurrentBag<(string Venue, IReadOnlyList<AllergyEntry> Entries)> AllergyLists { get; } = [];
 
     public bool ConfirmTimesOut { get; set; }
 
@@ -50,6 +53,12 @@ public sealed class FakeVenuePartner(IClock clock) : IVenuePartner
     {
         holds.TryRemove(hold.Reference, out _);
         Released.Add(hold.Reference);
+        return Task.CompletedTask;
+    }
+
+    public Task ShareAllergyListAsync(string venueName, Guid? venueId, IReadOnlyList<AllergyEntry> entries, CancellationToken cancellationToken)
+    {
+        AllergyLists.Add((venueName, entries));
         return Task.CompletedTask;
     }
 
