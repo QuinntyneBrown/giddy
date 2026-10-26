@@ -4,6 +4,7 @@ using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
 using Giddy.Domain.Disruptions;
 using Giddy.Domain.Families;
+using Giddy.Domain.Guests;
 using Giddy.Domain.Memories;
 using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
@@ -44,6 +45,8 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<SavedCard> SavedCards => Set<SavedCard>();
 
     public DbSet<DisruptionNotice> Disruptions => Set<DisruptionNotice>();
+
+    public DbSet<Guest> Guests => Set<Guest>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

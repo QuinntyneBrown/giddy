@@ -1,4 +1,5 @@
 using Giddy.Domain.Families;
+using Giddy.Domain.Guests;
 using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Giddy.Infrastructure.Persistence;
@@ -48,6 +49,16 @@ public static class TestData
         party.Share(TestParent.Dev.Id, PartyRole.Viewer);
         return party;
     }
+
+    /// <summary>Five families on Zuri's list: Aisha's parent has no mobile and Ava's has no email.</summary>
+    public static IReadOnlyList<Guest> GuestsFor(Party party) =>
+    [
+        new(Guid.NewGuid(), party.Id, "Maya Chen", "Lily Chen", "lily.chen@example.com", "416-555-0177"),
+        new(Guid.NewGuid(), party.Id, "Arjun Patel", "Priya Patel", "priya.patel@example.com", "416-555-0123"),
+        new(Guid.NewGuid(), party.Id, "Leo Rossi", "Marco Rossi", "marco.rossi@example.com", "647-555-0101"),
+        new(Guid.NewGuid(), party.Id, "Aisha Mohamed", "Hodan Mohamed", "hodan.mohamed@example.com", null),
+        new(Guid.NewGuid(), party.Id, "Ava Wilson", "Jordan Wilson", null, "416-555-0199"),
+    ];
 
     public static Party StrangersParty() => Party.Plan(
         Guid.NewGuid(),

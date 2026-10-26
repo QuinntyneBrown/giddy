@@ -36,6 +36,7 @@ app.MapMemoryEndpoints();
 app.MapHomeEndpoints();
 app.MapVenueEndpoints();
 app.MapBookingEndpoints();
+app.MapGuestEndpoints();
 
 app.Run();
 
