@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { AllergyListShared } from './allergy-list-shared';
 import { Guest } from './guest';
 import { GuestList } from './guest-list';
+import { ImportEvent } from './import-event';
 import { ImportPreview } from './import-preview';
 import { ImportReport } from './import-report';
 import { ImportSource } from './import-source';
@@ -18,7 +19,8 @@ export interface GuestsApi {
   remind(partyId: string, guestIds: string[]): Observable<RemindersSent>;
   shareAllergyList(partyId: string): Observable<AllergyListShared>;
   checkImport(partyId: string, file: File): Observable<ImportPreview>;
-  importFile(partyId: string, file: File): Observable<ImportReport>;
+  /** Emits upload progress, then the report. */
+  importFile(partyId: string, file: File): Observable<ImportEvent>;
   importSources(partyId: string): Observable<ImportSource[]>;
   importFromParty(partyId: string, sourcePartyId: string): Observable<ImportReport>;
 }

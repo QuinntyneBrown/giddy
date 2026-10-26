@@ -1,3 +1,4 @@
+export * from './lib/guests/import-event';
 export * from './lib/guests/import-preview';
 export * from './lib/guests/import-report';
 export * from './lib/guests/import-source';

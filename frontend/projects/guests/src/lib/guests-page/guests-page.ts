@@ -35,6 +35,8 @@ import { LiveUpdates, ResourceLoader, joinNames, partySections, torontoToday } f
 import { catchError, firstValueFrom, of } from 'rxjs';
 import { AddGuestData } from '../add-guest-dialog/add-guest-data';
 import { AddGuestDialog } from '../add-guest-dialog/add-guest-dialog';
+import { ImportGuestsData } from '../import-guests-dialog/import-guests-data';
+import { ImportGuestsDialog } from '../import-guests-dialog/import-guests-dialog';
 import { RemoveGuestData } from '../remove-guest-dialog/remove-guest-data';
 import { RemoveGuestDialog } from '../remove-guest-dialog/remove-guest-dialog';
 import { GuestFilter } from './guest-filter';
@@ -324,7 +326,15 @@ export class GuestsPage {
     });
   }
 
-  protected openImport(): void {}
+  protected openImport(): void {
+    const ref = this.dialog.open<number, ImportGuestsData, ImportGuestsDialog>(ImportGuestsDialog, {
+      partyId: this.partyId(),
+      childName: this.party.value()?.childName ?? null,
+    });
+    ref.closed.subscribe((imported) => {
+      if (imported) this.list.reload();
+    });
+  }
 
   protected confirmRemove(guest: Guest): void {
     const ref = this.dialog.open<boolean, RemoveGuestData, RemoveGuestDialog>(

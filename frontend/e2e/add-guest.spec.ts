@@ -82,6 +82,28 @@ test.describe('adding a guest', () => {
     await expect(dialog.dialog).toBeVisible();
   });
 
+  test('says the list holds up to 60 guests', async ({ page, fakeApi }) => {
+    const store = fakeApi.guestStore;
+    for (let i = store.guests.length; i < 60; i++)
+      store.guests.push({
+        ...store.guests[0],
+        id: `extra-${i}`,
+        childName: `Child ${i}`,
+        email: `p${i}@example.com`,
+      });
+    const guests = new GuestsPage(page);
+    const dialog = new AddGuestDialog(page);
+    await guests.openGuests(dinoParty);
+    await guests.addGuest.click();
+
+    await dialog.child.fill('Samira Haddad');
+    await dialog.parent.fill('Rania Haddad');
+    await dialog.email.fill('rania.haddad@example.com');
+    await dialog.save.click();
+
+    await expect(dialog.problem).toContainText('The guest list holds up to 60 guests.');
+  });
+
   test('pre-fills the name searched for', async ({ page }) => {
     const guests = new GuestsPage(page);
     const dialog = new AddGuestDialog(page);

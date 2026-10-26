@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { AllergyListShared } from './allergy-list-shared';
 import { Guest } from './guest';
 import { GuestList } from './guest-list';
 import { GuestsApi } from './guests-api';
+import { ImportEvent } from './import-event';
 import { ImportPreview } from './import-preview';
 import { ImportReport } from './import-report';
 import { ImportSource } from './import-source';
@@ -43,8 +44,26 @@ export class HttpGuestsApi implements GuestsApi {
     return this.http.post<ImportPreview>(`/api/parties/${partyId}/imports/check`, form(file));
   }
 
-  importFile(partyId: string, file: File): Observable<ImportReport> {
-    return this.http.post<ImportReport>(`/api/parties/${partyId}/imports`, form(file));
+  importFile(partyId: string, file: File): Observable<ImportEvent> {
+    return this.http
+      .post<ImportReport>(`/api/parties/${partyId}/imports`, form(file), {
+        reportProgress: true,
+        observe: 'events',
+      })
+      .pipe(
+        filter((e) => e.type === HttpEventType.UploadProgress || e.type === HttpEventType.Response),
+        map((e): ImportEvent =>
+          e.type === HttpEventType.Response
+            ? { kind: 'done', report: e.body! }
+            : {
+                kind: 'progress',
+                percent:
+                  e.type === HttpEventType.UploadProgress && e.total
+                    ? Math.round((e.loaded / e.total) * 100)
+                    : 0,
+              },
+        ),
+      );
   }
 
   importSources(partyId: string): Observable<ImportSource[]> {
