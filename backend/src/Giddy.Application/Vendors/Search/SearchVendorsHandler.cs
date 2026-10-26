@@ -37,7 +37,8 @@ public sealed class SearchVendorsHandler(IGiddyDbContext db) : IRequestHandler<S
         bool Affordable(CatalogueItem i, decimal? max) => max is null || i.Price <= max;
         var matches = available.Where(i => Themed(i) && Affordable(i, request.MaxPrice)).OrderByDescending(i => i.Vendor?.Rating ?? 0).ToList();
 
-        var allergies = await AllergiesAsync(party, cancellationToken);
+        // Allergy fit matters for what children eat, so only food is checked against it.
+        var allergies = request.Category == "food" ? await AllergiesAsync(party, cancellationToken) : [];
         var plan = party.BookingsToDo.ToList();
         return new VendorSearchResult(
             request.Category,
@@ -46,7 +47,7 @@ public sealed class SearchVendorsHandler(IGiddyDbContext db) : IRequestHandler<S
             party.Theme,
             themeOn,
             matches.Select(i => Result(i, allergies, plan)).ToList(),
-            request.Category == "food" ? allergies : [],
+            allergies,
             matches.Count > 0 ? null : NoResults(request, party, themeOn, available.Where(Themed).ToList(), available.Where(i => Affordable(i, request.MaxPrice)).ToList()));
     }
 

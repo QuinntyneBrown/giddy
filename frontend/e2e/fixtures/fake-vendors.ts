@@ -289,10 +289,11 @@ export class FakeVendors {
           ...(v.freeOf.includes('dairy') ? ['dairy-free'] : []),
           ...(v.vegan ? ['vegan'] : []),
         ],
-        allergyFit: allergies.map((a) => ({
-          allergen: a.allergen,
-          ok: v.freeOf.includes(a.allergen),
-        })),
+        // Like the API, only food is checked against the allergies.
+        allergyFit:
+          category === 'food'
+            ? allergies.map((a) => ({ allergen: a.allergen, ok: v.freeOf.includes(a.allergen) }))
+            : [],
         planStatus: this.planStatus(v.name),
       })),
       allergies: category === 'food' ? allergies : [],

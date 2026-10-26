@@ -56,6 +56,7 @@ public sealed class VendorSearchTests : IAsyncLifetime
         Assert.Equal(("🧪", 195m, 4.9m, 187), (fizz.GetProperty("emoji").GetString(), fizz.GetProperty("price").GetDecimal(), fizz.GetProperty("rating").GetDecimal(), fizz.GetProperty("reviewCount").GetInt32()));
         Assert.Equal((45, 4, 10), (fizz.GetProperty("durationMinutes").GetInt32(), fizz.GetProperty("minAge").GetInt32(), fizz.GetProperty("maxAge").GetInt32()));
         Assert.Equal("Leslieville", search.GetProperty("place").GetString());
+        Assert.Equal(0, fizz.GetProperty("allergyFit").GetArrayLength());
         Assert.Equal("2026-11-14", search.GetProperty("date").GetString());
     }
 

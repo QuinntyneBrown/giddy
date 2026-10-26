@@ -23,6 +23,7 @@ test.describe('finding entertainers', () => {
     await expect(fizz).toContainText('(187)');
     await expect(fizz).toContainText('45 min · ages 4–10');
     await expect(fizz).toContainText('$195');
+    await expect(fizz).not.toContainText('Can’t meet');
     await expect(vendors.result('DJ Dance Party Dan')).toHaveCount(0);
   });
 
