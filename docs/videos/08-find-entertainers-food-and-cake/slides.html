@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 08 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="08" data-video-title="Find entertainers, food and cake" data-parts="Introduction|Promises|Entertainers|No fit|Food|Quotes|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 08</div>
+  <h1>Find entertainers, food and cake</h1>
+  <p class="lead">Fun that suits the party, food every child can eat</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Every vendor listed is free on the party date">
+  <h2>What Fun &amp; food promises</h2>
+  <ul>
+    <li>Free on the party date; travels or delivers to the venue or area</li>
+    <li>The party's theme filter starts on</li>
+    <li>Vendors in the plan show their status</li>
+    <li>Food is checked against every recorded allergy</li>
+  </ul>
+</section>
+
+<section id="entertainers" data-part="2" data-cue="Here is Amara on Fun and food." data-clip="clips/entertainers-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Entertainers and a quote</h3><p>Theme chip on by default; the quote dialog is pre-filled; the vendor shows as Quote requested.</p></div>
+</section>
+
+<section id="no-fit" data-part="3" data-cue="If the filters match nothing">
+  <h2>When nothing fits</h2>
+  <div class="cols">
+    <img class="shot" alt="No activities under $200 for the Dino Dig theme, Raise to $250" src="shots/desktop-no-results.png">
+    <img class="shot" alt="Choose a start time between 1:00 and 3:30 pm" src="shots/desktop-start-invalid.png">
+  </div>
+</section>
+
+<section id="food" data-part="4" data-cue="On a phone, Food and cake opens with a warning" data-clip="clips/food-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Allergy fit</h3><p>Allergies by child; every vendor says what it can't meet, matched by canonical allergen.</p></div>
+</section>
+
+<section id="quotes" data-part="5" data-cue="When a quote is about to run out" data-clip="clips/expiring-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Expiring quotes</h3><p>Two days ahead: Confirm books the vendor; Find another opens Fun &amp; food.</p></div>
+</section>
+
+<section id="testing" data-part="6" data-cue="The API tests cover vendors free on the date">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 210 tests</h3><p>Availability and travel, theme, plan status, allergy fit, empty results, quotes within venue hours and once a day, the vendor webhook, expiry and confirming.</p></div>
+    <div class="card"><h3>Browser · 193 tests</h3><p>Fun &amp; food, the quote dialog and the overview banner against the fake API, with axe at 360 and 1280 px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="7" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Free that day and coming to the party</li><li>The theme filter starts on</li><li>Food checked against every allergy</li><li>Expiring quotes flagged two days ahead</li></ul>
+  <p class="muted">Next: choose a theme</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
