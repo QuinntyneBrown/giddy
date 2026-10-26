@@ -70,6 +70,18 @@ test.describe('choosing a theme', () => {
     expect(fakeApi.themeStore.partyTheme).toBe('Dino Dig');
   });
 
+  test('keeps the parent’s place in the list when choosing', async ({ page }) => {
+    const themes = new ThemesPage(page);
+    await themes.useWidth(360);
+    await themes.openThemes();
+    await themes.theme('Space Explorers').scrollIntoViewIfNeeded();
+
+    await themes.use('Space Explorers');
+
+    await expect(themes.theme('Space Explorers')).toContainText('Chosen for Zuri');
+    await expect(themes.theme('Space Explorers')).toBeInViewport();
+  });
+
   test('the undo offer goes after eight seconds', async ({ page }) => {
     const themes = new ThemesPage(page);
     await themes.openThemes();

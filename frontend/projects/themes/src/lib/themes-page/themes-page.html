@@ -63,7 +63,7 @@
       @for (theme of themes.value()!.results; track theme.id; let i = $index) {
         <li
           giddy-tile
-          [selected]="theme.chosen"
+          [selected]="isChosen(theme)"
           [heading]="theme.name"
           [emoji]="theme.emoji"
           [pop]="pop(i)"
@@ -74,7 +74,7 @@
           <span giddyTileFooter class="text-caption"
             >Ages {{ theme.minAge }}–{{ theme.maxAge }}</span
           >
-          @if (theme.chosen) {
+          @if (isChosen(theme)) {
             <span giddyTileFooter class="themes__chosen-note"
               ><svg giddy-icon="check-circle" size="sm"></svg>Chosen for
               {{ child()?.name ?? 'the party' }}</span

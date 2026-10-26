@@ -80,7 +80,13 @@ export class ThemesPage {
     (list) => list.results.length === 0,
     false,
   );
+
+  protected isChosen(theme: Theme): boolean {
+    return theme.name === this.chosenName();
+  }
   protected readonly child = computed(() => this.themes.value()?.child ?? null);
+  /** The party's theme, updated in place when it changes so the list keeps its place. */
+  protected readonly chosenName = signal<string | null>(null);
   protected readonly canChoose = computed(() => {
     const party = this.party();
     return !!party && party.role !== 'viewer' && !party.locked;
@@ -103,6 +109,10 @@ export class ThemesPage {
       this.outdoor();
       this.budget();
       untracked(() => this.themes.reload());
+    });
+    effect(() => {
+      const list = this.themes.value();
+      if (list) untracked(() => this.chosenName.set(list.partyTheme));
     });
   }
 
@@ -133,7 +143,7 @@ export class ThemesPage {
     this.choosing.set(theme.id);
     try {
       const change = await firstValueFrom(this.api.choose(party.id, theme.id));
-      this.themes.reload();
+      this.chosenName.set(change.theme);
       const child = this.child()?.name;
       this.offerUndo(`${theme.name} is ${child ? `${child}’s` : 'the party’s'} theme`, change);
     } finally {
@@ -146,8 +156,10 @@ export class ThemesPage {
     const party = this.party();
     if (!offer || !party) return;
     this.dismissUndo();
-    await firstValueFrom(this.api.choose(party.id, offer.change.previous?.id ?? null));
-    this.themes.reload();
+    const restored = await firstValueFrom(
+      this.api.choose(party.id, offer.change.previous?.id ?? null),
+    );
+    this.chosenName.set(restored.theme);
   }
 
   protected dismissUndo(): void {
