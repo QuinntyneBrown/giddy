@@ -54,6 +54,7 @@ public sealed class PartyListAndOverviewTests : IAsyncLifetime
         var next = overview.GetProperty("nextTasks").EnumerateArray().ToList();
         Assert.Equal(["Order the cake", "Share the allergy list with the venue", "Order loot bags"], next.Select(t => t.GetProperty("title").GetString()!));
         Assert.Equal(["peanut"], overview.GetProperty("allergies").EnumerateArray().Select(a => a.GetString()!));
+        Assert.Equal(("Zuri", 7), (overview.GetProperty("childName").GetString(), overview.GetProperty("turningAge").GetInt32()));
         Assert.Equal(800m, overview.GetProperty("budget").GetDecimal());
         Assert.Equal(778m, overview.GetProperty("planned").GetDecimal());
         var members = overview.GetProperty("members").EnumerateArray().ToList();

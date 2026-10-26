@@ -11,6 +11,8 @@ public sealed record PartyOverview(
     string EndsAt,
     string TimeOfDay,
     int DaysToGo,
+    string? ChildName,
+    int? TurningAge,
     string? Area,
     string? VenueName,
     string? Theme,
