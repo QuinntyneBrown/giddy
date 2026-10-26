@@ -1,0 +1,85 @@
+<giddy-dialog
+  [heading]="editing ? 'Change this cost' : 'Add a cost'"
+  description="Track anything that isn’t booked through Giddy."
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <giddy-form-field
+    label="What is it?"
+    inputId="cost-description"
+    [error]="errors().description ?? null"
+  >
+    <input
+      giddyInput
+      type="text"
+      maxlength="80"
+      autocomplete="off"
+      data-initial-focus
+      [value]="description()"
+      (input)="description.set($any($event.target).value)"
+    />
+  </giddy-form-field>
+  <div class="grid-2">
+    <giddy-form-field label="Category" inputId="cost-category" [error]="errors().category ?? null">
+      <select giddyInput [value]="category()" (change)="category.set($any($event.target).value)">
+        @for (option of categories; track option) {
+          <option [value]="option" [selected]="option === category()">{{ option }}</option>
+        }
+      </select>
+    </giddy-form-field>
+    <giddy-form-field label="Amount" inputId="cost-amount" [error]="errors().amount ?? null">
+      <giddy-input-group prefix="$">
+        <input
+          giddyInput
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [value]="amount()"
+          (input)="amount.set($any($event.target).value)"
+        />
+      </giddy-input-group>
+    </giddy-form-field>
+  </div>
+  <label giddy-choice>
+    <input type="checkbox" [checked]="paid()" (change)="paid.set($any($event.target).checked)" />
+    Already paid
+  </label>
+  @if (preview(); as p) {
+    <p class="text-sm text-muted" aria-live="polite">
+      {{ p.lead }}<strong>{{ p.figure }}</strong> of your {{ p.budget | giddyMoney }} budget.
+    </p>
+  }
+  @if (editing) {
+    <button
+      giddyDialogFooter
+      giddy-button
+      variant="ghost"
+      type="button"
+      [disabled]="busy()"
+      (click)="remove()"
+    >
+      Remove cost
+    </button>
+  }
+  <button giddyDialogFooter giddy-button type="button" [disabled]="busy()" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    {{ editing ? 'Save changes' : 'Add cost' }}
+  </button>
+</giddy-dialog>

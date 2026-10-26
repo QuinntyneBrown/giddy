@@ -4,5 +4,6 @@ export function partySections(partyId: string): { label: string; link: string }[
     { label: 'Overview', link: `/parties/${partyId}` },
     { label: 'Guests', link: `/parties/${partyId}/guests` },
     { label: 'Invites', link: `/parties/${partyId}/invite` },
+    { label: 'Budget', link: `/parties/${partyId}/budget` },
   ];
 }

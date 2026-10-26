@@ -1,2 +1,7 @@
-<span class="stat__value stat__value--card">{{ value() }}</span>
-<span class="text-muted">{{ caption() }}</span>
+@if (label()) {
+  <span class="stat__label">{{ label() }}</span>
+  <span class="stat__value">{{ value() }}</span>
+} @else {
+  <span class="stat__value stat__value--card">{{ value() }}</span>
+  <span class="text-muted">{{ caption() }}</span>
+}

@@ -8,6 +8,7 @@
       "@giddy/api": ["./projects/api/src/public-api.ts"],
       "@giddy/components": ["./projects/components/src/public-api.ts"],
       "@giddy/core": ["./projects/core/src/public-api.ts"],
+      "@giddy/budget": ["./projects/budget/src/public-api.ts"],
       "@giddy/guests": ["./projects/guests/src/public-api.ts"],
       "@giddy/home": ["./projects/home/src/public-api.ts"],
       "@giddy/invitations": ["./projects/invitations/src/public-api.ts"],

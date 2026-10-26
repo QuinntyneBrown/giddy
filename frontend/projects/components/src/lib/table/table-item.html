@@ -1,0 +1,9 @@
+<span class="notif__icon table-item__icon" [class]="'pop--' + pop()"
+  ><span class="emoji" aria-hidden="true">{{ emoji() }}</span></span
+>
+<span>
+  <span class="list__title">{{ heading() }}</span>
+  @if (meta(); as text) {
+    <span class="list__meta table-item__meta">{{ text }}</span>
+  }
+</span>

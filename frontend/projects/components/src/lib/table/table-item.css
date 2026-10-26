@@ -1,0 +1,16 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.table-item__icon {
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  font-size: var(--font-size-md);
+}
+
+.table-item__meta {
+  display: block;
+}

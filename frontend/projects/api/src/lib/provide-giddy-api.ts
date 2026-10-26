@@ -1,4 +1,6 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { BUDGET_API } from './budget/budget-api.token';
+import { HttpBudgetApi } from './budget/http-budget-api';
 import { BOOKINGS_API } from './bookings/bookings-api.token';
 import { HttpBookingsApi } from './bookings/http-bookings-api';
 import { GUESTS_API } from './guests/guests-api.token';
@@ -42,6 +44,7 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: THEMES_API, useClass: HttpThemesApi },
     { provide: BOOKINGS_API, useClass: HttpBookingsApi },
     { provide: GUESTS_API, useClass: HttpGuestsApi },
+    { provide: BUDGET_API, useClass: HttpBudgetApi },
     { provide: INVITATIONS_API, useClass: HttpInvitationsApi },
     { provide: RSVP_API, useClass: HttpRsvpApi },
     { provide: LIVE_UPDATES_API, useClass: HttpLiveUpdatesApi },

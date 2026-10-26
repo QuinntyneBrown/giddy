@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { budgetRoutes } from '@giddy/budget';
 import { guestsRoutes } from '@giddy/guests';
 import { homeRoutes } from '@giddy/home';
 import { invitationsRoutes } from '@giddy/invitations';
@@ -13,6 +14,7 @@ import { venuesRoutes } from '@giddy/venues';
 export const routes: Routes = [
   ...homeRoutes,
   ...guestsRoutes,
+  ...budgetRoutes,
   ...invitationsRoutes,
   ...partiesRoutes,
   ...plannerRoutes,
