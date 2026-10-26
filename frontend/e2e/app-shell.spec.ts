@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test('provides accessible application landmarks and responsive navigation', async ({ page }) => {
   await page.goto('/');
@@ -41,4 +42,11 @@ test('declares Canadian English for GTA parents', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.locator('html')).toHaveAttribute('lang', 'en-CA');
+});
+
+test('has no serious or critical accessibility violations', async ({ page }) => {
+  await page.goto('/');
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''))).toEqual([]);
 });
