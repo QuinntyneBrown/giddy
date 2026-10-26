@@ -1,3 +1,21 @@
 .home__skeleton-hero {
   background: var(--color-bg-subtle);
 }
+
+.home__section-title {
+  font: var(--text-h4);
+  margin-bottom: var(--space-3);
+}
+
+.home__nudge-action,
+.home__birthday-action {
+  align-self: flex-start;
+}
+
+.home__caught-up {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.home__birthday {
+  flex-wrap: nowrap;
+}

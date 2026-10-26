@@ -1,6 +1,10 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { CONVERSATIONS_API } from './conversations/conversations-api.token';
 import { HttpConversationsApi } from './conversations/http-conversations-api';
+import { FAMILY_API } from './family/family-api.token';
+import { HttpFamilyApi } from './family/http-family-api';
+import { HOME_API } from './home/home-api.token';
+import { HttpHomeApi } from './home/http-home-api';
 import { HttpMemoriesApi } from './memories/http-memories-api';
 import { MEMORIES_API } from './memories/memories-api.token';
 import { HttpPartiesApi } from './parties/http-parties-api';
@@ -15,5 +19,7 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: PARTIES_API, useClass: HttpPartiesApi },
     { provide: CONVERSATIONS_API, useClass: HttpConversationsApi },
     { provide: MEMORIES_API, useClass: HttpMemoriesApi },
+    { provide: FAMILY_API, useClass: HttpFamilyApi },
+    { provide: HOME_API, useClass: HttpHomeApi },
   ]);
 }

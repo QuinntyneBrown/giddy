@@ -16,7 +16,7 @@ test('tells the parent when they go offline and when they are back online', asyn
 });
 
 test('keeps skeletons still when the device asks for reduced motion', async ({ page, fakeApi }) => {
-  fakeApi.respond('GET', '/api/parties', { body: fakeApi.parties, delayMs: 2000 });
+  fakeApi.respond('GET', '/api/home', () => ({ body: fakeApi.partyStore.home(), delayMs: 2000 }));
   const home = new HomePage(page);
   await home.preferReducedMotion();
   await home.open();

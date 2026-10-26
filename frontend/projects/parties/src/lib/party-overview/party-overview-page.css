@@ -1,0 +1,23 @@
+.overview__header {
+  margin-top: var(--space-3);
+}
+
+.overview__card .text-caption {
+  padding: 0 var(--space-4);
+}
+
+.overview__allergies {
+  gap: var(--space-2);
+}
+
+.overview__member {
+  padding-inline: 0;
+}
+
+.overview__role {
+  display: block;
+}
+
+.overview__delete {
+  color: var(--color-danger-fg);
+}

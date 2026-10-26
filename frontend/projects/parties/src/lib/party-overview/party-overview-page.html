@@ -1,0 +1,232 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header overview__header">
+  <div>
+    <h1>Party overview</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  @if (canPlan()) {
+    <div class="cluster">
+      <button giddy-button variant="primary" type="button" (click)="askGiddy()">
+        <svg giddy-icon="sparkle"></svg>Ask Giddy
+      </button>
+    </div>
+  }
+</div>
+
+@switch (overview.status()) {
+  @case ('loading') {
+    @if (overview.showSkeleton()) {
+      <div class="stack" aria-busy="true">
+        <span class="visually-hidden">Loading the party…</span>
+        <giddy-skeleton shape="rect" height="12rem" />
+        <giddy-skeleton shape="rect" height="8rem" />
+      </div>
+    }
+  }
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t load this party"
+      text="The plan is safe; we just couldn’t reach it. Try again in a moment."
+      [referenceCode]="overview.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="overview.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/parties">See my parties</a>
+    </section>
+  }
+  @default {
+    @if (party(); as party) {
+      @if (party.locked) {
+        <div giddy-alert class="section" heading="This party has happened!">
+          <div>
+            The plan is now read-only so your records stay accurate. You can still reuse it as a
+            starting point for next year.
+          </div>
+          <div class="alert__actions">
+            <a [routerLink]="['/parties', party.id, 'wrap-up']">Send thank-yous</a>
+            <a routerLink="/parties/new">Reuse this plan</a>
+          </div>
+        </div>
+      }
+      <div class="section">
+        <section
+          giddy-party-hero
+          [heading]="party.name"
+          [eyebrow]="party.locked ? 'Party complete' : 'Next up'"
+          [daysToGo]="party.daysToGo"
+          [done]="party.locked"
+          [readiness]="party.locked ? 100 : party.readiness"
+          [readinessDetail]="readinessDetail()"
+        >
+          <span giddyPartyHeroMeta
+            ><svg giddy-icon="calendar" size="sm"></svg
+            ><time [attr.datetime]="party.date"
+              >{{ party.date | giddyDate: true }} ·
+              {{ party.startsAt | giddyTimeRange: party.endsAt }}</time
+            ></span
+          >
+          @if (party.venueName) {
+            <span giddyPartyHeroMeta
+              ><svg giddy-icon="pin" size="sm"></svg>{{ party.venueName }}</span
+            >
+          }
+          @if (party.guests) {
+            <span giddyPartyHeroMeta
+              ><svg giddy-icon="guests" size="sm"></svg>{{ party.guests }} kids</span
+            >
+          }
+        </section>
+      </div>
+
+      @if (isDraft()) {
+        <section
+          giddy-empty-state
+          heading="Nothing booked yet"
+          [text]="
+            'Next, let Giddy find a venue that’s free on ' +
+            (party.date | giddyDate) +
+            (party.guests ? ' and fits ' + party.guests + ' kids.' : '.')
+          "
+        >
+          <a giddy-button variant="primary" routerLink="/ask-giddy"
+            ><svg giddy-icon="sparkle"></svg>Find a venue with Giddy</a
+          >
+          <a giddy-button routerLink="/venues">Browse venues myself</a>
+        </section>
+      } @else {
+        <div class="split">
+          <div class="stack stack--lg">
+            <section giddy-card heading="Booked & to book" class="card--flush overview__card">
+              @switch (bookings.status()) {
+                @case ('error') {
+                  <div giddy-alert tone="warning" heading="Booking details didn’t load">
+                    <div>
+                      Your plan is safe. We couldn’t refresh venue and vendor status right now.
+                    </div>
+                    <div class="alert__actions">
+                      <button giddy-button size="sm" type="button" (click)="bookings.reload()">
+                        Try again
+                      </button>
+                    </div>
+                  </div>
+                }
+                @case ('ready') {
+                  <p class="text-caption">
+                    {{ bookedCount() }} of {{ bookings.value()?.length }} booked
+                  </p>
+                  <ul class="list">
+                    @for (booking of bookings.value(); track booking.category + booking.name) {
+                      <li
+                        giddy-list-item
+                        [emoji]="art(booking).emoji"
+                        [pop]="art(booking).pop"
+                        [overline]="booking.category"
+                        [heading]="booking.name"
+                      >
+                        @if (booking.status === 'confirmed') {
+                          <giddy-badge tone="success">Booked</giddy-badge>
+                        } @else {
+                          <giddy-badge tone="info">To book</giddy-badge>
+                        }
+                        <span class="price">{{ booking.price | giddyMoney }}</span>
+                      </li>
+                    }
+                  </ul>
+                }
+                @case ('empty') {
+                  <p class="text-sm">Nothing planned to book yet.</p>
+                }
+                @default {
+                  <giddy-skeleton />
+                }
+              }
+            </section>
+            @if (party.nextTasks.length) {
+              <section
+                giddy-card
+                heading="Next on the checklist"
+                class="card--flush overview__card"
+              >
+                <p class="text-caption">
+                  {{ party.doneTasks }} of {{ party.totalTasks }} tasks done
+                </p>
+                <ul class="list">
+                  @for (task of party.nextTasks; track task.title) {
+                    <li
+                      giddy-task
+                      [heading]="task.title"
+                      [due]="taskDue(task)"
+                      [late]="task.overdue"
+                    ></li>
+                  }
+                </ul>
+              </section>
+            }
+          </div>
+          <aside class="stack" aria-label="About the party">
+            <section giddy-card heading="Guests">
+              <giddy-tally [items]="tally()" />
+              @if (party.allergies.length) {
+                <div class="cluster overview__allergies">
+                  @for (allergy of party.allergies; track allergy) {
+                    <giddy-allergy-tag>{{ allergyLabel(allergy) }}</giddy-allergy-tag>
+                  }
+                </div>
+              }
+            </section>
+            <section giddy-card heading="Budget">
+              <giddy-stat [value]="party.planned | giddyMoney" [caption]="budgetCaption()" />
+              @if (budgetSegments().length) {
+                <giddy-meter
+                  [segments]="budgetSegments()"
+                  [over]="party.budget !== null && party.planned > party.budget"
+                  [label]="
+                    (party.planned | giddyMoney) +
+                    ' planned of ' +
+                    (party.budget ?? 0 | giddyMoney) +
+                    ' budget'
+                  "
+                />
+              }
+            </section>
+            <section giddy-card heading="Planning together">
+              <ul class="list">
+                @for (member of party.members; track member.parentId) {
+                  <li class="list__item overview__member">
+                    <giddy-avatar size="sm" aria-hidden="true" [name]="member.name" />
+                    <span class="list__body">
+                      <span class="list__title"
+                        >{{ member.name }}{{ member.isYou ? ' (you)' : '' }}</span
+                      >
+                      <span class="list__meta overview__role">{{ roleLabel(member) }}</span>
+                    </span>
+                  </li>
+                }
+              </ul>
+            </section>
+          </aside>
+        </div>
+      }
+
+      @if (party.canDelete) {
+        <section class="section" aria-labelledby="danger-title">
+          <h2 id="danger-title" class="visually-hidden">More actions</h2>
+          <button
+            giddy-button
+            variant="ghost"
+            size="sm"
+            type="button"
+            class="overview__delete"
+            (click)="confirmDelete()"
+          >
+            <svg giddy-icon="trash"></svg>Delete this party
+          </button>
+        </section>
+      }
+    }
+  }
+}

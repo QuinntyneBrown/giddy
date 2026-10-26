@@ -15,10 +15,10 @@ public sealed class CreatePartyValidator : AbstractValidator<CreatePartyCommand>
     {
         RuleFor(c => c.Date)
             .Must(date => LocalDatePattern.Iso.Parse(date ?? string.Empty) is { Success: true } parsed && parsed.Value > calendar.Today)
-            .WithMessage("Choose a date from tomorrow onwards.");
+            .WithMessage("Pick a date from tomorrow onwards");
         RuleFor(c => c.Guests)
             .InclusiveBetween(1, MaxGuests)
-            .WithMessage($"Enter between 1 and {MaxGuests} kids.");
+            .WithMessage($"Enter how many kids, from 1 to {MaxGuests}");
         RuleFor(c => c.TimeOfDay)
             .Must(t => t is "morning" or "afternoon" or "evening")
             .WithMessage("Choose morning, afternoon or evening.");

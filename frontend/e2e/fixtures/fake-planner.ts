@@ -169,6 +169,14 @@ export class FakePlanner {
     return { status: 202, body: { messageId: message.id, turnId: turn.id } };
   }
 
+  /** A new conversation about a party, as POST /api/parties/{id}/conversations does. */
+  startFor(partyId: string) {
+    this.conversationId = id();
+    this.messages = [];
+    this.glance = this.glance ? { ...this.glance, partyId } : null;
+    return this.view();
+  }
+
   view() {
     const running = [...this.turns.values()].find(
       (t) => t.status === 'running' && (this.events(t), t.status === 'running'),

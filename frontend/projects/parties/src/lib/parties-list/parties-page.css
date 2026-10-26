@@ -1,0 +1,8 @@
+.parties__group {
+  font: var(--text-h4);
+}
+
+.parties__list {
+  list-style: none;
+  padding: 0;
+}

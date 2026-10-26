@@ -30,9 +30,10 @@ export class AppShellPage {
     this.pageHeadings = page.getByRole('heading', { level: 1 });
   }
 
-  /** Fixes the browser clock at an instant, for example '2026-10-25T20:00:00Z'. */
+  /** Starts the browser clock at an instant, for example '2026-10-25T20:00:00Z', and lets it run. */
   async setNow(instant: string): Promise<void> {
-    await this.page.clock.setFixedTime(new Date(instant));
+    await this.page.clock.install({ time: new Date(instant) });
+    await this.page.clock.resume();
   }
 
   async open(path = '/'): Promise<void> {

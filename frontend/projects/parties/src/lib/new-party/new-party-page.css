@@ -1,0 +1,4 @@
+.new-party__someone {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-muted);
+}
