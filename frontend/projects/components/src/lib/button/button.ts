@@ -9,11 +9,13 @@ import { ButtonVariant } from './button-variant';
 @Component({
   selector: 'button[giddy-button], a[giddy-button]',
   templateUrl: './button.html',
+  styleUrl: './button.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'btn',
     '[class.btn--primary]': "variant() === 'primary'",
-    '[class.btn--ghost]': "variant() === 'ghost'",
+    '[class.btn--ghost]': "variant() === 'ghost' || variant() === 'danger-ghost'",
+    '[class.btn--ghost-danger]': "variant() === 'danger-ghost'",
     '[class.btn--danger]': "variant() === 'danger'",
     '[class.btn--link]': "variant() === 'link'",
     '[class.btn--sm]': "size() === 'sm'",

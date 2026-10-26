@@ -1,0 +1,229 @@
+<div class="page-header">
+  <div>
+    <h1>Settings</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+</div>
+<div class="stack">
+  @if (status(); as message) {
+    <div giddy-alert tone="success" [heading]="message.heading">
+      <div>{{ message.text }}</div>
+    </div>
+  }
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="Something went wrong">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  @switch (settings.status()) {
+    @case ('ready') {
+      <form class="stack" novalidate (submit)="$event.preventDefault(); save()">
+        <section giddy-card heading="Profile">
+          <div class="stack">
+            <giddy-avatar size="lg" aria-hidden="true" [name]="session()?.name ?? firstName()" />
+            <div class="settings__email">
+              <div>
+                <div class="field__label">Email</div>
+                <div>{{ settings.value()?.email }}</div>
+                @if (pendingEmail(); as pending) {
+                  <p class="text-sm text-muted">Waiting for you to confirm {{ pending }}</p>
+                }
+              </div>
+              <button giddy-button size="sm" type="button" (click)="changeEmail()">
+                Change email
+              </button>
+            </div>
+            <div class="grid-2">
+              <giddy-form-field
+                label="First name"
+                inputId="settings-firstName"
+                [error]="errors().firstName ?? null"
+              >
+                <input
+                  giddyInput
+                  type="text"
+                  autocomplete="given-name"
+                  [value]="firstName()"
+                  (input)="firstName.set($any($event.target).value)"
+                />
+              </giddy-form-field>
+              <giddy-form-field
+                label="Last name"
+                inputId="settings-lastName"
+                [error]="errors().lastName ?? null"
+              >
+                <input
+                  giddyInput
+                  type="text"
+                  autocomplete="family-name"
+                  [value]="lastName()"
+                  (input)="lastName.set($any($event.target).value)"
+                />
+              </giddy-form-field>
+              <giddy-form-field
+                label="Mobile"
+                inputId="settings-mobile"
+                help="For RSVP texts and party-day reminders"
+                [error]="errors().mobile ?? null"
+              >
+                <input
+                  giddyInput
+                  type="tel"
+                  autocomplete="tel"
+                  [value]="mobile()"
+                  (input)="mobile.set($any($event.target).value)"
+                />
+              </giddy-form-field>
+              <giddy-form-field
+                label="Postal code"
+                inputId="settings-postalCode"
+                help="Used to find venues near you"
+                [error]="errors().postalCode ?? null"
+              >
+                <input
+                  giddyInput
+                  type="text"
+                  autocomplete="postal-code"
+                  [value]="postalCode()"
+                  (input)="postalCode.set($any($event.target).value)"
+                />
+              </giddy-form-field>
+            </div>
+          </div>
+        </section>
+        <section giddy-card heading="Notifications">
+          <div class="stack">
+            <giddy-table-wrap>
+              <table class="table">
+                <caption class="visually-hidden">
+                  Notification channels
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">What</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Text</th>
+                    <th scope="col">Push</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of channelRows; track row.key) {
+                    <tr>
+                      <th scope="row">
+                        <span class="list__title">{{ row.name }}</span>
+                        <span class="list__meta settings__meta">{{ row.description }}</span>
+                      </th>
+                      @for (channel of channelNames; track channel) {
+                        <td>
+                          <label giddy-choice centred>
+                            <input
+                              type="checkbox"
+                              [attr.aria-label]="row.name + ' by ' + channel"
+                              [checked]="checked(row, channel)"
+                              (change)="setChannel(row, channel, $any($event.target).checked)"
+                            />
+                          </label>
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </giddy-table-wrap>
+            <label giddy-switch block description="No texts or push between 9 pm and 7 am">
+              Quiet hours
+              <input
+                type="checkbox"
+                role="switch"
+                [checked]="quietHours()"
+                (change)="setQuietHours($any($event.target).checked)"
+              />
+            </label>
+          </div>
+        </section>
+        <ng-container [ngTemplateOutlet]="remembers" />
+        <div class="form-actions">
+          <button giddy-button type="button" (click)="cancel()">Cancel</button>
+          <button
+            giddy-button
+            variant="primary"
+            type="submit"
+            [busy]="saving()"
+            [disabled]="saving()"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    }
+    @case ('error') {
+      <section
+        giddy-empty-state
+        compact
+        tone="error"
+        heading="We couldn’t load your settings"
+        text="Nothing was lost. Try again in a moment."
+        [referenceCode]="settings.problem()?.referenceCode ?? null"
+      ></section>
+    }
+    @default {
+      @if (settings.showSkeleton()) {
+        <div aria-busy="true"><giddy-skeleton /></div>
+      }
+    }
+  }
+
+  <section giddy-card heading="Privacy & account">
+    <div class="cluster">
+      <button giddy-button type="button" (click)="download()">
+        <svg giddy-icon="download"></svg>Download my data
+      </button>
+      <button giddy-button type="button" (click)="signOut()">
+        <svg giddy-icon="sign-out"></svg>Sign out
+      </button>
+      <button giddy-button variant="danger-ghost" type="button" (click)="deleteAccount()">
+        <svg giddy-icon="trash"></svg>Delete my account
+      </button>
+    </div>
+  </section>
+</div>
+
+<ng-template #remembers>
+  <section giddy-card heading="What Giddy remembers">
+    <p class="text-sm text-muted">Giddy uses these to plan better. Remove anything, any time.</p>
+    @switch (memories.status()) {
+      @case ('ready') {
+        <div class="cluster">
+          @for (memory of memories.value(); track memory.id) {
+            <giddy-removable-chip
+              removeVerb="Forget"
+              [label]="memory.text"
+              (removed)="forget(memory)"
+            />
+          }
+        </div>
+      }
+      @case ('empty') {
+        <p class="text-sm">Giddy doesn’t remember anything about your family yet.</p>
+      }
+      @case ('error') {
+        <section
+          giddy-empty-state
+          compact
+          tone="error"
+          heading="We couldn’t load what Giddy remembers"
+          text="Nothing was lost. Try again in a moment."
+          [referenceCode]="memories.problem()?.referenceCode ?? null"
+        ></section>
+      }
+      @default {
+        @if (memories.showSkeleton()) {
+          <div aria-busy="true"><giddy-skeleton /></div>
+        }
+      }
+    }
+  </section>
+</ng-template>

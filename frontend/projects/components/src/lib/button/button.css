@@ -1,0 +1,4 @@
+/* A quiet button for a destructive action, such as "Delete my account" in a list of actions. */
+:host(.btn--ghost-danger) {
+  color: var(--color-danger-fg);
+}

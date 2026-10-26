@@ -50,6 +50,7 @@ export * from './lib/breadcrumb/breadcrumb-item';
 export * from './lib/choice/choice';
 export * from './lib/choice/choice-card';
 export * from './lib/choice/choice-group';
+export * from './lib/switch/switch';
 export * from './lib/error-summary/error-message';
 export * from './lib/error-summary/error-summary';
 export * from './lib/form-field/form-field';

@@ -1,7 +1,9 @@
 <ng-content select="input" />
-<span class="choice__text">
-  <span><ng-content /></span>
-  @if (description(); as text) {
-    <small>{{ text }}</small>
-  }
-</span>
+@if (!centred()) {
+  <span class="choice__text">
+    <span><ng-content /></span>
+    @if (description(); as text) {
+      <small>{{ text }}</small>
+    }
+  </span>
+}
