@@ -25,6 +25,20 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`TasksController`** — Returns ETags and honours `If-Match` (412 on conflict).
 
 
+**As built**
+
+**What the device keeps**
+- `OfflineCache` keeps a copy of each run sheet, checklist and party overview a planner opens, in IndexedDB (`OfflineStore`), for seven days. It serves that copy only when the network fails; an answer from the server, even an error, is shown as is.
+- The Angular service worker (production builds) caches the app shell, so a saved run sheet opens after a reload with no connection. Party data is never kept in the service worker's cache.
+
+**Ticking offline**
+- A tick made offline updates the checklist on the device and waits in `TaskSync`'s outbox, with the task's `version`.
+- When the connection returns, the outbox is sent with `If-Match`, and the "Back online" banner says what synced.
+- A task a co-planner changed in the meantime answers 412 with the task as it is now and who changed it. The danger banner's "Review change" opens a dialog to keep the parent's tick or the co-planner's version.
+
+**Pages that aren't saved**
+- Opening a page that isn't saved on the device shows the offline page, which links to the last saved run sheet.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
