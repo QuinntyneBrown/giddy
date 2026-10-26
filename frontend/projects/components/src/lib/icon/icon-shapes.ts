@@ -13,6 +13,7 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
     path('M3 10h18M8 3v4M16 3v4'),
   ],
   check: [path('m5 12 5 5L20 7')],
+  'check-circle': [circle(12, 12, 9), path('m8 12 3 3 5-6')],
   close: [path('M6 6l12 12M18 6 6 18')],
   explore: [circle(12, 12, 9), path('m15.5 8.5-2 5-5 2 2-5z')],
   family: [
@@ -27,6 +28,7 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
     ),
   ],
   home: [path('M3 11 12 4l9 7'), path('M5 10v10h5v-6h4v6h5V10')],
+  info: [circle(12, 12, 9), path('M12 11v5M12 8h.01')],
   mail: [{ kind: 'rect', x: 3, y: 5, width: 18, height: 14, rx: 2 }, path('m3 7 9 6 9-6')],
   moon: [path('M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z')],
   parties: [

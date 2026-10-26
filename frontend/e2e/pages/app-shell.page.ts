@@ -63,6 +63,35 @@ export class AppShellPage {
     await this.page.context().setOffline(true);
   }
 
+  async goOnline(): Promise<void> {
+    await this.page.context().setOffline(false);
+  }
+
+  connectionBanner(): Locator {
+    return this.page.locator('.offline-banner').getByRole('status');
+  }
+
+  async dismissConnectionBanner(): Promise<void> {
+    await this.connectionBanner().getByRole('button', { name: 'Dismiss' }).click();
+  }
+
+  async preferReducedMotion(): Promise<void> {
+    await this.page.emulateMedia({ reducedMotion: 'reduce' });
+  }
+
+  /** Sizes of every link and button in the navigation landmarks and main content. */
+  async targetSizes(
+    scope: 'navigation' | 'main',
+  ): Promise<{ name: string; width: number; height: number }[]> {
+    const container = scope === 'main' ? this.main : this.primaryNavigation;
+    return container.locator('a:visible, button:visible').evaluateAll((elements) =>
+      elements.map((element) => {
+        const box = element.getBoundingClientRect();
+        return { name: element.textContent?.trim() ?? '', width: box.width, height: box.height };
+      }),
+    );
+  }
+
   async followFooterLink(name: string): Promise<void> {
     await this.footer.getByRole('link', { name }).click();
   }

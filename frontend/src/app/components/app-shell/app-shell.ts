@@ -1,9 +1,10 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { SessionStore } from '@giddy/core';
+import { ConnectionStatus, SessionStore } from '@giddy/core';
 import { ThemeService } from '../../theme/theme.service';
 import {
+  AlertComponent,
   AvatarComponent,
   BottomNavComponent,
   ButtonComponent,
@@ -19,6 +20,7 @@ import {
 @Component({
   selector: 'giddy-app-shell',
   imports: [
+    AlertComponent,
     AvatarComponent,
     BottomNavComponent,
     ButtonComponent,
@@ -39,6 +41,7 @@ export class AppShellComponent {
   private readonly router = inject(Router);
   protected readonly themeService = inject(ThemeService);
   protected readonly session = inject(SessionStore).session;
+  protected readonly connection = inject(ConnectionStatus);
 
   protected readonly sidebarGroups: NavGroup[] = [
     {

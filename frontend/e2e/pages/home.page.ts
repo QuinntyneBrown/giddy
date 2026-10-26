@@ -31,6 +31,15 @@ export class HomePage extends AppShellPage {
     return this.main.getByRole('link', { name, exact: true });
   }
 
+  runningSkeletonAnimations(): Promise<number> {
+    return this.loading
+      .locator('.skeleton')
+      .first()
+      .evaluate(
+        (element) => element.getAnimations().filter((a) => a.playState === 'running').length,
+      );
+  }
+
   async tryAgain(): Promise<void> {
     await this.error.getByRole('button', { name: 'Try again' }).click();
   }

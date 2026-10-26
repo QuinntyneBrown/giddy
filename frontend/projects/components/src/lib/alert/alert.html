@@ -1,0 +1,10 @@
+<svg [giddy-icon]="icon()"></svg>
+<div class="alert__body">
+  <div class="alert__title">{{ heading() }}</div>
+  <ng-content />
+</div>
+@if (dismissible()) {
+  <button class="close" type="button" aria-label="Dismiss" (click)="dismissed.emit()">
+    <svg giddy-icon="close"></svg>
+  </button>
+}

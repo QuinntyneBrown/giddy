@@ -53,6 +53,26 @@
 </ng-template>
 
 <ng-template #content>
+  @if (!connection.online()) {
+    <div class="offline-banner">
+      <div giddy-alert banner tone="warning" heading="You’re offline">
+        <div>Giddy will reconnect on its own. Booking and invites need a connection.</div>
+      </div>
+    </div>
+  } @else if (connection.reconnected()) {
+    <div class="offline-banner">
+      <div
+        giddy-alert
+        banner
+        dismissible
+        tone="success"
+        heading="Back online"
+        (dismissed)="connection.acknowledgeReconnected()"
+      >
+        <div>You’re connected again.</div>
+      </div>
+    </div>
+  }
   <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
   <footer
     giddy-footer
