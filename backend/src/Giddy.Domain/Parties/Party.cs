@@ -230,6 +230,17 @@ public sealed class Party
             : BookingsToDo.Select(b => ReferenceEquals(b, existing) ? updated : b).ToList();
     }
 
+    /// <summary>
+    /// Starts from a saved plan: its theme, its venue and vendors to book again at their last
+    /// prices, and its checklist due the same number of days before this party.
+    /// </summary>
+    public void StartFrom(Wrapping.PartyTemplate template)
+    {
+        Theme = template.Theme;
+        BookingsToDo = template.Bookings.Select(b => new BookingToDo(b.Category, b.Name, b.Estimate, b.CatalogueItemId)).ToList();
+        Checklist = template.Tasks.Select(t => new ChecklistTask(t.Title, Date.PlusDays(-t.DaysBefore)) { GiddyAction = t.GiddyAction }).ToList();
+    }
+
     /// <summary>Sets or clears the party's theme; invitations, cake ideas and activities follow it.</summary>
     public void ChooseTheme(string? theme) => Theme = string.IsNullOrWhiteSpace(theme) ? null : theme.Trim();
 

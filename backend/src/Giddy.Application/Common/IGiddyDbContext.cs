@@ -71,5 +71,11 @@ public interface IGiddyDbContext
 
     DbSet<Giddy.Domain.Privacy.DataExport> DataExports { get; }
 
+    DbSet<Giddy.Domain.Wrapping.ThankYouNote> ThankYouNotes { get; }
+
+    DbSet<Giddy.Domain.Wrapping.ProviderRating> ProviderRatings { get; }
+
+    DbSet<Giddy.Domain.Wrapping.PartyTemplate> PartyTemplates { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

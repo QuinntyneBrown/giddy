@@ -59,6 +59,7 @@ app.MapSharingEndpoints();
 app.MapSettingsEndpoints();
 app.MapDeliveryEndpoints();
 app.MapPrivacyEndpoints();
+app.MapWrapUpEndpoints();
 
 app.Run();
 

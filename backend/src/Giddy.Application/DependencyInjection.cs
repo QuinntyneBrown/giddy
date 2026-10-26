@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddScoped<Notifications.Unsubscribe>();
         services.AddScoped<RunSheets.RunSheetReader>();
         services.AddScoped<Families.Reminders.BirthdayReminders>();
+        services.AddScoped<Wrapping.TemplateReminders>();
         services.AddScoped<Accounts.AccountTokens>();
         services.AddScoped<Accounts.AccountEmails>();
         services.AddScoped<Accounts.Sessions.ParentSessions>();

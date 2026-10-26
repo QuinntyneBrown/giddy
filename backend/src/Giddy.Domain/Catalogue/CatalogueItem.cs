@@ -155,4 +155,24 @@ public sealed class CatalogueItem
     public bool Fits(int guests) => Capacity is null || Capacity >= guests;
 
     private static IEnumerable<string> Lower(string[] values) => values.Select(v => v.ToLowerInvariant());
+
+    /// <summary>
+    /// Counts a party's star rating in the public rating, or replaces that party's earlier one.
+    /// </summary>
+    /// <param name="previous">The party's earlier rating; null for a first rating.</param>
+    public void Rate(int stars, int? previous)
+    {
+        var (rating, count) = Venue is { } venue ? (venue.Rating, venue.ReviewCount) : Vendor is { } vendor ? (vendor.Rating, vendor.ReviewCount) : (0m, 0);
+        var total = (rating * count) - (previous ?? 0) + stars;
+        count += previous is null ? 1 : 0;
+        rating = count == 0 ? 0 : total / count;
+        if (Venue is not null)
+        {
+            (Venue.Rating, Venue.ReviewCount) = (rating, count);
+        }
+        else if (Vendor is not null)
+        {
+            (Vendor.Rating, Vendor.ReviewCount) = (rating, count);
+        }
+    }
 }

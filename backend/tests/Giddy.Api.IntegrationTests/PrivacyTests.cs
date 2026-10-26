@@ -92,6 +92,27 @@ public sealed partial class PrivacyTests : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
+    [Fact]
+    public async Task Deleting_the_account_removes_thank_you_notes_ratings_and_saved_plans()
+    {
+        await factory.SeedAsync(db =>
+        {
+            var guest = db.Guests.First(g => g.PartyId == party.Id);
+            var note = new Giddy.Domain.Wrapping.ThankYouNote(party.Id, guest.Id);
+            note.Edit("Dino excavation kit", null);
+            db.ThankYouNotes.Add(note);
+            var rating = new Giddy.Domain.Wrapping.ProviderRating(party.Id, Guid.NewGuid());
+            rating.Rate(5, "Wonderful", TestParent.Amara.Id, NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0));
+            db.ProviderRatings.Add(rating);
+            db.PartyTemplates.Add(new Giddy.Domain.Wrapping.PartyTemplate(db.Parties.Find(party.Id)!, null, NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0)));
+        });
+        using var browser = await SignedInAsync();
+
+        await browser.Http.PostAsJsonAsync("/api/privacy/delete-account", new { email = TestParent.Amara.Email }, Cancel);
+
+        Assert.Equal((0, 0, 0), await factory.QueryAsync(db => Task.FromResult((db.ThankYouNotes.Count(), db.ProviderRatings.Count(), db.PartyTemplates.Count()))));
+    }
+
     private async Task<AccountClient> SignedInAsync()
     {
         var browser = await factory.CreateAnonymousClientAsync();

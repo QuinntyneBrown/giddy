@@ -29,6 +29,13 @@ public sealed class CreatePartyHandler(IGiddyDbContext db, ICurrentParent parent
         PostalCode.TryParse(request.PostalCode, out var postalCode);
         var party = Party.Plan(Guid.NewGuid(), $"{childName}’s {Ordinal.Of(age)} birthday", date, start, end, parent.Id);
         party.Describe(childName, age, GtaAreas.Resolve(postalCode!), request.Guests, request.Budget, request.ChildId);
+        if (request.TemplateId is { } templateId)
+        {
+            var template = await db.PartyTemplates.SingleOrDefaultAsync(t => t.Id == templateId && t.OwnerId == parent.Id, cancellationToken)
+                ?? throw new NotFoundException("Saved plan not found.");
+            party.StartFrom(template);
+        }
+
         db.Parties.Add(party);
         await db.SaveChangesAsync(cancellationToken);
         return mapper.Map(party, parent.Id);
