@@ -245,6 +245,19 @@ public sealed class WrapUpTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_birthday_less_than_eight_weeks_away_moves_the_reminder_to_the_year_after()
+    {
+        var sixth = Party.Plan(Guid.NewGuid(), "Zuri’s 6th: Mermaid Splash", new LocalDate(2025, 11, 15), new LocalTime(13, 0), new LocalTime(15, 0), TestParent.Amara.Id);
+        sixth.Describe("Zuri", 6, new PartyArea("Leslieville", DemoCatalogue.LeslievilleLatitude, DemoCatalogue.LeslievilleLongitude, 8), 14, 720, TestData.Zuri);
+        await factory.SeedAsync(db => db.Parties.Add(sixth));
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var template = await (await amara.PostAsync($"/api/parties/{sixth.Id}/template", null, Cancel)).Content.ReadFromJsonAsync<JsonElement>(Cancel);
+
+        Assert.Equal("2027-09-19", template.GetProperty("remindOn").GetString());
+    }
+
+    [Fact]
     public async Task Eight_weeks_before_the_next_birthday_Giddy_reminds_the_parent_once()
     {
         using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);

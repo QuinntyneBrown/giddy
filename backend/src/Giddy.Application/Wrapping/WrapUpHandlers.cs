@@ -172,7 +172,10 @@ public sealed class WrapUpHandlers(IGiddyDbContext db, ICurrentParent current, I
         return note;
     }
 
-    /// <summary>Eight weeks before the birthday after the one this party celebrated.</summary>
+    /// <summary>
+    /// Eight weeks before the first birthday after the one this party celebrated that is still at
+    /// least eight weeks away.
+    /// </summary>
     private async Task<LocalDate?> RemindOnAsync(Party party, CancellationToken cancellationToken)
     {
         if (party.ChildId is not { } childId || party.TurningAge is not { } age)
@@ -181,7 +184,17 @@ public sealed class WrapUpHandlers(IGiddyDbContext db, ICurrentParent current, I
         }
 
         var family = await db.Families.SingleOrDefaultAsync(f => f.Id == party.OwnerId, cancellationToken);
-        var child = family?.Children.SingleOrDefault(c => c.Id == childId);
-        return child?.Birthday.PlusYears(age + 1).PlusDays(-PartyTemplate.RemindDaysBefore);
+        if (family?.Children.SingleOrDefault(c => c.Id == childId) is not { } child)
+        {
+            return null;
+        }
+
+        var remindOn = child.Birthday.PlusYears(age + 1).PlusDays(-PartyTemplate.RemindDaysBefore);
+        while (remindOn < calendar.Today)
+        {
+            remindOn = remindOn.PlusYears(1);
+        }
+
+        return remindOn;
     }
 }
