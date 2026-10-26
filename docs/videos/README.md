@@ -12,6 +12,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 02 | [Chat with Giddy](02-chat-with-giddy/README.md) | ~4 min | Visible steps, grounded priced plans, confirmation, Stop, failures and memories |
 | 03 | [Start a party plan](03-start-a-party-plan/README.md) | ~4 min | New party basics, readiness, the overview, locking, deleting and Home |
 | 04 | [Find and compare venues](04-find-and-compare-venues/README.md) | ~3.5 min | Venue search, filters, relaxation, venue pages, slots and comparison |
+| 05 | [Book a venue](05-book-a-venue/README.md) | ~4 min | Booking a slot, the deposit, failures, 3-D Secure, booking banners and cancelling |
 
 ## Making or updating a video
 
