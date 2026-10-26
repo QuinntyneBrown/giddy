@@ -49,6 +49,7 @@ app.MapEmailEventEndpoints();
 app.MapImportEndpoints();
 app.MapVendorEndpoints();
 app.MapThemeEndpoints();
+app.MapBudgetEndpoints();
 
 app.Run();
 

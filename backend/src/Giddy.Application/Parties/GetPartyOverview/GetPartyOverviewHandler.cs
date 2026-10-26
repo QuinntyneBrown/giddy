@@ -40,7 +40,7 @@ public sealed class GetPartyOverviewHandler(IGiddyDbContext db, ICurrentParent p
             NextStep.Of(party),
             party.Allergies,
             party.Budget,
-            party.BookingsToDo.Sum(b => b.Estimate),
+            party.Planned,
             new RsvpCounts(0, 0, 0),
             party.Members
                 .OrderBy(m => m.Role)
