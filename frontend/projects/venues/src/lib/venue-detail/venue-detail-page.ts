@@ -10,8 +10,9 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { PARTIES_API, VENUES_API } from '@giddy/api';
+import { BOOKINGS_API, Booking, PARTIES_API, VENUES_API } from '@giddy/api';
 import {
+  AlertComponent,
   BadgeComponent,
   BreadcrumbComponent,
   ButtonComponent,
@@ -20,14 +21,24 @@ import {
   EmptyStateComponent,
   FeatureListComponent,
   GalleryComponent,
+  GiddyDialog,
   IconComponent,
   RatingComponent,
   SkeletonComponent,
   SlotOption,
   SlotPickerComponent,
 } from '@giddy/components';
-import { ResourceLoader, formatDate, formatMoney, formatTime, formatTimeRange } from '@giddy/core';
-import { catchError, firstValueFrom, of } from 'rxjs';
+import {
+  ResourceLoader,
+  SessionStore,
+  formatDate,
+  formatMoney,
+  formatTime,
+  formatTimeRange,
+} from '@giddy/core';
+import { catchError, firstValueFrom, forkJoin, of } from 'rxjs';
+import { BookVenueData } from '../book-venue-dialog/book-venue-data';
+import { BookVenueDialog } from '../book-venue-dialog/book-venue-dialog';
 import { pickParty } from '../party-context';
 import { duration } from '../venue-format';
 
@@ -35,6 +46,7 @@ import { duration } from '../venue-format';
 @Component({
   imports: [
     RouterLink,
+    AlertComponent,
     BadgeComponent,
     BreadcrumbComponent,
     ButtonComponent,
@@ -55,11 +67,11 @@ import { duration } from '../venue-format';
 export class VenueDetailPage {
   private readonly api = inject(VENUES_API);
   private readonly router = inject(Router);
-  private readonly parties = toSignal(
-    inject(PARTIES_API)
-      .mine()
-      .pipe(catchError(() => of([]))),
-  );
+  private readonly partiesApi = inject(PARTIES_API);
+  private readonly bookingsApi = inject(BOOKINGS_API);
+  private readonly dialog = inject(GiddyDialog);
+  private readonly session = inject(SessionStore);
+  private readonly parties = toSignal(this.partiesApi.mine().pipe(catchError(() => of([]))));
 
   readonly venueId = input.required<string>();
   /** ISO date to show slots for, from the query string. */
@@ -76,6 +88,16 @@ export class VenueDetailPage {
     () => false,
     false,
   );
+  /** Planners can book for the party on its own date. */
+  protected readonly canBook = computed(() => {
+    const party = this.party();
+    return !!party && party.role !== 'viewer' && !party.locked && party.date === this.day();
+  });
+  protected readonly canPlan = computed(() => {
+    const party = this.party();
+    return !!party && party.role !== 'viewer' && !party.locked;
+  });
+  protected readonly opening = signal(false);
   protected readonly selected = signal<string | null>(null);
   protected readonly favourite = signal(false);
   protected readonly waitlisted = signal(false);
@@ -107,9 +129,19 @@ export class VenueDetailPage {
         : [{ term: 'Fits', detail: `${venue.capacity} kids` }]),
     ];
   });
+  protected readonly bookingFacts = computed(() => {
+    const booking = this.venue.value()?.booking;
+    if (!booking) return [];
+    return [
+      { term: 'Kids', detail: `Up to ${booking.capacity}` },
+      { term: 'Room', detail: booking.room },
+      ...(booking.contact ? [{ term: 'Contact', detail: booking.contact }] : []),
+    ];
+  });
   protected readonly formatDate = formatDate;
   protected readonly formatMoney = formatMoney;
   protected readonly formatTime = formatTime;
+  protected readonly formatTimeRange = formatTimeRange;
   protected readonly duration = duration;
 
   constructor() {
@@ -144,6 +176,40 @@ export class VenueDetailPage {
       this.api.joinWaitlist(this.venueId(), this.day(), this.party()?.id ?? null),
     );
     this.waitlisted.set(true);
+  }
+
+  protected async book(resume: Booking | null = null): Promise<void> {
+    const venue = this.venue.value();
+    const party = this.party();
+    const slot = venue?.slots.find((s) => s.start === (resume?.start ?? this.selected()));
+    if (!venue || !party || !slot) return;
+
+    this.opening.set(true);
+    try {
+      const { overview, savedCards } = await firstValueFrom(
+        forkJoin({
+          overview: this.partiesApi.overview(party.id),
+          savedCards: this.bookingsApi.savedCards().pipe(catchError(() => of([]))),
+        }),
+      );
+      const data: BookVenueData = {
+        partyId: party.id,
+        childName: overview.childName,
+        child: overview.childName
+          ? `${overview.childName}${overview.turningAge ? `, turning ${overview.turningAge}` : ''}`
+          : '',
+        bookingName: this.session.session()?.name ?? '',
+        allergies: overview.allergies,
+        venue,
+        slot: { start: slot.start, end: slot.end },
+        savedCards,
+        resume,
+      };
+      const ref = this.dialog.open<Booking, BookVenueData, BookVenueDialog>(BookVenueDialog, data);
+      ref.closed.subscribe(() => this.venue.reload());
+    } finally {
+      this.opening.set(false);
+    }
   }
 
   protected async pickDate(date: string): Promise<void> {

@@ -1,0 +1,232 @@
+<giddy-dialog size="lg" [heading]="heading()" [description]="description()" [busy]="busy()">
+  @switch (step()) {
+    @case ('booked') {
+      <div class="stack booked">
+        <p class="booked__headline">
+          <strong>{{ bookedHeadline() }}</strong>
+        </p>
+        <p class="text-muted">
+          Confirmation {{ booking()?.confirmationNumber }} is in your email.
+          @if (booking()?.contact; as contact) {
+            Your contact at the venue is {{ contact }}.
+          }
+          Giddy added “Share the allergy list” to your checklist.
+        </p>
+      </div>
+    }
+    @case ('taken') {
+      <div
+        giddy-alert
+        tone="danger"
+        [heading]="formatTime(takenStart()!) + ' was just booked by someone else'"
+      >
+        @if (alternatives().length) {
+          <div>
+            Nothing was charged. Here’s what’s still free at {{ venue.name }} on
+            {{ formatDate(venue.date) }}:
+          </div>
+        } @else {
+          <div>
+            Nothing was charged. Nothing else is free at {{ venue.name }} that day; try another date
+            or venue.
+          </div>
+        }
+      </div>
+      @if (alternatives().length) {
+        <ul class="list" aria-label="Still free">
+          @for (alternative of alternatives(); track alternative.start) {
+            <li class="list__item">
+              <span class="list__body">
+                <span class="list__title">{{
+                  formatTimeRange(alternative.start, alternative.end)
+                }}</span>
+                <span class="list__meta">Same room, same price</span>
+              </span>
+              <button giddy-button size="sm" type="button" (click)="pickAlternative(alternative)">
+                Book {{ formatTime(alternative.start) }}
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    }
+    @case ('authenticate') {
+      @if (problem(); as failure) {
+        <div giddy-alert tone="danger" [heading]="failure.heading">
+          <div>{{ failure.text }}</div>
+        </div>
+      }
+      <ng-container *ngTemplateOutlet="summary" />
+      <div giddy-alert heading="Your bank wants to check it’s you">
+        <div>{{ holdNote() }}</div>
+      </div>
+      <section class="card stack" aria-labelledby="bv-bank-title">
+        <h3 id="bv-bank-title" class="card__title">Your bank’s check</h3>
+        <p class="text-sm text-muted">Test mode: approve as your bank app would.</p>
+        <div class="cluster">
+          <button
+            giddy-button
+            variant="primary"
+            type="button"
+            [busy]="busy()"
+            [disabled]="busy()"
+            (click)="approve()"
+          >
+            Approve
+          </button>
+        </div>
+      </section>
+    }
+    @default {
+      @if (problem(); as failure) {
+        <div giddy-alert tone="danger" [heading]="failure.heading">
+          <div>{{ failure.text }}</div>
+        </div>
+      }
+      @if (summaryErrors().length) {
+        <giddy-error-summary [errors]="summaryErrors()" />
+      }
+      <ng-container *ngTemplateOutlet="summary" />
+      <div class="stack">
+        <div class="grid-2">
+          <giddy-form-field
+            label="Name for the booking"
+            inputId="bv-bookingName"
+            [error]="errors().bookingName ?? null"
+          >
+            <input
+              giddyInput
+              type="text"
+              autocomplete="name"
+              [value]="bookingName()"
+              (input)="bookingName.set($any($event.target).value)"
+            />
+          </giddy-form-field>
+          <giddy-form-field label="Mobile" inputId="bv-mobile" [error]="errors().mobile ?? null">
+            <input
+              giddyInput
+              type="tel"
+              autocomplete="tel"
+              [value]="mobile()"
+              (input)="mobile.set($any($event.target).value)"
+            />
+          </giddy-form-field>
+        </div>
+        <giddy-form-field
+          label="Birthday child"
+          inputId="bv-child"
+          [error]="errors().child ?? null"
+        >
+          <input
+            giddyInput
+            type="text"
+            [value]="child()"
+            (input)="child.set($any($event.target).value)"
+          />
+        </giddy-form-field>
+        <giddy-form-field label="Notes for the venue" optional>
+          <textarea
+            giddyInput
+            rows="2"
+            [value]="notes()"
+            (input)="notes.set($any($event.target).value)"
+          ></textarea>
+        </giddy-form-field>
+        <fieldset>
+          <legend>Deposit</legend>
+          @for (saved of data.savedCards; track saved.id) {
+            <label giddy-choice [description]="depositNote">
+              <input
+                type="radio"
+                name="bv-card"
+                [checked]="card() === saved.id"
+                (change)="card.set(saved.id)"
+              />
+              {{ saved.brand }} ending {{ saved.last4 }}
+            </label>
+          }
+          <label giddy-choice [description]="data.savedCards.length ? null : depositNote">
+            <input
+              type="radio"
+              name="bv-card"
+              [checked]="card() === newCard"
+              (change)="card.set(newCard)"
+            />
+            Add a card
+          </label>
+        </fieldset>
+        @if (card() === newCard) {
+          <giddy-form-field
+            label="Card"
+            help="Card details are collected by our payment provider and never reach Giddy. In test mode, choose a test card."
+          >
+            <select giddyInput (change)="testCard.set($any($event.target).value)">
+              @for (test of testCards; track test.token) {
+                <option [value]="test.token" [selected]="test.token === testCard()">
+                  {{ test.label }}
+                </option>
+              }
+            </select>
+          </giddy-form-field>
+          <label giddy-choice description="Giddy keeps only the brand and last four digits.">
+            <input
+              type="checkbox"
+              [checked]="saveCard()"
+              (change)="saveCard.set($any($event.target).checked)"
+            />
+            Save this card for next time
+          </label>
+        }
+        <p class="text-caption">{{ cancellationNote }}</p>
+      </div>
+    }
+  }
+  <ng-container ngProjectAs="[giddyDialogFooter]">
+    @switch (step()) {
+      @case ('booked') {
+        <button giddy-button type="button" (click)="close()">Close</button>
+        <a
+          giddy-button
+          variant="primary"
+          data-initial-focus
+          [routerLink]="['/parties', data.partyId]"
+          (click)="close()"
+          >Back to the plan</a
+        >
+      }
+      @case ('taken') {
+        <button giddy-button type="button" (click)="close()">Close</button>
+      }
+      @case ('authenticate') {
+        <button giddy-button type="button" [disabled]="busy()" (click)="close()">
+          Finish later
+        </button>
+      }
+      @default {
+        <button giddy-button type="button" [disabled]="busy()" (click)="close()">Cancel</button>
+        <button
+          giddy-button
+          variant="primary"
+          type="button"
+          [busy]="busy()"
+          [disabled]="busy()"
+          (click)="pay()"
+        >
+          {{ payLabel() }}
+        </button>
+      }
+    }
+  </ng-container>
+</giddy-dialog>
+
+<ng-template #summary>
+  <div class="well stack stack--sm">
+    <div class="cluster cluster--between">
+      <strong
+        ><span class="emoji" aria-hidden="true">{{ venue.emoji }}</span> {{ venue.name }}</strong
+      >
+      <span class="price">{{ venue.price | giddyMoney }}</span>
+    </div>
+    <span class="text-sm text-muted">{{ when() }}</span>
+  </div>
+</ng-template>

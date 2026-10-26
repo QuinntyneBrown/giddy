@@ -18,6 +18,8 @@ export interface SeedVenue {
   partyHost: boolean;
   themeFit: string | null;
   slots: { start: string; end: string; booked: boolean }[];
+  room?: string;
+  contact?: string;
 }
 
 const slot = (start: string, end: string, booked = false) => ({ start, end, booked });
@@ -41,6 +43,8 @@ export const venues: SeedVenue[] = [
     indoor: true,
     partyHost: true,
     themeFit: 'Dino theme room',
+    room: 'Fossil Room',
+    contact: 'Bea at 416-555-0142',
     slots: [slot('10:00', '12:30', true), slot('13:00', '15:30'), slot('16:00', '18:30')],
   },
   {
