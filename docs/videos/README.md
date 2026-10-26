@@ -21,6 +21,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 11 | [Follow the checklist](11-follow-the-checklist/README.md) | ~3.5 min | Dated tasks, sharing the work, reminders and quiet hours |
 | 12 | [Run the party day](12-run-the-party-day/README.md) | ~3.5 min | The run sheet, quick calls, and working offline |
 | 13 | [Sign up and set up the family](13-sign-up-and-set-up-the-family/README.md) | ~3.5 min | Accounts, sessions, the family and birthday nudges |
+| 14 | [Manage plans and notifications](14-manage-plans-and-notifications/README.md) | ~4 min | Sharing, the notification centre, delivery, settings, push, cookies and your data |
 
 ## Making or updating a video
 
