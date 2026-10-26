@@ -64,3 +64,10 @@ test('shows a recoverable server-error page', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Something went wrong' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
 });
+
+test('shows an offline page when the connection is unavailable', async ({ page }) => {
+  await page.goto('/offline');
+
+  await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
+});
