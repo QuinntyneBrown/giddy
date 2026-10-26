@@ -1,0 +1,7 @@
+.dialog__heading {
+  flex: 1;
+}
+
+.dialog__description {
+  margin-top: var(--space-1);
+}

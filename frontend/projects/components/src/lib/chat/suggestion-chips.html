@@ -1,0 +1,5 @@
+@for (suggestion of suggestions().slice(0, 4); track suggestion) {
+  <button giddy-chip type="button" [disabled]="disabled()" (click)="chosen.emit(suggestion)">
+    {{ suggestion }}
+  </button>
+}

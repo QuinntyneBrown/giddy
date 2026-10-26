@@ -17,7 +17,9 @@ export type IconName =
   | 'plus'
   | 'refresh'
   | 'search'
+  | 'send'
   | 'settings'
   | 'sparkle'
+  | 'stop'
   | 'sun'
   | 'themes';

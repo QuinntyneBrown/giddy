@@ -1,0 +1,11 @@
+@if (author() === 'parent') {
+  <giddy-avatar size="sm" aria-hidden="true" [name]="authorName()" />
+} @else {
+  <svg giddy-mascot size="sm" mood="party" ariaLabel="Giddy"></svg>
+}
+<div class="bubble">
+  <ng-content />
+  @if (time(); as when) {
+    <span class="bubble__time">{{ author() === 'giddy' ? 'Giddy · ' + when : when }}</span>
+  }
+</div>

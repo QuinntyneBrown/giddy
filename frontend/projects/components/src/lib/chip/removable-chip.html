@@ -1,0 +1,9 @@
+{{ label() }}
+<button
+  class="remove"
+  type="button"
+  [attr.aria-label]="removeVerb() + ': ' + label()"
+  (click)="removed.emit()"
+>
+  <svg giddy-icon="close" size="sm"></svg>
+</button>
