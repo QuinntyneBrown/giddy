@@ -84,6 +84,19 @@ public sealed class CatalogueItem
 
     public ThemeProfile? ThemeInfo { get; private set; }
 
+    /// <summary>The person to ask for on the day, such as the venue's host; null for the business itself.</summary>
+    public string? ContactName { get; private set; }
+
+    /// <summary>Digits only, for a tel: link, for example 4165550142.</summary>
+    public string? Phone { get; private set; }
+
+    public CatalogueItem WithContact(string? contactName, string phone)
+    {
+        ContactName = contactName;
+        Phone = phone;
+        return this;
+    }
+
     public CatalogueItem WithThemeProfile(ThemeProfile profile)
     {
         ThemeInfo = profile;

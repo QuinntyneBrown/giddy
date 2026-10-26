@@ -15,6 +15,18 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
         db.CatalogueItems.AddRange(DemoCatalogue.Items().Where(i => !existing.Contains(i.Id)));
         await db.SaveChangesAsync(cancellationToken);
 
+        // Items seeded before contacts existed get their phone numbers.
+        var contacts = DemoCatalogue.Items().Where(i => i.Phone is not null).ToDictionary(i => i.Id);
+        foreach (var item in await db.CatalogueItems.Where(i => i.Phone == null).ToListAsync(cancellationToken))
+        {
+            if (contacts.TryGetValue(item.Id, out var demo))
+            {
+                item.WithContact(demo.ContactName, demo.Phone!);
+            }
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
         var notices = await db.Disruptions.Select(d => d.Id).ToListAsync(cancellationToken);
         db.Disruptions.AddRange(DemoDisruptions.Notices().Where(d => !notices.Contains(d.Id)));
         await db.SaveChangesAsync(cancellationToken);

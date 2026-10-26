@@ -3,6 +3,7 @@ import {
   ApplicationConfig,
   LOCALE_ID,
   inject,
+  isDevMode,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
@@ -11,6 +12,7 @@ import {
   withComponentInputBinding,
   withNavigationErrorHandler,
 } from '@angular/router';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideGiddyApi } from '@giddy/api';
 import { navigationErrorRedirect } from '@giddy/system';
 import { routes } from './app.routes';
@@ -30,5 +32,11 @@ export const appConfig: ApplicationConfig = {
     provideGiddyApi(),
     provideAppInitializer(() => inject(SessionStore).load()),
     { provide: LOCALE_ID, useValue: 'en-CA' },
+    // The app shell is cached so a saved run sheet opens with no connection. Party data is kept
+    // separately on the device (OfflineStore), never in the service worker's cache.
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };

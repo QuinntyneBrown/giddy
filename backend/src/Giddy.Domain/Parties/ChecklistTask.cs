@@ -17,6 +17,9 @@ public sealed record ChecklistTask(string Title, LocalDate Due, bool Done = fals
     /// <summary>The Toronto date it was ticked off.</summary>
     public LocalDate? DoneOn { get; init; }
 
+    /// <summary>The planner who last changed it, so a conflicting change can say who made it.</summary>
+    public Guid? ChangedBy { get; init; }
+
     /// <summary>What Giddy can do for the parent: allergyList or rsvpReminder; null when nothing.</summary>
     public string? GiddyAction { get; init; }
 }

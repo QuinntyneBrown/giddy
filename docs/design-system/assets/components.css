@@ -618,7 +618,9 @@ h1, h2, h3, h4, .card__title, .dialog__title, .drawer__title, .empty__title { fo
 .timeline__time { font: var(--text-label); font-variant-numeric: tabular-nums; text-align: right; padding-top: var(--space-3); }
 .timeline__dot { width: 1.5rem; height: 1.5rem; margin-top: var(--space-3); border-radius: 50%; border: 3px solid var(--color-bg-canvas); background: var(--pop-solid, var(--color-border-strong)); position: relative; z-index: 1; }
 .timeline__item[aria-current="step"] .timeline__card { border-color: var(--color-accent); box-shadow: 0 0 0 2px var(--color-accent); }
-.timeline__item--done .timeline__card { opacity: 0.7; }
+/* Done steps recede with a quieter surface, not opacity, so their text keeps 4.5:1 contrast. */
+.timeline__item--done .timeline__card { background: var(--color-bg-subtle); box-shadow: none; }
+.timeline__item--done .timeline__dot { opacity: 0.6; }
 .timeline__card { padding: var(--space-3) var(--space-4); }
 
 /* ---------- RSVP tally ---------------------------------------------------- */

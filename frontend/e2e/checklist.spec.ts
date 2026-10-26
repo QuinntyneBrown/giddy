@@ -74,7 +74,7 @@ test.describe('the checklist', () => {
     await expect(checklist.celebration).toContainText('All 10 tasks done.');
     await expect(
       checklist.celebration.getByRole('link', { name: 'Open the run sheet' }),
-    ).toHaveAttribute('href', `/parties/${dinoParty.id}/party-day`);
+    ).toHaveAttribute('href', `/parties/${dinoParty.id}/day`);
   });
 
   test('offers to make a checklist when there is none', async ({ page }) => {

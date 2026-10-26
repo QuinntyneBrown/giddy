@@ -14,6 +14,7 @@ import { BadgeTone } from './badge-tone';
     '[class.badge--warning]': "tone() === 'warning'",
     '[class.badge--danger]': "tone() === 'danger'",
     '[class.badge--count]': "tone() === 'count'",
+    '[class.badge--solid]': "tone() === 'solid'",
     '[class]': "pop() ? 'pop--' + pop() : ''",
   },
 })

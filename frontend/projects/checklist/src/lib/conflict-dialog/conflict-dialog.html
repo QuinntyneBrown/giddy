@@ -1,0 +1,41 @@
+<giddy-dialog
+  heading="Which version should Giddy keep?"
+  [description]="conflict.message"
+  [busy]="busy()"
+>
+  @if (failed()) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>Nothing changed. Try again in a moment.</div>
+    </div>
+  }
+  <p>
+    <strong>Yours:</strong> you {{ conflict.change.done ? 'ticked off' : 'unticked' }} “{{
+      conflict.change.title
+    }}”.
+  </p>
+  <p>
+    <strong>{{ who() }}’s:</strong> “{{ conflict.current.title }}”,
+    {{ conflict.current.done ? 'done' : 'not done yet' }}.
+  </p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="busy()"
+    (click)="keep('theirs')"
+  >
+    Keep {{ who() }}’s
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="keep('mine')"
+  >
+    Keep mine
+  </button>
+</giddy-dialog>

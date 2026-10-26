@@ -43,6 +43,12 @@ public sealed class GiddyExceptionHandler(IProblemDetailsService problemDetails,
                 Status = StatusCodes.Status409Conflict,
                 Extensions = { ["alternatives"] = unavailable.Alternatives },
             },
+            Giddy.Application.Checklist.Tasks.TaskChangedException changed => new ProblemDetails
+            {
+                Title = changed.Message,
+                Status = StatusCodes.Status412PreconditionFailed,
+                Extensions = { ["current"] = changed.Current },
+            },
             ConflictException conflict => new ProblemDetails { Title = conflict.Message, Status = StatusCodes.Status409Conflict },
             _ => Unexpected(exception),
         };

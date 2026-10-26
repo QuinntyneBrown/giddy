@@ -57,6 +57,12 @@ export class ResourceLoader<T> {
     });
   }
 
+  /** Shows a value changed on the device, such as a tick made offline, without loading. */
+  update(value: T): void {
+    this.currentValue.set(value);
+    this.currentStatus.set(this.isEmpty(value) ? 'empty' : 'ready');
+  }
+
   private stop(): void {
     clearTimeout(this.timer);
     this.subscription?.unsubscribe();

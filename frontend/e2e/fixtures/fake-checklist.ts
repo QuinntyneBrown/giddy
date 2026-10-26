@@ -78,6 +78,14 @@ const day = (iso: string) =>
 const plusDays = (iso: string, days: number) =>
   new Date(Date.parse(`${iso}T12:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
 
+/** Like the API's task version: changes whenever the task does. */
+const version = (t: SeedTask) =>
+  [t.title, t.due, t.done, t.ownerId, t.remindMe]
+    .join('|')
+    .split('')
+    .reduce((hash, c) => (hash * 31 + c.charCodeAt(0)) >>> 0, 7)
+    .toString(16);
+
 /** The checklist, as the API answers it, for "today" in Toronto. */
 export class FakeChecklist {
   /** Tasks by party id; parties without an entry have none. */
@@ -140,6 +148,17 @@ export class FakeChecklist {
     on('PUT', '/api/parties/:partyId/tasks/:taskId/done', (request, { partyId, taskId }) => {
       const existing = this.list(partyId).find((t) => t.id === taskId);
       if (!existing) return { status: 404 };
+      this.doneRequests.push({ taskId, ifMatch: request.headers()['if-match'] ?? null });
+      const expected = request.headers()['if-match']?.replace(/"/g, '');
+      if (expected && expected !== version(existing))
+        return {
+          status: 412,
+          body: {
+            status: 412,
+            title: `${this.changedBy.get(existing.id) ?? 'Someone'} changed this task while you were offline.`,
+            current: this.taskView(existing),
+          },
+        };
       const { done } = request.postDataJSON() as { done: boolean };
       this.setDone(existing, done);
       return { body: this.taskView(existing) };
@@ -199,6 +218,22 @@ export class FakeChecklist {
     });
   }
 
+  /** Bodies and If-Match headers of PUT .../done, oldest first. */
+  doneRequests: { taskId: string; ifMatch: string | null }[] = [];
+  /** Who last changed each task, by id, when it was a co-planner. */
+  private readonly changedBy = new Map<string, string>();
+
+  /** A co-planner renames a task, so a change made offline to it conflicts. */
+  rename(partyId: string, title: string, newTitle: string, by: string): void {
+    const task = this.list(partyId).find((t) => t.title === title)!;
+    task.title = newTitle;
+    this.changedBy.set(task.id, by);
+  }
+
+  find(partyId: string, title: string): SeedTask | undefined {
+    return this.list(partyId).find((t) => t.title === title);
+  }
+
   /** What a co-planner's tick looks like from here. */
   tick(partyId: string, title: string): void {
     this.setDone(
@@ -255,6 +290,7 @@ export class FakeChecklist {
       ownerName: planners.find((p) => p.parentId === t.ownerId)?.name ?? 'A planner',
       remindMe: t.remindMe,
       giddyCanDo: t.done ? null : t.giddyAction,
+      version: version(t),
     };
   }
 

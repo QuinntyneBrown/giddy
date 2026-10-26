@@ -55,7 +55,7 @@
       @if (allDone()) {
         <section giddy-card class="checklist__celebration" [heading]="celebration()">
           <p>All {{ view.total }} tasks done. On the day, just follow the party-day run sheet.</p>
-          <a giddy-button variant="primary" [routerLink]="'/parties/' + partyId() + '/party-day'"
+          <a giddy-button variant="primary" [routerLink]="'/parties/' + partyId() + '/day'"
             >Open the run sheet</a
           >
         </section>

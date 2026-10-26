@@ -57,7 +57,24 @@
   @if (!connection.online()) {
     <div class="offline-banner">
       <div giddy-alert banner tone="warning" heading="You’re offline">
-        <div>Giddy will reconnect on its own. Booking and invites need a connection.</div>
+        <div>
+          You can keep ticking off tasks; they’ll sync when you reconnect. Booking and invites need
+          a connection.
+        </div>
+      </div>
+    </div>
+  } @else if (sync.syncing()) {
+    <div class="offline-banner">
+      <div
+        giddy-alert
+        banner
+        [heading]="
+          'Syncing ' +
+          sync.pending().length +
+          (sync.pending().length === 1 ? ' change…' : ' changes…')
+        "
+      >
+        <div>Saved on this device</div>
       </div>
     </div>
   } @else if (connection.reconnected()) {
@@ -68,13 +85,39 @@
         dismissible
         tone="success"
         heading="Back online"
-        (dismissed)="connection.acknowledgeReconnected()"
+        (dismissed)="acknowledge()"
       >
-        <div>You’re connected again.</div>
+        <div>{{ syncedText() }}</div>
       </div>
     </div>
   }
-  <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
+  @for (conflict of sync.conflicts(); track conflict.change.taskId) {
+    <div class="offline-banner">
+      <div giddy-alert banner tone="danger" heading="1 change couldn’t sync">
+        <div>{{ conflict.message }} Choose which version to keep.</div>
+        <div class="alert__actions">
+          <button giddy-button size="sm" type="button" (click)="review(conflict)">
+            Review change
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+  <main id="main-content" class="container" tabindex="-1">
+    @if (offlinePage()) {
+      <giddy-error-page
+        code="You’re offline"
+        heading="No internet right now"
+        message="Giddy needs a connection to load this page. Your party-day run sheet and checklist are saved on this device, so they still work."
+      >
+        @if (savedRunSheet(); as link) {
+          <a giddy-button variant="primary" [routerLink]="link">Open saved run sheet</a>
+        }
+        <button giddy-button type="button" (click)="tryAgain()">Try again</button>
+      </giddy-error-page>
+    }
+    <div [hidden]="offlinePage()"><ng-content /></div>
+  </main>
   <footer
     giddy-footer
     text="© 2026 Giddy · Made with confetti in Toronto"

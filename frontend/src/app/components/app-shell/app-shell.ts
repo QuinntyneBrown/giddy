@@ -1,7 +1,17 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { ConnectionStatus, SessionStore } from '@giddy/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { ConflictDialog } from '@giddy/checklist';
+import { filter, map } from 'rxjs';
+import { ConnectionStatus, OfflineStore, SessionStore, SyncConflict, TaskSync } from '@giddy/core';
 import { LiveRsvpToasts } from '@giddy/guests';
 import { ThemeService } from '../../theme/theme.service';
 import {
@@ -9,7 +19,9 @@ import {
   AvatarComponent,
   BottomNavComponent,
   ButtonComponent,
+  ErrorPageComponent,
   FooterComponent,
+  GiddyDialog,
   IconComponent,
   NavGroup,
   NavItem,
@@ -25,6 +37,7 @@ import {
     AvatarComponent,
     BottomNavComponent,
     ButtonComponent,
+    ErrorPageComponent,
     IconComponent,
     FooterComponent,
     LiveRsvpToasts,
@@ -44,6 +57,26 @@ export class AppShellComponent {
   protected readonly themeService = inject(ThemeService);
   protected readonly session = inject(SessionStore).session;
   protected readonly connection = inject(ConnectionStatus);
+  protected readonly sync = inject(TaskSync);
+  private readonly dialog = inject(GiddyDialog);
+  private readonly store = inject(OfflineStore);
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map((event) => event.urlAfterRedirects),
+    ),
+    { initialValue: this.router.url },
+  );
+  /** The run sheet this device has saved, for the offline page. */
+  protected readonly savedRunSheet = signal<string | null>(null);
+  /** A page opened while offline that isn't saved on the device. */
+  protected readonly offlinePage = signal(false);
+  protected readonly syncedText = computed(() => {
+    const synced = this.sync.result()?.synced ?? 0;
+    return synced
+      ? `${synced} ${synced === 1 ? 'change' : 'changes'} synced: ${synced} checklist ${synced === 1 ? 'tick' : 'ticks'}.`
+      : 'You’re connected again.';
+  });
 
   protected readonly sidebarGroups: NavGroup[] = [
     {
@@ -84,7 +117,44 @@ export class AppShellComponent {
     { label: 'Terms & privacy', link: '/legal' },
   ];
 
+  constructor() {
+    let previous = this.router.url;
+    effect(() => {
+      const url = this.url();
+      const opened = url !== previous;
+      previous = url;
+      if (this.connection.online()) this.offlinePage.set(false);
+      else if (opened) this.offlinePage.set(!savedOnDevice(url));
+    });
+    effect(() => {
+      if (this.offlinePage())
+        void this.store
+          .get<string>('last-run-sheet')
+          .then((id) => this.savedRunSheet.set(id ? `/parties/${id}/day` : null));
+    });
+  }
+
+  protected review(conflict: SyncConflict): void {
+    this.dialog.open<boolean, SyncConflict, ConflictDialog>(ConflictDialog, conflict, {
+      autoFocus: '[data-initial-focus]',
+    });
+  }
+
+  protected tryAgain(): void {
+    if (this.connection.online()) this.offlinePage.set(false);
+  }
+
+  protected acknowledge(): void {
+    this.connection.acknowledgeReconnected();
+    this.sync.dismissResult();
+  }
+
   protected search(query: string): void {
     void this.router.navigate(['/venues'], { queryParams: query ? { q: query } : {} });
   }
+}
+
+/** Pages that work offline from what the device saved: a party's run sheet and checklist. */
+function savedOnDevice(url: string): boolean {
+  return /^\/parties\/[^/]+\/(day|checklist)(\?|#|$)/.test(url);
 }

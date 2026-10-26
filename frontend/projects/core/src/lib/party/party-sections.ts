@@ -6,5 +6,6 @@ export function partySections(partyId: string): { label: string; link: string }[
     { label: 'Invites', link: `/parties/${partyId}/invite` },
     { label: 'Budget', link: `/parties/${partyId}/budget` },
     { label: 'Checklist', link: `/parties/${partyId}/checklist` },
+    { label: 'Party day', link: `/parties/${partyId}/day` },
   ];
 }

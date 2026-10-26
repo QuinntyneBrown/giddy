@@ -14,6 +14,8 @@ public sealed class CatalogueItemConfiguration : IEntityTypeConfiguration<Catalo
         builder.Property(i => i.Id).ValueGeneratedNever();
         builder.Property(i => i.Category).HasConversion<string>().HasMaxLength(20);
         builder.Property(i => i.Name).HasMaxLength(120);
+        builder.Property(i => i.ContactName).HasMaxLength(60);
+        builder.Property(i => i.Phone).HasMaxLength(20);
         builder.Property(i => i.Neighbourhood).HasMaxLength(80);
         builder.Property(i => i.PriceBasis).HasMaxLength(120);
         builder.PrimitiveCollection(i => i.Features);

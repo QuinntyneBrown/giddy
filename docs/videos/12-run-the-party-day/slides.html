@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 12 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="12" data-video-title="Run the party day" data-parts="Introduction|Promises|The day|Drafting|Offline|Not saved|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 12</div>
+  <h1>Run the party day</h1>
+  <p class="lead">What's next, who to call, and it still works with no signal</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Giddy drafts the day from the plan">
+  <h2>What the party day promises</h2>
+  <ul>
+    <li>Timed steps from set-up to pick-up, with who and what to remember</li>
+    <li>Now and Done follow the clock in Toronto</li>
+    <li>Call opens the phone's dialler</li>
+    <li>Opened once in the week before, it works offline</li>
+  </ul>
+</section>
+
+<section id="day" data-part="2" data-cue="Here is Zuri's party on a phone" data-clip="clips/day-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>On the day</h3><p>Now ringed, earlier steps Done; it moves on at 2:15; quick calls and the allergy check.</p></div>
+</section>
+
+<section id="drafting" data-part="3" data-cue="A party without a run sheet offers to draft one.">
+  <h2>Drafting the run sheet</h2>
+  <img class="shot" alt="No run sheet yet, with Draft my run sheet" src="shots/desktop-empty.png">
+</section>
+
+<section id="offline" data-part="4" data-cue="Here's the checklist on a laptop when the connection drops." data-clip="clips/offline-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Ticks wait, then sync</h3><p>Back online lists what synced; a co-planner's change is shown to resolve, never overwritten.</p></div>
+</section>
+
+<section id="not-saved" data-part="5" data-cue="The run sheet, contacts, allergy list and checklist are saved">
+  <h2>Pages that aren't saved</h2>
+  <img class="shot" alt="No internet right now, with Open saved run sheet and Try again" src="shots/desktop-offline-page.png">
+</section>
+
+<section id="testing" data-part="6" data-cue="The API tests cover drafting the steps">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 250 tests</h3><p>Drafted steps, quick calls, allergies, draft rules, viewers, If-Match versions and the 412 conflict.</p></div>
+    <div class="card"><h3>Browser · 242 tests</h3><p>Now and Done with the clock, tel: links, drafting, loading from the device, sync, conflicts, the offline page, axe.</p></div>
+  </div>
+  <p class="muted">Plus a production build: the service worker reloads a saved run sheet with no connection.</p>
+</section>
+
+<section id="recap" data-part="7" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Drafted from the plan</li><li>Now and Done follow the clock</li><li>Calls go to the dialler</li><li>Offline ticks sync; conflicts are shown</li></ul>
+  <p class="muted">Next: sign up and set up the family</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

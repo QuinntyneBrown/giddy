@@ -24,6 +24,22 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`RunSheet`** — Entity holding ordered `RunStep`s.
 
 
+**As built**
+
+- The run sheet is a list of `RunStep`s on the party, stored as JSON. `RunSheetDrafter` works the steps out from the plan:
+  - set-up 45 minutes before the start, and the food delivered 15 minutes before;
+  - guests arriving at the start, and the entertainer half an hour in, for the length of their show;
+  - food after the show, carrying the allergy reminder (for example "peanut … for Arjun · dairy-free for Maya");
+  - cake 45 minutes before the end, loot bags at the door, and pick-up at the end.
+- Each step names who looks after it: the parent, the venue host or the vendor.
+- `GET /api/parties/{id}/run-sheet` returns the steps with:
+  - quick calls for the venue host and each vendor with a phone number (catalogue items gained `ContactName` and `Phone`, and the seeder backfills them);
+  - the allergy list;
+  - how many children are coming.
+- `POST .../run-sheet/draft` answers 409 when a run sheet already exists or nothing is booked.
+- The page is `/parties/{id}/day` (the Party day tab). The current step is worked out from the time in Toronto every 30 seconds: it is ringed and says Now, and earlier steps say Done. Before the party day every step is still to come; after it, every step is done. Call buttons are `tel:` links.
+- The library gained `ol[giddy-timeline]`, `li[giddy-timeline-item]` and a `solid` badge tone.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

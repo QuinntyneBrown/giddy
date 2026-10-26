@@ -20,6 +20,7 @@ public sealed class SaveTaskHandler(IGiddyDbContext db, ChecklistProjection proj
             Due = due,
             OwnerId = request.OwnerId ?? parent.Id,
             RemindMe = request.RemindMe,
+            ChangedBy = parent.Id,
         };
         party.SaveTask(task);
         await db.SaveChangesAsync(cancellationToken);

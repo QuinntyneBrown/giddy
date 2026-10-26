@@ -26,7 +26,16 @@ import {
   ToastComponent,
   ToastRegionComponent,
 } from '@giddy/components';
-import { LiveUpdates, ResourceLoader, formatDate, partySections } from '@giddy/core';
+import {
+  ConnectionStatus,
+  LiveUpdates,
+  OfflineCache,
+  ResourceLoader,
+  TaskSync,
+  formatDate,
+  partySections,
+  torontoToday,
+} from '@giddy/core';
 import { firstValueFrom } from 'rxjs';
 import { DeleteTaskDialog } from '../delete-task-dialog/delete-task-dialog';
 import { DeleteTaskDialogData } from '../delete-task-dialog/delete-task-dialog-data';
@@ -35,6 +44,7 @@ import { GiddyDoDialogData } from '../giddy-do-dialog/giddy-do-dialog-data';
 import { TaskDialog } from '../task-dialog/task-dialog';
 import { TaskDialogData } from '../task-dialog/task-dialog-data';
 import { ChecklistToast } from './checklist-toast';
+import { withTick } from './with-tick';
 
 /** A party's dated checklist: what's overdue, due this week, before the party, and done. */
 @Component({
@@ -61,18 +71,21 @@ export class ChecklistPage {
   private readonly checklistApi = inject(CHECKLIST_API);
   private readonly partiesApi = inject(PARTIES_API);
   private readonly dialog = inject(GiddyDialog);
+  private readonly cache = inject(OfflineCache);
+  private readonly connection = inject(ConnectionStatus);
+  private readonly sync = inject(TaskSync);
   private nextToast = 0;
 
   /** From the route. */
   readonly partyId = input.required<string>();
 
   protected readonly party = new ResourceLoader(
-    () => this.partiesApi.overview(this.partyId()),
+    () => this.cache.load(`overview:${this.partyId()}`, this.partiesApi.overview(this.partyId())),
     () => false,
     false,
   );
   protected readonly checklist = new ResourceLoader(
-    () => this.checklistApi.get(this.partyId()),
+    () => this.cache.load(this.cacheKey(), this.checklistApi.get(this.partyId())),
     (checklist) => checklist.total === 0,
     false,
   );
@@ -130,6 +143,9 @@ export class ChecklistPage {
     effect(() => {
       if (live.version() > 0) untracked(() => this.checklist.reload());
     });
+    effect(() => {
+      if (this.sync.changes() > 0) untracked(() => this.checklist.reload());
+    });
   }
 
   protected due(task: ChecklistTask): string {
@@ -159,6 +175,20 @@ export class ChecklistPage {
   }
 
   protected async setDone(task: ChecklistTask, done: boolean): Promise<void> {
+    if (!this.connection.online()) {
+      // Saved on the device and sent with the version the parent saw when the connection returns.
+      const ticked = withTick(this.checklist.value()!, task.id, done, torontoToday());
+      this.checklist.update(ticked);
+      await this.cache.save(this.cacheKey(), ticked);
+      await this.sync.queue({
+        partyId: this.partyId(),
+        taskId: task.id,
+        title: task.title,
+        done,
+        version: task.version,
+      });
+      return;
+    }
     try {
       await firstValueFrom(this.checklistApi.setDone(this.partyId(), task.id, done));
     } catch {
@@ -214,6 +244,10 @@ export class ChecklistPage {
 
   protected dismiss(id: number): void {
     this.toasts.update((toasts) => toasts.filter((t) => t.id !== id));
+  }
+
+  private cacheKey(): string {
+    return `checklist:${this.partyId()}`;
   }
 
   private letGiddyDo(task: ChecklistTask): void {

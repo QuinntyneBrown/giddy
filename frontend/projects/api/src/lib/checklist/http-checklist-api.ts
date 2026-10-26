@@ -27,8 +27,17 @@ export class HttpChecklistApi implements ChecklistApi {
     return this.http.delete<void>(`/api/parties/${partyId}/tasks/${taskId}`);
   }
 
-  setDone(partyId: string, taskId: string, done: boolean): Observable<ChecklistTask> {
-    return this.http.put<ChecklistTask>(`/api/parties/${partyId}/tasks/${taskId}/done`, { done });
+  setDone(
+    partyId: string,
+    taskId: string,
+    done: boolean,
+    version?: string,
+  ): Observable<ChecklistTask> {
+    return this.http.put<ChecklistTask>(
+      `/api/parties/${partyId}/tasks/${taskId}/done`,
+      { done },
+      version ? { headers: { 'If-Match': `"${version}"` } } : {},
+    );
   }
 
   letGiddyDo(partyId: string, taskId: string): Observable<GiddyDidTask> {
