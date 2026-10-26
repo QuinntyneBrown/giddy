@@ -116,6 +116,67 @@ public sealed class BookVenueTests : IAsyncLifetime
         Assert.Equal(TestParent.Kemi.Email, Assert.Single(factory.Email.Sent).To);
     }
 
+    [Fact]
+    public async Task A_slot_taken_while_the_dialog_was_open_offers_alternatives_and_takes_no_payment()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        factory.Partner.TakeSlot(DemoCatalogue.DinoDen, new NodaTime.LocalDate(2026, 11, 14), new NodaTime.LocalTime(13, 0));
+
+        var response = await amara.PostAsJsonAsync(BookingsUrl, Booking(), Cancel);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Contains("no longer free", problem.GetProperty("title").GetString());
+        var alternative = Assert.Single(problem.GetProperty("alternatives").EnumerateArray());
+        Assert.Equal(("16:00", "18:30"), (alternative.GetProperty("start").GetString(), alternative.GetProperty("end").GetString()));
+        Assert.Empty(factory.Payments.Authorised);
+    }
+
+    [Fact]
+    public async Task A_slot_that_is_already_booked_cannot_be_booked()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var response = await amara.PostAsJsonAsync(BookingsUrl, Booking(start: "10:00"), Cancel);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Empty(factory.Payments.Authorised);
+    }
+
+    [Fact]
+    public async Task When_the_venue_does_not_confirm_the_payment_is_cancelled_and_the_hold_released()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        factory.Partner.ConfirmTimesOut = true;
+
+        var response = await amara.PostAsJsonAsync(BookingsUrl, Booking(), Cancel);
+
+        Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Contains("nothing was charged", problem.GetProperty("title").GetString());
+        Assert.Single(factory.Payments.Voided);
+        Assert.Empty(factory.Payments.Captured);
+        Assert.Single(factory.Partner.Released);
+        var party = await factory.QueryAsync(db => db.Parties.SingleAsync(p => p.Id == dinoParty.Id, Cancel));
+        Assert.Equal(BookingStatus.ToBook, party.BookingsToDo.Single(b => b.Category == "Venue").Status);
+        Assert.Empty(factory.Email.Sent);
+    }
+
+    [Fact]
+    public async Task A_declined_card_releases_the_hold_and_charges_nothing()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var response = await amara.PostAsJsonAsync(BookingsUrl, Booking(token: "tok_declined"), Cancel);
+
+        Assert.Equal(HttpStatusCode.PaymentRequired, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal("Visa ending 0002 was declined, so nothing was charged. Try another card.", problem.GetProperty("title").GetString());
+        Assert.Single(factory.Partner.Released);
+        Assert.Empty(factory.Payments.Captured);
+        Assert.Empty(factory.Partner.Confirmed);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();

@@ -35,7 +35,21 @@ public sealed class BookVenueHandler(
         var slot = venue.Venue!.Slots.SingleOrDefault(s => s.Start == start)
             ?? throw new NotFoundException("Slot not found.");
 
-        var hold = await partner.HoldAsync(venue, date, slot, cancellationToken);
+        if (!venue.FreeSlotsOn(date).Contains(slot))
+        {
+            throw SlotUnavailable(venue, date, slot);
+        }
+
+        VenueHold hold;
+        try
+        {
+            hold = await partner.HoldAsync(venue, date, slot, cancellationToken);
+        }
+        catch (SlotTakenException)
+        {
+            throw SlotUnavailable(venue, date, slot);
+        }
+
         var booking = Booking.Hold(
             Guid.NewGuid(), party.Id, venue.Id, venue.Name, date, slot.Start, slot.End,
             venue.Venue.Room, venue.Capacity ?? 0, venue.Price, venue.Venue.Deposit, date.PlusDays(-venue.Venue.FreeCancellationDays),
@@ -60,4 +74,11 @@ public sealed class BookVenueHandler(
         await completion.CompleteAsync(booking, new BookingContact(booking.BookingName, booking.Mobile, booking.Child, booking.Notes), cancellationToken);
         return BookingViews.From(booking, venue.Venue.Contact, calendar.Today);
     }
+
+    private static SlotUnavailableException SlotUnavailable(Domain.Catalogue.CatalogueItem venue, LocalDate date, Domain.Catalogue.VenueSlot taken) => new(
+        $"{BookingFormats.Time.Format(taken.Start)} at {venue.Name} is no longer free, so nothing was charged.",
+        venue.FreeSlotsOn(date)
+            .Where(s => s != taken)
+            .Select(s => new AlternativeSlot(venue.Id, venue.Name, BookingFormats.Time.Format(s.Start), BookingFormats.Time.Format(s.End)))
+            .ToList());
 }
