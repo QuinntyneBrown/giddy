@@ -15,10 +15,11 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Backend (Giddy API)**
 
-- **`PartyAccessHandler`** — `AuthorizationHandler<PartyRequirement, PartyRef>`; resolves membership and role; returns 404 when the caller cannot know the party exists, 403 when revealed by a link.
+- **`PartyAuthorizationBehavior`** — MediatR pipeline behaviour for every `IPartyRequest` (party id plus required `PartyAccess`: Read or Plan); resolves the caller's membership and role before validation or the handler runs; non-members get 404 (`NotFoundException`), viewers asking to plan get 403 (`ForbiddenException`).
 - **`ValidationBehavior`** — MediatR pipeline behaviour running FluentValidation allow-list validators; returns 400 with field errors.
 - **`SecurityHeadersMiddleware`** — Adds CSP without `unsafe-inline` scripts, HSTS, `nosniff`, `Referrer-Policy`.
-- **`AntiforgeryFilter`** — Validates anti-CSRF tokens on state-changing requests.
+- **`AntiforgeryValidationMiddleware`** — Validates the `X-XSRF-TOKEN` header on every state-changing `/api` request; `GET /api/antiforgery` issues the `XSRF-TOKEN` cookie Angular echoes back.
+- **`GiddyExceptionHandler`** — Maps validation, not-found and forbidden exceptions to RFC 7807 problems; unexpected failures get a `referenceCode` such as `GDY-7Q2K` and no internals.
 - **`ToolScopeAuthenticationHandler`** — Authenticates the agent's family-scope token and maps it to the same policies.
 
 **Frontend (Giddy Web)**
@@ -29,7 +30,7 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Open points**
 
-- Automated IDOR test generation approach in CI `<TO SUPPLY>`
+- IDOR coverage: each write endpoint's integration tests include another family's token and assert 404 with nothing changed (see `PartyAccessTests`).
 
 ## Requirements
 

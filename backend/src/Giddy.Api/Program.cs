@@ -1,23 +1,35 @@
+using System.Text.Json.Serialization;
 using Giddy.Api.Authentication;
+using Giddy.Api.Endpoints;
+using Giddy.Api.Errors;
+using Giddy.Api.Logging;
 using Giddy.Api.Security;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+using Giddy.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddAuthentication("Rejecting")
-    .AddScheme<AuthenticationSchemeOptions, RejectingAuthenticationHandler>("Rejecting", null);
-builder.Services.AddAuthorizationBuilder().SetFallbackPolicy(
-    new AuthorizationPolicyBuilder("Rejecting")
-        .RequireAuthenticatedUser()
-        .Build());
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddGiddyAuthentication();
+builder.Services.AddGiddyAntiforgery();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GiddyExceptionHandler>();
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase)));
 
 var app = builder.Build();
 
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<AntiforgeryValidationMiddleware>();
+
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
-app.MapGet("/api/parties", () => Results.Ok(Array.Empty<object>()));
+app.MapSessionEndpoints();
+app.MapPartyEndpoints();
+app.MapServiceAreaEndpoints();
 
 app.Run();
 
