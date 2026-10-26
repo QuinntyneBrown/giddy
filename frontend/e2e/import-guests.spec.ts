@@ -24,6 +24,7 @@ test.describe('importing guests', () => {
 
     await expect(dialog.dialog).toContainText('Grade 2 Room 12 class list.csv');
     await expect(dialog.dialog).toContainText('5 rows');
+    await expect(dialog.dialog.getByText('Drop a file here or browse')).toBeHidden();
     await expect(dialog.warning).toContainText('1 row needs a parent email');
     await expect(dialog.warning).toContainText(
       'Row 5 (Omar Siddiqui) has no email. Fix it in the file, or import the rest and add it later.',

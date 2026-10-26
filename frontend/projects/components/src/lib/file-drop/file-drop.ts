@@ -10,6 +10,8 @@ import {
 import { ButtonComponent } from '../button/button';
 import { IconComponent } from '../icon/icon';
 
+let nextId = 0;
+
 /**
  * A drop zone for one file that is also a file picker; once a file is chosen it shows its name
  * and details with "Choose another file".
@@ -33,6 +35,7 @@ export class FileDropComponent {
   readonly fileDetail = input<string | null>(null);
   readonly chosen = output<File>();
   protected readonly dragging = signal(false);
+  protected readonly id = `giddy-file-drop-${nextId++}`;
 
   protected pick(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];

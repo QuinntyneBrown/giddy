@@ -14,16 +14,26 @@
     </button>
   </div>
 }
-<label
-  class="well stack file-drop__zone"
-  [class.file-drop__zone--dragging]="dragging()"
-  [hidden]="!!fileName()"
-  (dragover)="over($event)"
-  (dragleave)="dragging.set(false)"
-  (drop)="drop($event)"
->
-  <svg giddy-icon="upload" size="lg"></svg>
-  <span class="list__title">Drop a file here or browse</span>
-  <span class="list__meta">{{ hint() }}</span>
-  <input #picker class="visually-hidden" type="file" [accept]="accept()" (change)="pick($event)" />
-</label>
+@if (!fileName()) {
+  <label
+    class="well stack file-drop__zone"
+    [for]="id"
+    [class.file-drop__zone--dragging]="dragging()"
+    (dragover)="over($event)"
+    (dragleave)="dragging.set(false)"
+    (drop)="drop($event)"
+  >
+    <svg giddy-icon="upload" size="lg"></svg>
+    <span class="list__title">Drop a file here or browse</span>
+    <span class="list__meta">{{ hint() }}</span>
+  </label>
+}
+<input
+  #picker
+  class="visually-hidden"
+  type="file"
+  [id]="id"
+  [accept]="accept()"
+  [attr.aria-label]="'Choose a file, ' + hint()"
+  (change)="pick($event)"
+/>

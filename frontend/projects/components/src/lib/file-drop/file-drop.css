@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 
-.file-drop__zone:focus-within {
+:host:has(input:focus-visible) .file-drop__zone {
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
