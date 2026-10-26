@@ -50,3 +50,10 @@ test('has no serious or critical accessibility violations', async ({ page }) => 
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''))).toEqual([]);
 });
+
+test('shows a plain-language no-access page', async ({ page }) => {
+  await page.goto('/403');
+
+  await expect(page.getByRole('heading', { name: 'You do not have access to this page' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
+});
