@@ -30,6 +30,11 @@ export class AppShellPage {
     this.pageHeadings = page.getByRole('heading', { level: 1 });
   }
 
+  /** Fixes the browser clock at an instant, for example '2026-10-25T20:00:00Z'. */
+  async setNow(instant: string): Promise<void> {
+    await this.page.clock.setFixedTime(new Date(instant));
+  }
+
   async open(path = '/'): Promise<void> {
     await this.page.goto(path);
   }
@@ -100,7 +105,11 @@ export class AppShellPage {
   async seriousAccessibilityViolations(): Promise<string[]> {
     // Let colour transitions settle so axe measures what the parent actually sees.
     await this.page.waitForFunction(() =>
-      document.getAnimations().every((animation) => animation.playState !== 'running'),
+      document
+        .getAnimations()
+        .every(
+          (animation) => !(animation instanceof CSSTransition) || animation.playState !== 'running',
+        ),
     );
     const results = await new AxeBuilder({ page: this.page }).analyze();
     return results.violations

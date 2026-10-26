@@ -1,5 +1,82 @@
 <div class="page-header">
   <div>
-    <h1>Welcome to Giddy{{ firstName() ? ', ' + firstName() : '' }}</h1>
+    <h1>{{ heading() }}</h1>
+    @if (parties.status() === 'empty') {
+      <p class="subtitle">No parties yet. Let’s fix that.</p>
+    }
   </div>
 </div>
+
+@switch (parties.status()) {
+  @case ('loading') {
+    @if (parties.showSkeleton()) {
+      <div aria-busy="true" aria-live="polite">
+        <span class="visually-hidden">Loading your home…</span>
+        <div class="hero home__skeleton-hero">
+          <div class="party-card">
+            <giddy-skeleton shape="rect" width="5.5rem" height="5.5rem" />
+            <div>
+              <giddy-skeleton shape="title" />
+              <giddy-skeleton />
+              <giddy-skeleton />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+  @case ('ready') {
+    @if (nextParty(); as party) {
+      <section giddy-hero aria-labelledby="party-hero-title">
+        <giddy-party-card
+          headingId="party-hero-title"
+          eyebrow="Next up"
+          [heading]="party.name"
+          [daysToGo]="party.daysToGo"
+        >
+          <span
+            ><svg giddy-icon="calendar" size="sm"></svg
+            ><time [attr.datetime]="party.date + 'T' + party.startsAt"
+              >{{ party.date | giddyDate: true }} ·
+              {{ party.startsAt | giddyTimeRange: party.endsAt }}</time
+            ></span
+          >
+        </giddy-party-card>
+      </section>
+    }
+  }
+  @case ('empty') {
+    <section giddy-hero aria-labelledby="first-title">
+      <div class="hero__layout">
+        <div class="stack">
+          <h2 id="first-title">Who’s the next birthday star?</h2>
+          <p>
+            Tell Giddy who you’re celebrating and roughly when. You’ll get a full plan with venues
+            that are actually free, in minutes.
+          </p>
+          <div class="cluster">
+            <a giddy-button variant="primary" size="lg" routerLink="/parties/new"
+              ><svg giddy-icon="plus"></svg>Plan a party</a
+            >
+          </div>
+        </div>
+        <svg giddy-mascot size="xl" mood="party" ariaLabel="Giddy wearing a party hat"></svg>
+      </div>
+    </section>
+  }
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t load your home"
+      text="Your parties are safe; we just couldn’t reach them. Check your connection and try again."
+      [referenceCode]="parties.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="parties.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/parties">See my parties</a>
+    </section>
+  }
+}

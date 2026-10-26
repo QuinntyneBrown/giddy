@@ -48,6 +48,7 @@ export class FakeApi {
         ? { body: this.session }
         : { status: 401, body: problem(401, 'Sign in to continue.') },
     );
+    this.on('GET', '/api/parties', () => ({ body: this.parties }));
     this.on('GET', '/api/antiforgery', () =>
       this.session
         ? {
