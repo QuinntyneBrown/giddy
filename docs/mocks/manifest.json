@@ -324,14 +324,16 @@
       "title": "New party",
       "route": "/parties/new",
       "requirements": [
-        "L2-010"
+        "L2-010",
+        "L2-054"
       ],
       "states": [
         "default",
         "someone-else",
         "invalid",
         "submitting",
-        "error"
+        "error",
+        "from-template"
       ],
       "not_applicable": {
         "loading": "The form renders from the family profile already in memory; nothing to fetch.",
@@ -1067,6 +1069,33 @@
         "invalid"
       ],
       "journey": "J15 Manage plans and notifications"
+    },
+    {
+      "id": "edit-thank-you",
+      "kind": "dialog",
+      "title": "Edit thank-you note",
+      "requirements": [
+        "L2-052"
+      ],
+      "opens_from": "wrap-up",
+      "states": [
+        "default",
+        "invalid"
+      ],
+      "journey": "J14 Wrap up after the party"
+    },
+    {
+      "id": "write-review",
+      "kind": "dialog",
+      "title": "Write a review",
+      "requirements": [
+        "L2-053"
+      ],
+      "opens_from": "wrap-up",
+      "states": [
+        "default"
+      ],
+      "journey": "J14 Wrap up after the party"
     }
   ]
 }
