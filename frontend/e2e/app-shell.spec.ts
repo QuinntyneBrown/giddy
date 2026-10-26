@@ -42,6 +42,7 @@ test('shows a helpful not-found page for an unknown route', async ({ page }) => 
   await page.goto('/missing-page');
 
   await expect(page.getByRole('heading', { name: 'We could not find that page' })).toBeVisible();
+  await expect(page).toHaveTitle('Page not found · Giddy');
   await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Get help' })).toBeVisible();
 });
