@@ -1,6 +1,6 @@
 import { PartySummary } from '@giddy/api';
 
-/** The party venue pages plan for: the one asked for, or the soonest party that hasn't happened. */
+/** The party a page plans for: the one asked for, or the soonest party that hasn’t happened. */
 export function pickParty(
   parties: PartySummary[],
   partyId: string | null | undefined,

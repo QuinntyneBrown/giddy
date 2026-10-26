@@ -26,10 +26,16 @@ import {
   ToastComponent,
   ToastRegionComponent,
 } from '@giddy/components';
-import { ResourceLoader, addDays, formatDate, formatMoney, torontoToday } from '@giddy/core';
+import {
+  ResourceLoader,
+  addDays,
+  formatDate,
+  formatMoney,
+  torontoToday,
+  pickParty,
+} from '@giddy/core';
 import { catchError, of } from 'rxjs';
 import { CompareSelection } from '../compare-selection';
-import { pickParty } from '../party-context';
 import { duration, freeBadge } from '../venue-format';
 import { VenueFilters, sortOptions, sortStorageKey } from './venue-filters';
 

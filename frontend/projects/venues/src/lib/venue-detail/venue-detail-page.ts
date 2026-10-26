@@ -38,6 +38,7 @@ import {
   formatMoney,
   formatTime,
   formatTimeRange,
+  pickParty,
 } from '@giddy/core';
 import { catchError, firstValueFrom, forkJoin, of } from 'rxjs';
 import { BookVenueData } from '../book-venue-dialog/book-venue-data';
@@ -45,7 +46,6 @@ import { BookVenueDialog } from '../book-venue-dialog/book-venue-dialog';
 import { CancelBookingData } from '../cancel-booking-dialog/cancel-booking-data';
 import { CancelBookingDialog } from '../cancel-booking-dialog/cancel-booking-dialog';
 import { CancelBookingOutcome } from '../cancel-booking-dialog/cancel-booking-outcome';
-import { pickParty } from '../party-context';
 import { duration } from '../venue-format';
 
 /** A venue's details, reviews and its slots on the party date. */
