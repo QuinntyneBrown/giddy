@@ -15,6 +15,10 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
         db.CatalogueItems.AddRange(DemoCatalogue.Items().Where(i => !existing.Contains(i.Id)));
         await db.SaveChangesAsync(cancellationToken);
 
+        var notices = await db.Disruptions.Select(d => d.Id).ToListAsync(cancellationToken);
+        db.Disruptions.AddRange(DemoDisruptions.Notices().Where(d => !notices.Contains(d.Id)));
+        await db.SaveChangesAsync(cancellationToken);
+
         if (!await db.Parents.AnyAsync(p => p.Id == DemoParents.Amara, cancellationToken))
         {
             db.Parents.AddRange(

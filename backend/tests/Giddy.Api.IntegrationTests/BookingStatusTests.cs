@@ -148,6 +148,63 @@ public sealed class BookingStatusTests : IAsyncLifetime
         Assert.Equal("Bea at 416-555-0142", booking.GetProperty("contact").GetString());
     }
 
+    [Fact]
+    public async Task Cancelling_within_the_free_window_refunds_the_deposit_and_releases_the_slot()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        var booking = await BookAsync(amara, "tok_visa");
+
+        var response = await amara.PostAsync($"/api/parties/{dinoParty.Id}/bookings/{booking}/cancel", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.True(result.GetProperty("refunded").GetBoolean());
+        Assert.Equal(100m, result.GetProperty("amount").GetDecimal());
+        Assert.Single(factory.Payments.Refunded);
+        Assert.Equal("DD-48213", Assert.Single(factory.Partner.Cancelled));
+        var venue = await amara.GetFromJsonAsync<JsonElement>($"/api/venues/{DemoCatalogue.DinoDen}?date=2026-11-14&partyId={dinoParty.Id}", Cancel);
+        Assert.False(venue.GetProperty("slots").EnumerateArray().Single(s => s.GetProperty("start").GetString() == "13:00").GetProperty("booked").GetBoolean());
+        Assert.Equal(JsonValueKind.Null, venue.GetProperty("booking").ValueKind);
+        var bookings = await amara.GetFromJsonAsync<JsonElement>($"/api/parties/{dinoParty.Id}/bookings", Cancel);
+        var planned = bookings.EnumerateArray().Single(b => b.GetProperty("category").GetString() == "Venue");
+        Assert.Equal(("toBook", 0m), (planned.GetProperty("status").GetString(), planned.GetProperty("paid").GetDecimal()));
+        Assert.Equal(0, (await amara.GetFromJsonAsync<JsonElement>(NoticesUrl, Cancel)).GetArrayLength());
+    }
+
+    [Fact]
+    public async Task Cancelling_after_the_free_window_keeps_the_deposit()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        var booking = await BookAsync(amara, "tok_visa");
+        factory.Clock.Advance(Duration.FromDays(8));
+
+        var venue = await amara.GetFromJsonAsync<JsonElement>($"/api/venues/{DemoCatalogue.DinoDen}?date=2026-11-14&partyId={dinoParty.Id}", Cancel);
+        var response = await amara.PostAsync($"/api/parties/{dinoParty.Id}/bookings/{booking}/cancel", null, Cancel);
+
+        Assert.False(venue.GetProperty("booking").GetProperty("refundable").GetBoolean());
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.False(result.GetProperty("refunded").GetBoolean());
+        Assert.Empty(factory.Payments.Refunded);
+        Assert.Single(factory.Partner.Cancelled);
+    }
+
+    [Fact]
+    public async Task Viewers_cannot_cancel_and_a_booking_is_cancelled_only_once()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        using var dev = await factory.CreateBrowserClientFor(TestParent.Dev);
+        var booking = await BookAsync(amara, "tok_visa");
+
+        var viewer = await dev.PostAsync($"/api/parties/{dinoParty.Id}/bookings/{booking}/cancel", null, Cancel);
+        var first = await amara.PostAsync($"/api/parties/{dinoParty.Id}/bookings/{booking}/cancel", null, Cancel);
+        var second = await amara.PostAsync($"/api/parties/{dinoParty.Id}/bookings/{booking}/cancel", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.Forbidden, viewer.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, first.StatusCode);
+        Assert.Equal(HttpStatusCode.Conflict, second.StatusCode);
+        Assert.Single(factory.Payments.Refunded);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();
@@ -156,8 +213,9 @@ public sealed class BookingStatusTests : IAsyncLifetime
 
     private string NoticesUrl => $"/api/parties/{dinoParty.Id}/booking-notices";
 
-    private async Task BookAsync(HttpClient client, string token) =>
-        await client.PostAsJsonAsync($"/api/parties/{dinoParty.Id}/bookings", new
+    private async Task<Guid> BookAsync(HttpClient client, string token)
+    {
+        var response = await client.PostAsJsonAsync($"/api/parties/{dinoParty.Id}/bookings", new
         {
             venueId = DemoCatalogue.DinoDen,
             date = "2026-11-14",
@@ -167,4 +225,6 @@ public sealed class BookingStatusTests : IAsyncLifetime
             child = "Zuri, turning 7",
             payment = new { token },
         }, Cancel);
+        return response.IsSuccessStatusCode ? (await response.Content.ReadFromJsonAsync<JsonElement>(Cancel)).GetProperty("id").GetGuid() : Guid.Empty;
+    }
 }

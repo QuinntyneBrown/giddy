@@ -141,4 +141,10 @@ public sealed class Party
             Checklist = [.. Checklist, new ChecklistTask(AllergyListTask, Date.PlusDays(-7))];
         }
     }
+
+    /// <summary>The venue booking was cancelled: the venue is to book again, and a kept deposit stays paid.</summary>
+    public void RecordVenueCancelled(bool refunded) =>
+        BookingsToDo = BookingsToDo
+            .Select(b => b.Category == "Venue" ? b with { Status = BookingStatus.ToBook, Paid = refunded ? 0 : b.Paid } : b)
+            .ToList();
 }

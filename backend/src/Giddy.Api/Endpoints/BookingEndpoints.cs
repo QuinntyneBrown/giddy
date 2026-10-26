@@ -1,5 +1,6 @@
 using Giddy.Application.Bookings;
 using Giddy.Application.Bookings.BookVenue;
+using Giddy.Application.Bookings.CancelBooking;
 using Giddy.Application.Bookings.CompleteAuthentication;
 using Giddy.Application.Bookings.GetBookingNotices;
 using Giddy.Application.Payments;
@@ -26,6 +27,9 @@ public static class BookingEndpoints
 
         bookings.MapPost("/{bookingId:guid}/authentication", (Guid partyId, Guid bookingId, ISender sender, CancellationToken cancel) =>
             sender.Send(new CompleteAuthenticationCommand(partyId, bookingId), cancel));
+
+        bookings.MapPost("/{bookingId:guid}/cancel", (Guid partyId, Guid bookingId, ISender sender, CancellationToken cancel) =>
+            sender.Send(new CancelBookingCommand(partyId, bookingId), cancel));
 
         app.MapGet("/api/parties/{partyId:guid}/booking-notices", (Guid partyId, ISender sender, CancellationToken cancel) =>
             sender.Send(new GetBookingNoticesQuery(partyId), cancel));
