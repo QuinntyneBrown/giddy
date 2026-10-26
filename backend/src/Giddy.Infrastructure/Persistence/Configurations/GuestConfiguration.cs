@@ -24,6 +24,8 @@ public sealed class GuestConfiguration : IEntityTypeConfiguration<Guest>
         builder.Ignore(g => g.FamilyName);
         builder.Ignore(g => g.HasAllergies);
         builder.HasIndex(g => g.PartyId);
+        // Removed guests are out of every query until Undo restores them or the purge deletes them.
+        builder.HasQueryFilter(g => g.RemovedAt == null);
         builder.HasIndex(g => g.TokenHash).IsUnique().HasFilter("[TokenHash] IS NOT NULL");
     }
 }

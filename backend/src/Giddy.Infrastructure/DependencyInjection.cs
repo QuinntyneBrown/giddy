@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
         services.AddSingleton<ISmsSender, LoggingSmsSender>();
         services.AddSingleton<IWebLinks, ConfiguredWebLinks>();
+        services.AddHostedService<Guests.RemovedGuestPurgeWorker>();
         return services;
     }
 

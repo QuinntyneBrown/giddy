@@ -61,6 +61,9 @@ public sealed class Guest
 
     public bool EmailBounced { get; private set; }
 
+    /// <summary>Set while the guest is removed but can still be restored with Undo.</summary>
+    public Instant? RemovedAt { get; private set; }
+
     public string ChildFirstName => ChildName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
 
     /// <summary>"the Chen family", from the child's surname.</summary>
@@ -110,4 +113,8 @@ public sealed class Guest
     public void Remind(Instant now) => LastRemindedAt = now;
 
     public void Bounce() => EmailBounced = true;
+
+    public void Remove(Instant now) => RemovedAt = now;
+
+    public void Restore() => RemovedAt = null;
 }

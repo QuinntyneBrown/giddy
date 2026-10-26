@@ -18,7 +18,7 @@ public sealed class DeletePartyHandler(IGiddyDbContext db) : IRequestHandler<Del
         db.AgentTurns.RemoveRange(await db.AgentTurns.Where(t => conversationIds.Contains(t.ConversationId)).ToListAsync(cancellationToken));
         db.Proposals.RemoveRange(await db.Proposals.Where(p => p.PartyId == party.Id).ToListAsync(cancellationToken));
         db.Conversations.RemoveRange(conversations);
-        db.Guests.RemoveRange(await db.Guests.Where(g => g.PartyId == party.Id).ToListAsync(cancellationToken));
+        db.Guests.RemoveRange(await db.Guests.IgnoreQueryFilters().Where(g => g.PartyId == party.Id).ToListAsync(cancellationToken));
         db.Invitations.RemoveRange(await db.Invitations.Where(i => i.PartyId == party.Id).ToListAsync(cancellationToken));
         db.PartyEvents.RemoveRange(await db.PartyEvents.Where(e => e.PartyId == party.Id).ToListAsync(cancellationToken));
         db.Parties.Remove(party);

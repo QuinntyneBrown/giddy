@@ -112,6 +112,71 @@ public sealed class ManageGuestsTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
+    [Fact]
+    public async Task A_removed_guest_can_be_restored_with_their_reply_for_ten_minutes()
+    {
+        await factory.SeedAsync(db =>
+        {
+            var maya = db.Guests.Find(guests[0].Id)!;
+            maya.Invite("hash-maya", "unused", Instant.FromUtc(2026, 10, 20, 12, 0));
+            maya.Reply(true, "Dairy-free", true, null, "Lily Chen", null, null, Instant.FromUtc(2026, 10, 21, 12, 0));
+        });
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var removed = await amara.DeleteAsync($"{GuestsUrl}/{guests[0].Id}", Cancel);
+        var afterRemove = await ListAsync(amara);
+        var restored = await amara.PostAsync($"{GuestsUrl}/{guests[0].Id}/restore", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.NoContent, removed.StatusCode);
+        Assert.Equal(4, afterRemove.GetProperty("guests").GetArrayLength());
+        Assert.Equal(0, afterRemove.GetProperty("counts").GetProperty("coming").GetInt32());
+        Assert.Equal(0, afterRemove.GetProperty("allergyList").GetArrayLength());
+        Assert.Equal(HttpStatusCode.OK, restored.StatusCode);
+        var guest = await restored.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal(("coming", "Dairy-free"), (guest.GetProperty("rsvp").GetString(), guest.GetProperty("allergies").GetString()));
+        Assert.Equal(1, (await ListAsync(amara)).GetProperty("counts").GetProperty("coming").GetInt32());
+    }
+
+    [Fact]
+    public async Task Undo_is_refused_after_ten_minutes()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        await amara.DeleteAsync($"{GuestsUrl}/{guests[0].Id}", Cancel);
+        factory.Clock.Advance(Duration.FromMinutes(11));
+
+        var restored = await amara.PostAsync($"{GuestsUrl}/{guests[0].Id}/restore", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.Conflict, restored.StatusCode);
+        Assert.Equal(4, (await ListAsync(amara)).GetProperty("guests").GetArrayLength());
+    }
+
+    [Fact]
+    public async Task A_removed_familys_private_link_stops_working()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        (await amara.PostAsync($"/api/parties/{dinoParty.Id}/invitation/send", null, Cancel)).EnsureSuccessStatusCode();
+        var token = System.Text.RegularExpressions.Regex.Match(factory.Email.Sent.Single(e => e.To == "lily.chen@example.com").Body, "/rsvp/([A-Za-z0-9_-]+)").Groups[1].Value;
+
+        await amara.DeleteAsync($"{GuestsUrl}/{guests[0].Id}", Cancel);
+        using var guest = factory.CreateClient();
+        var response = await guest.GetAsync($"/api/rsvp/{token}", Cancel);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Only_planners_remove_guests_and_only_from_their_own_party()
+    {
+        using var dev = await factory.CreateBrowserClientFor(TestParent.Dev);
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var viewer = await dev.DeleteAsync($"{GuestsUrl}/{guests[0].Id}", Cancel);
+        var unknown = await amara.DeleteAsync($"{GuestsUrl}/{Guid.NewGuid()}", Cancel);
+
+        Assert.Equal(HttpStatusCode.Forbidden, viewer.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, unknown.StatusCode);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();
