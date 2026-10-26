@@ -8,4 +8,6 @@ public enum CatalogueCategory
     Cake,
     Food,
     LootBags,
+    Activity,
+    Rental,
 }

@@ -11,6 +11,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import {
   BOOKINGS_API,
+  VENDORS_API,
   BookingNotice,
   PARTIES_API,
   PartyBooking,
@@ -22,6 +23,7 @@ import {
   AllergyTagComponent,
   AvatarComponent,
   BadgeComponent,
+  BadgeTone,
   BreadcrumbComponent,
   ButtonComponent,
   CardComponent,
@@ -99,6 +101,8 @@ export class PartyOverviewPage {
   private readonly dialogs = inject(GiddyDialog);
   private readonly router = inject(Router);
   private readonly bookingsApi = inject(BOOKINGS_API);
+  private readonly vendorsApi = inject(VENDORS_API);
+  protected readonly confirming = signal<string | null>(null);
 
   /** From the route. */
   readonly partyId = input.required<string>();
@@ -225,6 +229,51 @@ export class PartyOverviewPage {
   protected dismiss(notice: BookingNotice): void {
     rememberDismissed(noticeKey(notice));
     this.dismissed.update((keys) => [...keys, noticeKey(notice)]);
+  }
+
+  protected statusBadge(booking: PartyBooking): { label: string; tone: BadgeTone } {
+    switch (booking.status) {
+      case 'confirmed':
+        return { label: 'Booked', tone: 'success' };
+      case 'quoteRequested':
+        return { label: 'Quote requested', tone: 'info' };
+      case 'quoted':
+        return {
+          label: booking.quoteExpiresOn
+            ? `Quoted · until ${formatDate(booking.quoteExpiresOn)}`
+            : 'Quoted',
+          tone: 'warning',
+        };
+      default:
+        return { label: 'To book', tone: 'info' };
+    }
+  }
+
+  /** Fun & food's chip for a vendor category, for "Find another". */
+  protected vendorCategory(notice: BookingNotice): string {
+    switch (notice.category) {
+      case 'Activity':
+        return 'activities';
+      case 'Cake':
+      case 'Food':
+        return 'food';
+      case 'Rental':
+        return 'rentals';
+      default:
+        return 'entertainers';
+    }
+  }
+
+  protected async confirmQuote(notice: BookingNotice): Promise<void> {
+    if (!notice.quoteId) return;
+    this.confirming.set(notice.quoteId);
+    try {
+      await firstValueFrom(this.vendorsApi.confirmQuote(this.partyId(), notice.quoteId));
+      this.notices.reload();
+      this.bookings.reload();
+    } finally {
+      this.confirming.set(null);
+    }
   }
 
   /** The banner's link: book or retry on the venue's page, or see the booking there. */

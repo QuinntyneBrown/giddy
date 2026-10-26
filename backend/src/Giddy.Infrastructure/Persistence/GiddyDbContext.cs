@@ -12,6 +12,7 @@ using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Giddy.Domain.Payments;
 using Giddy.Domain.Proposals;
+using Giddy.Domain.Vendors;
 using Giddy.Infrastructure.Persistence.Conversions;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -53,6 +54,8 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<Invitation> Invitations => Set<Invitation>();
 
     public DbSet<PartyEvent> PartyEvents => Set<PartyEvent>();
+
+    public DbSet<QuoteRequest> QuoteRequests => Set<QuoteRequest>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

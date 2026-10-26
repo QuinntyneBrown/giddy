@@ -287,17 +287,46 @@ export function overviewOf(party: SeedSummary) {
 }
 
 export const dinoBookings = [
-  { category: 'Venue', name: 'Dino Den Play Café', price: 340, status: 'confirmed', paid: 100 },
+  {
+    category: 'Venue',
+    name: 'Dino Den Play Café',
+    price: 340,
+    status: 'confirmed',
+    paid: 100,
+    quoteExpiresOn: null as string | null,
+  },
   {
     category: 'Entertainer',
     name: 'Professor Fizz’s Volcano Lab',
     price: 195,
     status: 'toBook',
     paid: 0,
+    quoteExpiresOn: null as string | null,
   },
-  { category: 'Cake', name: 'Sweet Rex Bakery', price: 85, status: 'toBook', paid: 0 },
-  { category: 'Food', name: 'Pizza Nonna', price: 110, status: 'toBook', paid: 0 },
-  { category: 'Loot bags', name: 'Mini fossil dig kits', price: 48, status: 'toBook', paid: 0 },
+  {
+    category: 'Cake',
+    name: 'Sweet Rex Bakery',
+    price: 85,
+    status: 'toBook',
+    paid: 0,
+    quoteExpiresOn: null as string | null,
+  },
+  {
+    category: 'Food',
+    name: 'Pizza Nonna',
+    price: 110,
+    status: 'toBook',
+    paid: 0,
+    quoteExpiresOn: null as string | null,
+  },
+  {
+    category: 'Loot bags',
+    name: 'Mini fossil dig kits',
+    price: 48,
+    status: 'toBook',
+    paid: 0,
+    quoteExpiresOn: null as string | null,
+  },
 ];
 
 export const homeNudges = [

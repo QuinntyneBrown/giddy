@@ -1,0 +1,12 @@
+.vendors__fit--bad {
+  color: var(--color-danger-fg);
+}
+
+.vendors__fit--ok {
+  color: var(--color-success-fg);
+}
+
+.vendors__grid {
+  list-style: none;
+  padding: 0;
+}

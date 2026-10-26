@@ -27,6 +27,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`QuoteExpiryJob`** — Worker job raising the expiring-quote banner 2 days before expiry.
 
 
+**As built**
+
+- `GET /api/vendors/search?partyId&category&theme&maxPrice` lists vendors free on the party date who travel or deliver to the booked venue (or the party's area), with the party's theme filter on unless `theme=off`. Results carry rating, ages, duration, notice, dietary options, plan status and, for every recorded allergy, whether the vendor can meet it. Allergies are matched by canonical allergen (`Allergens.Canonical`: "Peanut (EpiPen with parent)" is peanut), which the planning agent's allergy flags now use too.
+- `POST /api/parties/{id}/quotes` checks the start time against the venue booking when one is confirmed, allows one pending request per vendor per 24 hours, sends through `IVendorDirectory` (a logging directory until a provider is connected), and adds the vendor to the plan as "Quote requested".
+- Vendor replies arrive at `POST /api/vendor-quotes` with the shared secret `Giddy:VendorQuotesSecret`; the quote goes into the budget as "Quoted" and the parent gets a live update. Quotes expiring within two days appear as a warning on the party overview with Confirm (`POST .../quotes/{quoteId}/confirm`) and Find another. The banner is computed when the overview loads, so no expiry job is needed.
+
 **Open points**
 
 - Vendor directory provider and webhook signing scheme `<TO SUPPLY>`

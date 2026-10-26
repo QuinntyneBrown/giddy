@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BadgeComponent } from '../badge/badge';
@@ -7,12 +8,12 @@ import { PopColour } from '../pop/pop-colour';
 let nextId = 0;
 
 /**
- * A card in a results grid: art with a status badge, a linked title, and body content (projected
+ * A card in a results grid: art with a status badge, a title (linked when there is a page to go to), and body content (projected
  * by default) with a footer slot (giddyTileFooter) for price and actions.
  */
 @Component({
   selector: 'li[giddy-tile]',
-  imports: [RouterLink, BadgeComponent],
+  imports: [NgTemplateOutlet, RouterLink, BadgeComponent],
   templateUrl: './tile.html',
   styleUrl: './tile.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +21,8 @@ let nextId = 0;
 })
 export class TileComponent {
   readonly heading = input.required<string>();
-  readonly link = input.required<string | unknown[]>();
+  /** Where the title goes; without one the title is plain text. */
+  readonly link = input<string | unknown[] | null>(null);
   readonly queryParams = input<Record<string, string> | null>(null);
   readonly emoji = input.required<string>();
   readonly pop = input<PopColour>('grape');

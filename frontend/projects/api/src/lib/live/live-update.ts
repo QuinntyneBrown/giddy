@@ -3,7 +3,7 @@ export interface LiveUpdate {
   id: number;
   partyId: string;
   guestId: string | null;
-  kind: 'opened' | 'replied' | 'changed' | 'allergy' | 'bounced';
+  kind: 'opened' | 'replied' | 'changed' | 'allergy' | 'bounced' | 'quote';
   tone: 'info' | 'success' | 'warning' | 'danger';
   title: string;
   text: string;

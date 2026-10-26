@@ -27,6 +27,17 @@ public static class DemoCatalogue
     public static readonly Guid CakeCorner = Guid.Parse("d1000000-0000-4000-8000-000000000002");
     public static readonly Guid PizzaNonna = Guid.Parse("e1000000-0000-4000-8000-000000000001");
     public static readonly Guid FossilKits = Guid.Parse("f1000000-0000-4000-8000-000000000001");
+    public static readonly Guid RexyDinoVisit = Guid.Parse("c1000000-0000-4000-8000-000000000003");
+    public static readonly Guid BubbleBianca = Guid.Parse("c1000000-0000-4000-8000-000000000004");
+    public static readonly Guid DjDanceParty = Guid.Parse("c1000000-0000-4000-8000-000000000005");
+    public static readonly Guid MississaugaMagicMax = Guid.Parse("c1000000-0000-4000-8000-000000000006");
+    public static readonly Guid PaintPals = Guid.Parse("a3000000-0000-4000-8000-000000000001");
+    public static readonly Guid CaptainClue = Guid.Parse("a3000000-0000-4000-8000-000000000002");
+    public static readonly Guid CastleHop = Guid.Parse("a4000000-0000-4000-8000-000000000001");
+    public static readonly Guid CupcakeCloud = Guid.Parse("d1000000-0000-4000-8000-000000000003");
+    public static readonly Guid FruitFrenzy = Guid.Parse("e1000000-0000-4000-8000-000000000002");
+    public static readonly Guid LittleChefs = Guid.Parse("e1000000-0000-4000-8000-000000000003");
+    public static readonly Guid PopsicleParade = Guid.Parse("e1000000-0000-4000-8000-000000000004");
 
     // Leslieville, Toronto.
     public const double LeslievilleLatitude = 43.6626;
@@ -102,15 +113,64 @@ public static class DemoCatalogue
             .WithFeatures("parking", "step-free", "indoor")
             .WithVenueProfile(Profile("🏰", "1500 Victoria Park Ave", 4.5m, 240, 3, 10, 120, true, null, Slot(11, 0, 13, 0), Slot(15, 0, 17, 0)));
         yield return new CatalogueItem(ProfessorFizz, CatalogueCategory.Entertainer, "Professor Fizz’s Volcano Lab", "Hands-on science show with erupting volcanoes.", "East York", 43.6900, -79.3300, 40, null, 195, "45 min show")
-            .ForThemes("science", "dinosaurs", "dino", "volcano");
+            .ForThemes("science", "dinosaurs", "dino", "volcano")
+            .WithVendorProfile(Vendor("🧪", 4.9m, 187, 4, 10, 45, null));
         yield return new CatalogueItem(DinoDanShow, CatalogueCategory.Entertainer, "Dino Dan’s Fossil Show", "Life-size dino puppets and a fossil dig.", "North York", 43.7615, -79.4111, 40, null, 240, "1 hour show")
-            .ForThemes("dinosaurs", "dino", "fossils");
+            .ForThemes("dinosaurs", "dino", "fossils")
+            .WithVendorProfile(Vendor("🦕", 4.6m, 98, 4, 9, 60, null));
+        yield return new CatalogueItem(RexyDinoVisit, CatalogueCategory.Entertainer, "Rexy the Dino Visit", "A friendly costumed T. rex for photos and a dino dance.", "Leslieville", 43.6650, -79.3290, 25, null, 150, "30 min visit")
+            .ForThemes("dinosaurs", "dino")
+            .WithVendorProfile(Vendor("🦖", 4.7m, 64, 2, 8, 30, null));
+        yield return new CatalogueItem(BubbleBianca, CatalogueCategory.Entertainer, "Bubble Bianca", "Giant bubbles, and bubbles you can stand inside.", "Danforth", 43.6790, -79.3450, 30, null, 210, "45 min show")
+            .UnavailableOn(zurisParty)
+            .WithVendorProfile(Vendor("🫧", 4.8m, 142, 2, 9, 45, null));
+        yield return new CatalogueItem(DjDanceParty, CatalogueCategory.Entertainer, "DJ Dance Party Dan", "Kid-friendly DJ with freeze-dance games.", "Riverdale", 43.6700, -79.3500, 30, null, 240, "90 min set")
+            .WithVendorProfile(Vendor("🎶", 4.5m, 77, 5, 12, 90, null));
+        yield return new CatalogueItem(MississaugaMagicMax, CatalogueCategory.Entertainer, "Mississauga Magic Max", "Close-up magic and balloon animals.", "Mississauga", 43.5890, -79.6441, 10, null, 180, "1 hour show")
+            .ForThemes("dino", "magic")
+            .WithVendorProfile(Vendor("🎩", 4.4m, 39, 4, 10, 60, null));
+        yield return new CatalogueItem(PaintPals, CatalogueCategory.Activity, "Paint Pals Face Painting", "Two artists, dino and glitter designs.", "East York", 43.6900, -79.3400, 30, null, 180, "2 hours")
+            .ForThemes("dino", "dinosaurs", "any")
+            .WithVendorProfile(Vendor("🎨", 4.8m, 230, null, null, 120, null));
+        yield return new CatalogueItem(CaptainClue, CatalogueCategory.Activity, "Captain Clue Treasure Hunts", "A story-led hunt for a hidden dino egg.", "Leslieville", 43.6620, -79.3330, 25, null, 165, "60 min hunt")
+            .ForThemes("dino", "dinosaurs", "pirates")
+            .WithVendorProfile(Vendor("🗺️", 4.6m, 51, 5, 10, 60, null));
+        yield return new CatalogueItem(CastleHop, CatalogueCategory.Rental, "Castle Hop Rentals", "Indoor-safe bouncy castle, set up and taken down for you.", "Scarborough", 43.7300, -79.2600, 35, null, 220, "bouncy castle for 4 hours")
+            .WithVendorProfile(Vendor("🏰", 4.5m, 120, 2, 10, 240, 3));
         yield return new CatalogueItem(SweetRex, CatalogueCategory.Cake, "Sweet Rex Bakery", "Custom dino cakes; nut-free bakery.", "Leslieville", 43.6610, -79.3350, 15, null, 85, "nut-free dino cake for 20")
-            .FreeOf("peanut", "tree nut");
-        yield return new CatalogueItem(CakeCorner, CatalogueCategory.Cake, "Cake Corner", "Classic buttercream cakes.", "Riverdale", 43.6680, -79.3500, 15, null, 70, "cake for 20");
+            .FreeOf("peanut", "tree nut")
+            .ForThemes("dino", "dinosaurs")
+            .WithVendorProfile(Vendor("🎂", 4.9m, 321, null, null, null, 5));
+        yield return new CatalogueItem(CakeCorner, CatalogueCategory.Cake, "Cake Corner", "Classic buttercream cakes.", "Riverdale", 43.6680, -79.3500, 15, null, 70, "cake for 20")
+            .WithVendorProfile(Vendor("🍰", 4.3m, 55, null, null, null, 3));
+        yield return new CatalogueItem(CupcakeCloud, CatalogueCategory.Cake, "Cupcake Cloud", "24 mini cupcakes with dino toppers, vegan option.", "Danforth", 43.6790, -79.3480, 20, null, 72, "24 mini cupcakes")
+            .WithFeatures("vegan").FreeOf("dairy", "egg")
+            .ForThemes("dino")
+            .WithVendorProfile(Vendor("🧁", 4.8m, 199, null, null, null, 2));
         yield return new CatalogueItem(PizzaNonna, CatalogueCategory.Food, "Pizza Nonna", "Wood-fired pizza delivered with juice boxes.", "Leslieville", 43.6600, -79.3400, 10, null, 110, "6 large pizzas and juice boxes")
-            .FreeOf("peanut", "tree nut");
+            .FreeOf("peanut", "tree nut")
+            .WithVendorProfile(Vendor("🍕", 4.7m, 540, null, null, null, 1));
+        yield return new CatalogueItem(FruitFrenzy, CatalogueCategory.Food, "Fruit Frenzy Platters", "Rainbow fruit platter for 20 kids.", "Leslieville", 43.6630, -79.3360, 15, null, 45, "platter for 20")
+            .FreeOf("peanut", "tree nut", "dairy", "gluten", "egg")
+            .WithVendorProfile(Vendor("🍓", 4.6m, 88, null, null, null, 1));
+        yield return new CatalogueItem(LittleChefs, CatalogueCategory.Food, "Little Chefs Catering", "Kid lunch boxes with a sandwich, veg and a treat, allergy-labelled.", "Riverdale", 43.6700, -79.3480, 20, null, 9, "per kid")
+            .FreeOf("peanut", "tree nut")
+            .WithVendorProfile(Vendor("🥪", 4.7m, 134, null, null, null, 2));
+        yield return new CatalogueItem(PopsicleParade, CatalogueCategory.Food, "Popsicle Parade", "Fruit popsicles, dairy-free and nut-free.", "East York", 43.6900, -79.3350, 20, null, 40, "20 popsicles")
+            .FreeOf("dairy", "peanut", "tree nut")
+            .WithVendorProfile(Vendor("🍦", 4.5m, 61, null, null, null, 1));
         yield return new CatalogueItem(FossilKits, CatalogueCategory.LootBags, "Mini fossil dig kits", "Plaster fossil blocks with tiny brushes.", "Online", LeslievilleLatitude, LeslievilleLongitude, 100, null, 48, "16 kits")
             .ForThemes("dinosaurs", "dino", "fossils");
     }
+
+    private static VendorProfile Vendor(string emoji, decimal rating, int reviews, int? minAge, int? maxAge, int? minutes, int? noticeDays) => new()
+    {
+        Emoji = emoji,
+        Rating = rating,
+        ReviewCount = reviews,
+        MinAge = minAge,
+        MaxAge = maxAge,
+        DurationMinutes = minutes,
+        NoticeDays = noticeDays,
+    };
 }

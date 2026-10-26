@@ -13,7 +13,7 @@
 // clips.mjs exports default [{ name, phone?, colorScheme?, javaScript?, run: async (demo) => {} }].
 // `demo` has: go(path), app() (the app's Frame), click(locator), type(locator, text),
 // press(key), pause(ms), note(text), mark(), page, base, and showEmail(email).
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -96,6 +96,14 @@ const frameHtml = (phone) => `<!doctype html>
   </script>
 </body></html>`;
 
+/** A video's length in seconds. Playwright's webm often has no duration in its header, so decode it. */
+function duration(file) {
+  const run = spawnSync(FFMPEG, ['-v', 'info', '-i', file, '-f', 'null', '-'], { encoding: 'utf8' });
+  const times = [...(run.stderr ?? '').matchAll(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/g)];
+  const last = times.at(-1);
+  return last ? Number(last[1]) * 3600 + Number(last[2]) * 60 + Number(last[3]) : 0;
+}
+
 /** Trims the page load before mark() and converts to H.264. */
 function encode(webm, mp4, offsetSeconds) {
   execFileSync(FFMPEG, ['-y', '-v', 'error', '-ss', Math.max(0, offsetSeconds).toFixed(3), '-i', webm, '-an', '-r', '30', '-c:v', 'libx264', '-preset', 'medium', '-crf', '22', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
@@ -141,6 +149,9 @@ async function record(browser, clip, outDir) {
     /** Starts the clip here; what came before (the first page load) is cut. */
     mark: () => {
       markedAt ??= Date.now();
+      // The screencast only sends a frame when the outer page repaints, so a page that finished
+      // loading inside the frame could still show its blank first paint. Nudge the cursor.
+      void setCursor(cursor.x + 0.5, cursor.y);
     },
     async go(path, { ready = clip.javaScript !== false } = {}) {
       await app().goto(new URL(path, base).href);
@@ -233,10 +244,14 @@ async function record(browser, clip, outDir) {
 
   await clip.run(demo);
   await pause(clip.tail ?? 1200);
-  const offset = ((markedAt ?? startedAt) - startedAt) / 1000;
+  const finishedAt = Date.now();
   const video = page.video();
   await context.close();
   const webm = await video.path();
+  // Measured back from the end: the webm's own start can drift from newPage(), so counting
+  // forward from startedAt can leave the first page load in the clip.
+  const kept = (finishedAt - (markedAt ?? startedAt)) / 1000;
+  const offset = Math.max(0, duration(webm) - kept);
   const mp4 = join(outDir, `${clip.name}.mp4`);
   encode(webm, mp4, offset);
   rmSync(tmp, { recursive: true, force: true });

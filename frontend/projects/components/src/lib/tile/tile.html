@@ -1,19 +1,30 @@
-<a
-  class="tile__art"
-  tabindex="-1"
-  aria-hidden="true"
-  [routerLink]="link()"
-  [queryParams]="queryParams()"
->
+@if (link(); as to) {
+  <a
+    class="tile__art"
+    tabindex="-1"
+    aria-hidden="true"
+    [routerLink]="to"
+    [queryParams]="queryParams()"
+  >
+    <ng-container *ngTemplateOutlet="art" />
+  </a>
+} @else {
+  <div class="tile__art"><ng-container *ngTemplateOutlet="art" /></div>
+}
+<ng-template #art>
   @if (badge(); as text) {
     <giddy-badge class="tile__badge" [tone]="badgeTone()">{{ text }}</giddy-badge>
   }
-  <span class="emoji">{{ emoji() }}</span>
-</a>
+  <span class="emoji" aria-hidden="true">{{ emoji() }}</span>
+</ng-template>
 <div class="tile__body">
   <div class="cluster cluster--between tile__head">
     <h2 class="tile__title" [id]="headingId">
-      <a class="tile__link" [routerLink]="link()" [queryParams]="queryParams()">{{ heading() }}</a>
+      @if (link(); as to) {
+        <a class="tile__link" [routerLink]="to" [queryParams]="queryParams()">{{ heading() }}</a>
+      } @else {
+        {{ heading() }}
+      }
     </h2>
     <ng-content select="[giddyTileAside]" />
   </div>
