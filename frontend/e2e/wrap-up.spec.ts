@@ -147,6 +147,17 @@ test.describe('ratings and next year', () => {
       .toBe(fakeApi.wrapUpStore.template?.templateId);
   });
 
+  test('starting a party from the saved plan opens the new party at the top', async ({ page }) => {
+    const wrapUp = new WrapUpPage(page);
+    await wrapUp.useWidth(360);
+    await wrapUp.openWrapUp(zurisSixth.id);
+    await wrapUp.saveTemplate.click();
+
+    await wrapUp.startFromTemplate.click();
+
+    await expect(new NewPartyPage(page).fromTemplate).toBeInViewport();
+  });
+
   test('“Reuse this plan” on a past party saves it and starts a new party from it', async ({
     page,
     fakeApi,
