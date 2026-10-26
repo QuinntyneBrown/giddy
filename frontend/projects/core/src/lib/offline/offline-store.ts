@@ -31,6 +31,11 @@ export class OfflineStore {
     await this.run('readwrite', (store) => store.delete(key));
   }
 
+  /** Removes everything saved on this device, for example when the parent signs out. */
+  async clear(): Promise<void> {
+    await this.run('readwrite', (store) => store.clear());
+  }
+
   private async run<T>(
     mode: IDBTransactionMode,
     action: (store: IDBObjectStore) => IDBRequest,

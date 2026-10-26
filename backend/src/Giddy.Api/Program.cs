@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPlanningAgent(builder.Configuration);
-builder.Services.AddGiddyAuthentication();
+builder.Services.AddGiddyAuthentication(builder.Configuration);
 builder.Services.AddGiddyAntiforgery();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GiddyExceptionHandler>();
@@ -52,6 +52,8 @@ app.MapThemeEndpoints();
 app.MapBudgetEndpoints();
 app.MapChecklistEndpoints();
 app.MapRunSheetEndpoints();
+app.MapAuthEndpoints();
+app.MapFamilyEndpoints();
 
 app.Run();
 

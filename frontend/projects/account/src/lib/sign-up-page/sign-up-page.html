@@ -1,0 +1,101 @@
+<giddy-auth-card
+  heading="Let’s plan something amazing"
+  lead="Free for parents. Takes about a minute."
+>
+  @if (existing(); as email) {
+    <div giddy-alert tone="danger" [heading]="'There’s already a Giddy account for ' + email">
+      <div>Sign in instead, or reset your password if you’ve forgotten it.</div>
+      <div class="alert__actions">
+        <a routerLink="/sign-in">Sign in</a>
+        <a routerLink="/forgot-password">Reset password</a>
+      </div>
+    </div>
+  }
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <form class="stack" novalidate (submit)="$event.preventDefault(); submit()">
+    <giddy-form-field
+      label="First name"
+      inputId="signup-firstName"
+      [error]="errors().firstName ?? null"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="given-name"
+        [readOnly]="busy()"
+        [value]="firstName()"
+        (input)="firstName.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Email" inputId="signup-email" [error]="errors().email ?? null">
+      <input
+        giddyInput
+        type="email"
+        autocomplete="email"
+        [readOnly]="busy()"
+        [value]="email()"
+        (input)="email.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field
+      label="Password"
+      inputId="signup-password"
+      help="At least 10 characters with a number or symbol."
+      [error]="errors().password ?? null"
+    >
+      <input
+        giddyInput
+        type="password"
+        autocomplete="new-password"
+        [readOnly]="busy()"
+        [value]="password()"
+        (input)="password.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field
+      label="Postal code"
+      inputId="signup-postalCode"
+      help="So we can show venues near you. We only use the first three characters."
+      [error]="errors().postalCode ?? null"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="postal-code"
+        [readOnly]="busy()"
+        [value]="postalCode()"
+        (input)="postalCode.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <label giddy-choice description="About two emails a month. Unsubscribe any time.">
+      <input
+        type="checkbox"
+        [disabled]="busy()"
+        [checked]="marketing()"
+        (change)="marketing.set($any($event.target).checked)"
+      />
+      Send me party ideas and reminders
+    </label>
+    <button
+      giddy-button
+      variant="primary"
+      size="lg"
+      type="submit"
+      [busy]="busy()"
+      [disabled]="busy()"
+    >
+      Create my account
+    </button>
+  </form>
+  <p class="text-caption">
+    By creating an account you agree to our <a routerLink="/legal">terms and privacy policy</a>.
+  </p>
+  <p class="text-sm">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
+</giddy-auth-card>

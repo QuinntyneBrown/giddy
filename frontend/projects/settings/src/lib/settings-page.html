@@ -38,3 +38,10 @@
     }
   }
 </section>
+
+<section giddy-card heading="Account" class="section">
+  <p class="text-sm">Signed in as {{ session()?.email }}.</p>
+  <div class="cluster">
+    <button giddy-button type="button" (click)="signOut()">Sign out</button>
+  </div>
+</section>

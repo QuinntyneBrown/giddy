@@ -5,6 +5,12 @@ namespace Giddy.Domain.Families;
 /// <summary>A child in the family, whose birthdays Giddy plans for.</summary>
 public sealed record Child(Guid Id, string FirstName, LocalDate Birthday)
 {
+    /// <summary>Up to five, from <see cref="Interests"/>' catalogue.</summary>
+    public string[] Interests { get; init; } = [];
+
+    /// <summary>Allergies or needs as the parent wrote them; null when there are none.</summary>
+    public string? Allergies { get; init; }
+
     /// <summary>The next birthday on or after <paramref name="today"/>.</summary>
     public LocalDate NextBirthday(LocalDate today)
     {

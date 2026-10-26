@@ -10,8 +10,8 @@ public static class SessionEndpoints
     {
         app.MapGet("/api/session", async (ICurrentParent parent, MediatR.ISender sender, CancellationToken cancel) =>
         {
-            await sender.Send(new Giddy.Application.Parents.RecordParentCommand(), cancel);
-            return new SessionResponse(parent.Id, parent.Name, parent.Email, parent.EmailVerified);
+            var account = await sender.Send(new Giddy.Application.Parents.RecordParentCommand(), cancel);
+            return new SessionResponse(parent.Id, parent.Name, parent.Email, parent.EmailVerified, account.EmailBounced);
         });
 
         app.MapGet("/api/antiforgery", (HttpContext context, IAntiforgery antiforgery) =>
@@ -25,7 +25,7 @@ public static class SessionEndpoints
                 Path = "/",
             });
             return new AntiforgeryTokenResponse(tokens.RequestToken!);
-        });
+        }).AllowAnonymous();
 
         return app;
     }

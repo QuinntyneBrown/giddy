@@ -31,6 +31,14 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`InterestCatalogue`** — Allowed interests and their theme tags.
 
 
+**As built**
+
+- Children gain up to five interests from `Interests` (`GET /api/family/interests`) and optional allergies.
+- `POST/PUT/DELETE /api/family/children` change only the signed-in parent's own family; another family's child answers 404.
+- `GET /api/family` gives each child's next birthday, the days until it, and the party planned for it (within a month of the birthday).
+- The family page and `/welcome` both use the same add/change child dialog. `/welcome` lists the kids added and offers "Skip for now"; the neighbourhood and notification steps in the mock are deferred.
+- The library chip now also covers static tags, and the library gained `giddy-auth-card`.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

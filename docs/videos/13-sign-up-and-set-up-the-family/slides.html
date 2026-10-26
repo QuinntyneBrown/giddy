@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 13 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="13" data-video-title="Sign up and set up the family" data-parts="Introduction|Promises|Sign up|Sign in|Family|Still there|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 13</div>
+  <h1>Sign up and set up the family</h1>
+  <p class="lead">Safe accounts, and the kids Giddy plans for</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Signing up takes a first name">
+  <h2>What accounts promise</h2>
+  <ul>
+    <li>10+ characters with a number or symbol; no breached passwords</li>
+    <li>Every mistake says how to fix it</li>
+    <li>No hint which part was wrong; a 15-minute pause after 5 tries</li>
+    <li>Server-side sessions; new-device emails</li>
+  </ul>
+</section>
+
+<section id="sign-up" data-part="2" data-cue="Here's Rania signing up on a laptop." data-clip="clips/sign-up-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Sign up, confirm, add the kids</h3><p>Check your email; the link confirms and signs in; family setup with up to 5 interests.</p></div>
+</section>
+
+<section id="sign-in" data-part="3" data-cue="On a phone, Amara opens her parties" data-clip="clips/sign-in-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Sign in and back</h3><p>One message for a wrong password; the email stays; back to the page she asked for.</p></div>
+</section>
+
+<section id="family" data-part="4" data-cue="The Family page shows each child">
+  <h2>The family page</h2>
+  <img class="shot" alt="The Family page with Zuri and Kofi, their birthdays, interests and party" src="shots/desktop-family.png">
+</section>
+
+<section id="still-there" data-part="5" data-cue="If a session ends while a parent is in the middle">
+  <h2>Still there?</h2>
+  <img class="shot" alt="The Still there, Amara? dialog asking for the password" src="shots/desktop-still-there.png">
+</section>
+
+<section id="testing" data-part="6" data-cue="The API tests cover sign-up and its rules">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 285 tests</h3><p>Sign-up rules, links, sign-in pause, cookies, sessions, new devices, rate limits, CSRF, resets, Google and Apple, children, nudges.</p></div>
+    <div class="card"><h3>Browser · 275 tests</h3><p>Every account page and dialog, family setup, the expired session that keeps a half-added guest, axe at 360 and 1280 px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="7" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Mistakes say how to fix them</li><li>Sign-in gives nothing away</li><li>Sessions are real on the server</li><li>Birthdays drive the nudges</li></ul>
+  <p class="muted">Next: manage plans and notifications</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

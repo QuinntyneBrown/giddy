@@ -25,6 +25,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`ResetToken`** — Hashed token with 30-minute expiry.
 
 
+**As built**
+
+- `POST /api/auth/password/forgot` answers 202 for any well-formed address and emails a single-use 30-minute link only when there is an account. An email outage answers 502 and the page keeps the address.
+- `GET /api/auth/password/reset/{token}` says whose link it is (410 when it has expired).
+- `POST /api/auth/password/reset` sets the password, confirms the email and lifts any sign-in pause. It ends every other session and signs the parent in on this device.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

@@ -9,8 +9,10 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AUTH_API, ApiProblem } from '@giddy/api';
 import { ConflictDialog } from '@giddy/checklist';
-import { filter, map } from 'rxjs';
+import { filter, firstValueFrom, map } from 'rxjs';
 import { ConnectionStatus, OfflineStore, SessionStore, SyncConflict, TaskSync } from '@giddy/core';
 import { LiveRsvpToasts } from '@giddy/guests';
 import { ThemeService } from '../../theme/theme.service';
@@ -66,6 +68,10 @@ export class AppShellComponent {
       map((event) => event.urlAfterRedirects),
     ),
     { initialValue: this.router.url },
+  );
+  private readonly auth = inject(AUTH_API);
+  protected readonly verifyText = signal(
+    'This reminder stays until your email is confirmed. Everything else works as normal.',
   );
   /** The run sheet this device has saved, for the offline page. */
   protected readonly savedRunSheet = signal<string | null>(null);
@@ -132,6 +138,19 @@ export class AppShellComponent {
           .get<string>('last-run-sheet')
           .then((id) => this.savedRunSheet.set(id ? `/parties/${id}/day` : null));
     });
+  }
+
+  protected async resendLink(email: string): Promise<void> {
+    try {
+      await firstValueFrom(this.auth.resendVerification(email));
+      this.verifyText.set(`We sent a new link to ${email}.`);
+    } catch (error) {
+      this.verifyText.set(
+        error instanceof HttpErrorResponse && error.status === 429
+          ? (error.error as ApiProblem).title
+          : 'We couldn’t send a new link. Try again in a moment.',
+      );
+    }
   }
 
   protected review(conflict: SyncConflict): void {

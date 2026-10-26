@@ -1,7 +1,9 @@
 import { Page, Request, Route } from '@playwright/test';
 import { FakeBookings } from './fake-bookings';
+import { FakeAccounts } from './fake-accounts';
 import { FakeBudget } from './fake-budget';
 import { FakeChecklist } from './fake-checklist';
+import { FakeFamily } from './fake-family';
 import { FakeRunSheet } from './fake-run-sheet';
 import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
@@ -109,6 +111,14 @@ export class FakeApi {
     () => this.guestStore.guests.filter((g) => g.rsvp === 'coming').length,
   );
 
+  readonly accountStore = new FakeAccounts((session) => {
+    this.session = session;
+    this.sessionExpired = false;
+  });
+  readonly familyStore = new FakeFamily(() => this.partyStore.family.children);
+  /** When set, the session has expired: everything but sign-in answers 401. */
+  sessionExpired = false;
+
   constructor() {
     this.registerDefaults();
   }
@@ -140,18 +150,17 @@ export class FakeApi {
     this.budgetStore.register((method, path, handler) => this.on(method, path, handler));
     this.checklistStore.register((method, path, handler) => this.on(method, path, handler));
     this.runSheetStore.register((method, path, handler) => this.on(method, path, handler));
+    this.accountStore.register((method, path, handler) => this.on(method, path, handler));
+    this.familyStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),
     );
-    this.on('GET', '/api/antiforgery', () =>
-      this.session
-        ? {
-            body: { token: xsrfToken },
-            headers: { 'set-cookie': `XSRF-TOKEN=${xsrfToken}; Path=/; SameSite=Strict` },
-          }
-        : { status: 401, body: problem(401, 'Sign in to continue.') },
-    );
+    // Like the API, visitors get a token too, so signing in and up are protected.
+    this.on('GET', '/api/antiforgery', () => ({
+      body: { token: xsrfToken },
+      headers: { 'set-cookie': `XSRF-TOKEN=${xsrfToken}; Path=/; SameSite=Strict` },
+    }));
   }
 
   private async handle(route: Route): Promise<void> {
@@ -162,6 +171,15 @@ export class FakeApi {
     if (!match) {
       this.unrouted.push(`${request.method()} ${url.pathname}`);
       await route.fulfill({ status: 599, json: { title: 'Unrouted request in the fake API' } });
+      return;
+    }
+
+    if (
+      this.sessionExpired &&
+      !url.pathname.startsWith('/api/auth/') &&
+      url.pathname !== '/api/antiforgery'
+    ) {
+      await route.fulfill({ status: 401, json: problem(401, 'Sign in to continue.') });
       return;
     }
 

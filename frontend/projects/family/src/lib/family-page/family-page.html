@@ -1,0 +1,113 @@
+<div class="page-header">
+  <div>
+    <h1>Family</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  <div class="cluster">
+    <button giddy-button variant="primary" type="button" (click)="open()">
+      <svg giddy-icon="plus"></svg>Add a child
+    </button>
+  </div>
+</div>
+
+@switch (family.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load your family"
+      text="Nothing changed. Try again in a moment."
+      [referenceCode]="family.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="family.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/">Go to my home</a>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="Add your kids to get birthday reminders"
+      text="Giddy uses each child’s age and interests to suggest parties, and reminds you 6 weeks before every birthday."
+    >
+      <button giddy-button variant="primary" type="button" (click)="open()">
+        <svg giddy-icon="plus"></svg>Add a child
+      </button>
+    </section>
+  }
+  @case ('ready') {
+    <div class="family__children section">
+      @for (child of family.value()!.children; track child.id) {
+        <section giddy-card [heading]="child.firstName" class="family__child">
+          <div class="cluster family__who">
+            <giddy-avatar size="md" aria-hidden="true" [name]="child.firstName" />
+            <p class="text-sm">{{ birthdayLine(child) }}</p>
+          </div>
+          @if (child.interests.length) {
+            <ul class="cluster family__interests" aria-label="Favourite things">
+              @for (interest of child.interests; track interest) {
+                <li giddy-chip>
+                  <span class="emoji" aria-hidden="true">{{ emoji(interest) }}</span>
+                  {{ interest }}
+                </li>
+              }
+            </ul>
+          }
+          <p class="text-sm text-muted">{{ child.allergies ?? 'No allergies' }}</p>
+          <div class="cluster">
+            @if (child.partyId) {
+              <a giddy-button size="sm" [routerLink]="'/parties/' + child.partyId">Party planned</a>
+            } @else {
+              <a
+                giddy-button
+                size="sm"
+                variant="primary"
+                routerLink="/parties/new"
+                [queryParams]="{ child: child.id }"
+                >Plan {{ child.firstName }}’s party</a
+              >
+            }
+            <button
+              giddy-button
+              size="sm"
+              variant="ghost"
+              type="button"
+              [attr.aria-label]="'Edit ' + child.firstName"
+              (click)="open(child)"
+            >
+              <svg giddy-icon="edit"></svg>Edit
+            </button>
+          </div>
+        </section>
+      }
+    </div>
+    <section giddy-card heading="Grown-ups" class="section">
+      <div class="cluster">
+        <giddy-avatar size="sm" aria-hidden="true" [name]="session()?.name ?? ''" />
+        <span>{{ session()?.name }} (you)</span>
+      </div>
+    </section>
+  }
+  @default {
+    @if (family.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading family…</span>
+        <giddy-skeleton shape="rect" height="10rem" />
+        <giddy-skeleton shape="rect" height="10rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @if (toast(); as heading) {
+    <giddy-toast
+      [heading]="heading"
+      text="Birthday reminders follow their details."
+      tone="success"
+    />
+  }
+</giddy-toast-region>

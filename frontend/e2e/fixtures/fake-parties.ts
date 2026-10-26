@@ -125,13 +125,19 @@ export class FakeParties {
         : null,
       rsvps: { coming: 0, waiting: 0, cantCome: 0 },
       allergies: next ? 1 : 0,
-      nextBirthday: {
-        childId: this.family.children[1].id,
-        firstName: 'Kofi',
-        turningAge: 4,
-        date: '2027-02-03',
-        daysAway: 101,
-      },
+      // Like the API: the next unplanned birthday within 120 days.
+      nextBirthday: (() => {
+        const child = this.family.children.find((c) => !c.partyId && c.daysUntil <= 120);
+        return child
+          ? {
+              childId: child.id,
+              firstName: child.firstName,
+              turningAge: child.turningAge,
+              date: child.nextBirthday,
+              daysAway: child.daysUntil,
+            }
+          : null;
+      })(),
     };
   }
 

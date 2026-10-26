@@ -25,6 +25,13 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`SessionService`** — Validates, extends, and revokes sessions.
 
 
+**As built**
+
+- `sessionExpiryInterceptor` catches a 401 from any request while a parent is signed in. `SessionRecovery` opens the "Still there?" dialog once, however many requests were waiting; after the parent signs back in, each request is sent again with the new anti-forgery token.
+- `POST /api/auth/sign-out` revokes the server session. The sign-out dialog (from Settings) also clears the device's `OfflineStore`.
+- There is no landing page yet, so signing out goes to the sign-in page.
+- `GET /api/antiforgery` is open to visitors, so signing in and up are protected against CSRF too.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

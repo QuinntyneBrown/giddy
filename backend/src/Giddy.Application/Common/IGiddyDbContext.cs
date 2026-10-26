@@ -57,5 +57,9 @@ public interface IGiddyDbContext
 
     DbSet<ScheduledNotification> Notifications { get; }
 
+    DbSet<AccountToken> AccountTokens { get; }
+
+    DbSet<ParentSession> ParentSessions { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

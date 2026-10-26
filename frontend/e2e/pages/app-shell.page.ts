@@ -68,6 +68,26 @@ export class AppShellPage {
     await this.page.context().setOffline(false);
   }
 
+  /** The banner asking an unverified parent to confirm their email, or saying it bounced. */
+  emailBanner(): Locator {
+    return this.page.locator('.email-banner [giddy-alert]');
+  }
+
+  /** How many entries this device has saved for offline use. */
+  async savedOnDevice(): Promise<number> {
+    return this.page.evaluate(
+      () =>
+        new Promise<number>((resolve) => {
+          const open = indexedDB.open('giddy-offline', 1);
+          open.onupgradeneeded = () => open.result.createObjectStore('kv');
+          open.onsuccess = () => {
+            const count = open.result.transaction('kv').objectStore('kv').count();
+            count.onsuccess = () => resolve(count.result);
+          };
+        }),
+    );
+  }
+
   connectionBanner(): Locator {
     return this.page.locator('.offline-banner').getByRole('status');
   }

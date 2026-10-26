@@ -4,6 +4,7 @@ export interface SeedSession {
   name: string;
   email: string;
   emailVerified: boolean;
+  emailBounced: boolean;
 }
 
 export interface SeedParty {
@@ -21,6 +22,7 @@ export const amara: SeedSession = {
   name: 'Amara Okafor',
   email: 'amara.okafor@example.com',
   emailVerified: true,
+  emailBounced: false,
 };
 
 export const dinoParty: SeedParty = {
@@ -162,6 +164,10 @@ export interface SeedChild {
   birthday: string;
   nextBirthday: string;
   turningAge: number;
+  daysUntil: number;
+  interests: string[];
+  allergies: string | null;
+  partyId: string | null;
 }
 
 export const family = {
@@ -174,6 +180,10 @@ export const family = {
       birthday: '2019-11-14',
       nextBirthday: '2026-11-14',
       turningAge: 7,
+      daysUntil: 20,
+      interests: ['Dinosaurs', 'Science', 'Digging'],
+      allergies: null,
+      partyId: '3d9c1b7e-2f4a-4e8d-b6c5-a1f2e3d4c5b6',
     },
     {
       id: '11111111-2222-4333-8444-000000000002',
@@ -181,6 +191,10 @@ export const family = {
       birthday: '2023-02-03',
       nextBirthday: '2027-02-03',
       turningAge: 4,
+      daysUntil: 101,
+      interests: ['Trains', 'Bubbles', 'Dogs'],
+      allergies: null,
+      partyId: null,
     },
   ] as SeedChild[],
 };

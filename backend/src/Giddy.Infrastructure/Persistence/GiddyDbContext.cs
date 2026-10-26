@@ -60,6 +60,10 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
 
     public DbSet<ScheduledNotification> Notifications => Set<ScheduledNotification>();
 
+    public DbSet<AccountToken> AccountTokens => Set<AccountToken>();
+
+    public DbSet<ParentSession> ParentSessions => Set<ParentSession>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Instant>().HaveConversion<InstantConverter>();

@@ -5,6 +5,8 @@ import { CHECKLIST_API } from './checklist/checklist-api.token';
 import { HttpChecklistApi } from './checklist/http-checklist-api';
 import { RUN_SHEET_API } from './run-sheets/run-sheet-api.token';
 import { HttpRunSheetApi } from './run-sheets/http-run-sheet-api';
+import { AUTH_API } from './auth/auth-api.token';
+import { HttpAuthApi } from './auth/http-auth-api';
 import { BOOKINGS_API } from './bookings/bookings-api.token';
 import { HttpBookingsApi } from './bookings/http-bookings-api';
 import { GUESTS_API } from './guests/guests-api.token';
@@ -38,6 +40,7 @@ import { SESSION_API } from './session/session-api.token';
 export function provideGiddyApi(): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: SESSION_API, useClass: HttpSessionApi },
+    { provide: AUTH_API, useClass: HttpAuthApi },
     { provide: PARTIES_API, useClass: HttpPartiesApi },
     { provide: CONVERSATIONS_API, useClass: HttpConversationsApi },
     { provide: MEMORIES_API, useClass: HttpMemoriesApi },

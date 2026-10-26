@@ -20,7 +20,7 @@ public sealed class GetHomeHandler(IGiddyDbContext db, ICurrentParent parent, To
         var family = await db.Families.SingleOrDefaultAsync(f => f.Id == parent.Id, cancellationToken);
         var planned = upcoming.Where(p => p.ChildId is not null).Select(p => p.ChildId!.Value).ToHashSet();
         var birthday = family?.Children
-            .Where(c => !planned.Contains(c.Id))
+            .Where(c => !planned.Contains(c.Id) && calendar.DaysUntil(c.NextBirthday(today)) <= 120)
             .OrderBy(c => c.NextBirthday(today))
             .Select(c => new UpcomingBirthday(
                 c.Id,

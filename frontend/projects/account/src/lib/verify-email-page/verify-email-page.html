@@ -1,0 +1,72 @@
+@switch (state()) {
+  @case ('checking') {
+    <giddy-auth-card heading="Confirming your email…">
+      <giddy-spinner /><span class="visually-hidden">Confirming your email</span>
+    </giddy-auth-card>
+  }
+  @case ('confirmed') {
+    <giddy-auth-card
+      emoji="🎉"
+      [heading]="'You’re in, ' + name() + '!'"
+      lead="Your email is confirmed. Next, tell us a little about your kids so Giddy can suggest the right parties."
+    >
+      <a giddy-button variant="primary" size="lg" routerLink="/welcome">Set up my family</a>
+    </giddy-auth-card>
+  }
+  @case ('expired') {
+    <giddy-auth-card
+      heading="This confirmation link has expired"
+      [lead]="
+        email()
+          ? 'Links last 24 hours. We can send a fresh one to ' + email() + '.'
+          : 'Links last 24 hours. Sign in and we’ll send a fresh one.'
+      "
+    >
+      @if (status(); as message) {
+        <div giddy-alert heading="Confirmation link">
+          <div>{{ message }}</div>
+        </div>
+      }
+      @if (email()) {
+        <button
+          giddy-button
+          variant="primary"
+          type="button"
+          [busy]="resending()"
+          [disabled]="resending()"
+          (click)="resend()"
+        >
+          Send a new link
+        </button>
+      } @else {
+        <a giddy-button variant="primary" routerLink="/sign-in">Sign in</a>
+      }
+    </giddy-auth-card>
+  }
+  @default {
+    <giddy-auth-card emoji="📬" heading="One quick thing: check your email">
+      <p>
+        We sent a link to <strong>{{ email() }}</strong
+        >. Tap it to confirm it’s you, then we’ll set up your family.
+      </p>
+      @if (status(); as message) {
+        <div giddy-alert heading="Confirmation link">
+          <div>{{ message }}</div>
+        </div>
+      }
+      <p class="text-sm">
+        Didn’t get it?
+        <button
+          giddy-button
+          variant="link"
+          type="button"
+          [disabled]="resending()"
+          (click)="resend()"
+        >
+          Resend
+        </button>
+        or <a routerLink="/sign-up">use a different email</a>.
+      </p>
+    </giddy-auth-card>
+  }
+}

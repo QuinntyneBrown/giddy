@@ -7,7 +7,7 @@ using NodaTime;
 namespace Giddy.Infrastructure.Persistence.Seeding;
 
 /// <summary>Adds the demo catalogue and the demo family's party if they are missing. Safe to run any number of times.</summary>
-public sealed class DemoDataSeeder(GiddyDbContext db)
+public sealed class DemoDataSeeder(GiddyDbContext db, Giddy.Application.Accounts.IPasswords? passwords = null, string? demoPassword = null)
 {
     public async Task SeedAsync(CancellationToken cancellationToken)
     {
@@ -40,6 +40,18 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
             family.AddChild(new Child(DemoParents.Zuri, "Zuri", new LocalDate(2019, 11, 14)));
             family.AddChild(new Child(DemoParents.Kofi, "Kofi", new LocalDate(2023, 2, 3)));
             db.Families.Add(family);
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        // The demo accounts can sign in with the password from configuration (never the repository).
+        if (passwords is not null && demoPassword is { Length: > 0 })
+        {
+            foreach (var parent in await db.Parents.Where(p => (p.Id == DemoParents.Amara || p.Id == DemoParents.Kemi) && p.PasswordHash == null).ToListAsync(cancellationToken))
+            {
+                parent.SetPassword(passwords.Hash(parent, demoPassword));
+                parent.ConfirmEmail(NodaTime.SystemClock.Instance.GetCurrentInstant());
+            }
+
             await db.SaveChangesAsync(cancellationToken);
         }
 
