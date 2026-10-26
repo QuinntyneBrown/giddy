@@ -29,7 +29,15 @@ public static class DependencyInjection
     public static IServiceCollection AddPlanningAgent(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<ClaudeOptions>().Bind(configuration.GetSection("Claude"));
-        services.AddSingleton(_ => new AnthropicClient { MaxRetries = 1 });
+        // A 10 s connect timeout means an unreachable provider is reported within 10 seconds (L2-020).
+        services.AddSingleton(_ => new AnthropicClient
+        {
+            MaxRetries = 1,
+            HttpClient = new HttpClient(new SocketsHttpHandler { ConnectTimeout = TimeSpan.FromSeconds(10) })
+            {
+                Timeout = Timeout.InfiniteTimeSpan,
+            },
+        });
         services.AddSingleton<IPlanningModel, ClaudePlanningModel>();
         services.AddSingleton<IAgentTurnQueue, ChannelAgentTurnQueue>();
         services.AddHostedService<AgentTurnWorker>();
