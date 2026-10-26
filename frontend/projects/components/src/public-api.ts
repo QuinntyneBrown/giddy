@@ -16,3 +16,6 @@ export * from './lib/sidebar-nav/nav-item';
 export * from './lib/sidebar-nav/sidebar-nav';
 export * from './lib/skip-link/skip-link';
 export * from './lib/top-bar/top-bar';
+export * from './lib/error-page/error-page';
+export * from './lib/mascot/mascot';
+export * from './lib/mascot/mascot-mood';

@@ -1,0 +1,10 @@
+<giddy-error-page
+  code="You’re offline"
+  heading="No internet right now"
+  message="Giddy needs a connection to load this page. Anything you’ve already opened stays on screen; check your Wi-Fi or data, then try again."
+  mood="sleepy"
+>
+  <button giddy-button variant="primary" type="button" (click)="tryAgain()">
+    <svg giddy-icon="refresh"></svg>Try again
+  </button>
+</giddy-error-page>

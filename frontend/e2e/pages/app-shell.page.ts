@@ -54,6 +54,14 @@ export class AppShellPage {
     await this.page.reload();
   }
 
+  async goOffline(): Promise<void> {
+    await this.page.context().setOffline(true);
+  }
+
+  async followFooterLink(name: string): Promise<void> {
+    await this.footer.getByRole('link', { name }).click();
+  }
+
   async skipToContent(): Promise<void> {
     await this.skipLink.focus();
     await this.page.keyboard.press('Enter');
@@ -90,9 +98,16 @@ export class AppShellPage {
   }
 
   async seriousAccessibilityViolations(): Promise<string[]> {
+    // Let colour transitions settle so axe measures what the parent actually sees.
+    await this.page.waitForFunction(() =>
+      document.getAnimations().every((animation) => animation.playState !== 'running'),
+    );
     const results = await new AxeBuilder({ page: this.page }).analyze();
     return results.violations
       .filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''))
-      .map((violation) => `${violation.id}: ${violation.help}`);
+      .map(
+        (violation) =>
+          `${violation.id}: ${violation.help} ${violation.nodes.map((n) => n.target.join(' ') + ' ' + n.failureSummary).join(' / ')}`,
+      );
   }
 }

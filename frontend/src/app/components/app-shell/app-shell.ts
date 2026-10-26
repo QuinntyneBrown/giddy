@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { SessionStore } from '../../session/session.store';
+import { SessionStore } from '@giddy/core';
 import { ThemeService } from '../../theme/theme.service';
 import {
   AvatarComponent,

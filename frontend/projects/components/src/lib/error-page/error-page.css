@@ -1,0 +1,7 @@
+.error-page__message {
+  font: var(--text-body-lg);
+}
+
+.error-page__actions {
+  justify-content: center;
+}

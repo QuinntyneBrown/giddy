@@ -6,15 +6,24 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withNavigationErrorHandler,
+} from '@angular/router';
 import { provideGiddyApi } from '@giddy/api';
+import { navigationErrorRedirect } from '@giddy/system';
 import { routes } from './app.routes';
-import { SessionStore } from './session/session.store';
+import { SessionStore } from '@giddy/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withNavigationErrorHandler(navigationErrorRedirect),
+    ),
     provideHttpClient(
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
     ),

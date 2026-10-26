@@ -1,0 +1,9 @@
+<section class="status-page">
+  <div class="stack">
+    <svg giddy-mascot size="xl" [mood]="mood()"></svg>
+    <p class="status-page__code">{{ code() }}</p>
+    <h1>{{ heading() }}</h1>
+    <p class="text-muted error-page__message">{{ message() }}</p>
+    <div class="cluster error-page__actions"><ng-content /></div>
+  </div>
+</section>
