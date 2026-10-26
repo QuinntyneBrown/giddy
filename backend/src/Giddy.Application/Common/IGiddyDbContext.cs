@@ -4,6 +4,7 @@ using Giddy.Domain.Conversations;
 using Giddy.Domain.Disruptions;
 using Giddy.Domain.Families;
 using Giddy.Domain.Guests;
+using Giddy.Domain.Invitations;
 using Giddy.Domain.Memories;
 using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
@@ -44,6 +45,8 @@ public interface IGiddyDbContext
     DbSet<DisruptionNotice> Disruptions { get; }
 
     DbSet<Guest> Guests { get; }
+
+    DbSet<Invitation> Invitations { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

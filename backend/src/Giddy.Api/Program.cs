@@ -37,6 +37,7 @@ app.MapHomeEndpoints();
 app.MapVenueEndpoints();
 app.MapBookingEndpoints();
 app.MapGuestEndpoints();
+app.MapInvitationEndpoints();
 
 app.Run();
 
