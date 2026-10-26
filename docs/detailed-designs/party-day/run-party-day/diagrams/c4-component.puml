@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Run the party day
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "RunSheetController", "ASP.NET Core controller", "Run sheet endpoints")
+  Component(draft, "RunSheetDrafter", "Domain service", "Steps from bookings")
+  Component(rs, "RunSheet", "Domain entity", "Ordered steps")
+}
+
+Rel(ctrl, draft, "Draft")
+Rel(draft, rs, "Creates")
+Rel(ctrl, db, "Reads", "EF Core")
+@enduml

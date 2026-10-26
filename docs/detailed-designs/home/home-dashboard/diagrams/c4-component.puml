@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Home dashboard and nudges
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "HomeController", "ASP.NET Core controller", "Home and nudges")
+  Component(q, "HomeQuery", "Query handler", "Hero, RSVPs, birthdays")
+  Component(ne, "NudgeEngine", "Domain service", "Rules and ordering")
+  Component(nr, "NudgeResolver", "Event handler", "Clears resolved nudges")
+}
+
+Rel(ctrl, q, "Home")
+Rel(ctrl, ne, "Nudges")
+Rel(ne, cache, "Cache", "RESP")
+Rel(q, db, "Reads", "EF Core")
+Rel(nr, cache, "Evict", "RESP")
+@enduml

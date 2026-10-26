@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Create a party plan
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PartiesController", "ASP.NET Core controller", "Party endpoints")
+  Component(h, "CreatePartyHandler", "MediatR handler", "Creates parties")
+  Component(party, "Party", "Domain aggregate", "Plan state")
+  Component(guide, "BudgetGuide", "Domain service", "Typical ranges")
+}
+
+Rel(ctrl, h, "CreatePartyCommand")
+Rel(h, party, "Creates")
+Rel(ctrl, guide, "GET budget hint")
+Rel(h, db, "Saves", "EF Core")
+@enduml

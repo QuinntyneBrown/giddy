@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Converse — stop Giddy
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PlannerChatPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "ConversationsController" as ctrl
+  participant "AgentHub" as hub
+end box
+box "Backend — Planning Agent application" #D1FADF
+  participant "AgentTurnConsumer" as cons
+  participant "AgentLoop" as loop
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Cache" as cache
+end box
+actor -> page : Press Stop (or Esc)
+page -> ctrl : POST /turns/{turnId}/cancel
+ctrl -> cache : Publish cancel:{turnId}
+ctrl --> page : 202
+cache -> cons : cancel signal
+cons -> loop : Cancel token
+loop -> loop : Abort model/tool calls; keep finished steps
+loop -> hub : turn.cancelled
+hub --> page : Composer re-enabled
+page --> actor : "Stopped"; can send a new message
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Lock a past party and delete a party
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PartiesController", "ASP.NET Core controller", "DELETE /api/parties/{id}")
+  Component(lock, "PartyLockFilter", "Endpoint filter", "409 on locked writes")
+  Component(del, "DeletePartyHandler", "MediatR handler", "Owner-only delete")
+  Component(party, "Party", "Domain aggregate", "Lock state")
+}
+
+Rel(lock, ctrl, "Guards writes")
+Rel(ctrl, del, "DeletePartyCommand")
+Rel(del, party, "Delete")
+Rel(del, db, "Deletes", "EF Core")
+@enduml

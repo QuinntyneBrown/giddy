@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Messages — text and STOP opt-out
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Backend — Background Worker application" #ECFDF3
+  participant "NotificationDispatcher" as disp
+  participant "SmsSender" as sms
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "SmsWebhookController" as hook
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "SMS provider" as smsx
+  database "Giddy database" as db
+end box
+disp -> db : Preferences (Text on for RSVPs)
+disp -> sms : Send "Giddy: Maya is coming! Reply STOP to opt out"
+sms -> smsx : HTTPS
+smsx --> actor : Text message
+actor -> smsx : STOP
+smsx -> hook : Webhook (signed)
+hook -> db : SmsOptedOut = true (< 1 min)
+@enduml

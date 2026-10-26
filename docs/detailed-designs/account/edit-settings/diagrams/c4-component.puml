@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Edit profile and notification settings
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "SettingsController", "ASP.NET Core controller", "Settings endpoints")
+  Component(prof, "UpdateProfileHandler", "MediatR handler", "Profile")
+  Component(pref, "UpdatePreferencesHandler", "MediatR handler", "Channels and quiet hours")
+  Component(chg, "ChangeEmailHandler", "MediatR handler", "Pending email change")
+}
+
+Rel(ctrl, prof, "UpdateProfileCommand")
+Rel(ctrl, pref, "UpdatePreferencesCommand")
+Rel(ctrl, chg, "ChangeEmailCommand")
+Rel(prof, db, "Saves", "EF Core")
+Rel(chg, bus, "EmailChangeRequested", "AMQP")
+@enduml

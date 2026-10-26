@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Apply plan — confirm and save
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "AcceptPlanDialog" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PlanController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "ApplyPlanHandler" as h
+  participant "Party" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Use this plan
+page --> actor : Dialog lists theme, 5 to-dos, $778 estimates, 10 tasks; "nothing booked or paid"
+actor -> page : Confirm
+page -> ctrl : POST /api/parties/{id}/plan {proposalId}
+ctrl -> h : ApplyPlanCommand
+h -> db : Load party + proposal (same family)
+h -> ent : ApplyProposal (no booking, no payment)
+h -> db : Save in one transaction
+alt commit ok
+  h --> ctrl : Ok
+  ctrl --> page : 200
+  page --> actor : "Plan saved to Zuri's Dino Dig 7th"
+else failure
+  h --> ctrl : Error (rolled back)
+  ctrl --> page : 500 ProblemDetails
+  page --> actor : Alert; party unchanged; Try again
+end
+@enduml

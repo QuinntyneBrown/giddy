@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Respond to an invitation
+
+Person(guest, "Guest parent", "Replies to an invitation without an account")
+System(giddy, "Giddy", "Agentic kids' birthday planner for the GTA")
+
+Rel(guest, giddy, "Replies through")
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Design and send invitations
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "InvitationsController", "ASP.NET Core controller", "Edit, test, send")
+  Component(h, "SendInvitationsHandler", "MediatR handler", "Tokens and messages")
+  Component(inv, "Invitation", "Domain entity", "Content and rules")
+  Component(tok, "RsvpTokenService", "Domain service", "128-bit tokens")
+}
+
+Rel(ctrl, h, "SendInvitationsCommand")
+Rel(h, inv, "Validate RSVP-by")
+Rel(h, tok, "Issue per guest")
+Rel(h, db, "Saves", "EF Core")
+Rel(h, bus, "Messages", "AMQP")
+@enduml

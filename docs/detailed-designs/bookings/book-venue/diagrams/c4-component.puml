@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Book a venue and pay the deposit
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+System_Ext(pay, "Payment provider", "PCI DSS Level 1 card processing and hosted fields")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "BookingsController", "ASP.NET Core controller", "Create booking")
+  Component(h, "BookVenueHandler", "MediatR handler", "Saga with compensation")
+  Component(bk, "Booking", "Domain aggregate", "Booking state")
+  Component(gw, "PaymentGateway", "HTTP adapter", "Payment provider")
+  Component(vp, "VenuePartnerClient", "HTTP adapter", "Venue partner")
+  Component(conf, "BookingConfirmedHandler", "Event handler", "Budget, task, email")
+}
+
+Rel(ctrl, h, "BookVenueCommand")
+Rel(h, vp, "Hold, confirm, release")
+Rel(vp, venues, "HTTPS")
+Rel(h, gw, "Authorise, capture, cancel")
+Rel(gw, pay, "Payment intents", "HTTPS")
+Rel(h, bk, "Transitions")
+Rel(h, db, "Saves", "EF Core")
+Rel(h, bus, "BookingConfirmed", "AMQP")
+Rel(bus, conf, "Consumes", "AMQP")
+@enduml

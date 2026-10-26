@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Track the party budget
+
+enum LineStatus {
+  Estimate
+  Quoted
+  DepositPaid
+  Paid
+}
+class Budget {
+  +Money Total
+  +List<CostLine> Lines
+  +Money Planned
+  +Money Paid
+  +Money Left
+  +Money PerKid(kids: int)
+  +bool IsOver
+}
+class CostLine {
+  +Guid Id
+  +string Category
+  +string Vendor
+  +LineStatus Status
+  +Money Planned
+  +Money Paid
+  +string? SourceRef
+}
+class Money {
+  +decimal Amount
+  +string Currency = "CAD"
+}
+Budget "1" *-- "*" CostLine
+CostLine --> LineStatus
+CostLine *-- Money
+@enduml

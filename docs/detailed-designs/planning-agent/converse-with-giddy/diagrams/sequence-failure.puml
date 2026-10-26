@@ -1,0 +1,40 @@
+@startuml
+title UML sequence behaviour — Converse — model provider unavailable
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PlannerChatPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "AgentHub" as hub
+end box
+box "Backend — Planning Agent application" #D1FADF
+  participant "AgentLoop" as loop
+  participant "ModelClient" as model
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Anthropic Claude API" as llm
+end box
+loop -> model : CreateMessage
+model -> llm : HTTPS
+llm --> model : 529 Overloaded
+model -> llm : Retry once after 1 s
+llm --> model : Timeout (10 s budget)
+model --> loop : ModelUnavailable
+loop -> hub : turn.failed {reason: unavailable}
+hub --> page : event
+page --> actor : Danger alert "Giddy can't answer right now" + Send again / Edit message
+@enduml

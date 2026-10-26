@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Session expiry and sign-out
+
+class SessionInterceptor {
+  +intercept(req, next): Observable<HttpEvent>
+  -pending: Queue<HttpRequest>
+}
+class SessionExpiredDialog {
+  +email: string
+  +submit(password: string): void
+}
+class OfflineStore {
+  +clear(): Promise<void>
+}
+class SessionService {
+  +Validate(cookie: string): Session?
+  +Revoke(id: Guid): void
+}
+SessionInterceptor --> SessionExpiredDialog : opens on 401
+SignOutDialog ..> OfflineStore : clears run sheets
+@enduml

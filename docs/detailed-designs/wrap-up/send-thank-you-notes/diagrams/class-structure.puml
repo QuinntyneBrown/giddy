@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Send thank-you notes
+
+class ThankYouNote {
+  +Guid GuestId
+  +string Text
+  +NoteState State
+  +DateTimeOffset? SentAt
+}
+enum NoteState {
+  Draft
+  Queued
+  Sent
+}
+class SendThankYousHandler {
+  +Handle(cmd: SendThankYousCommand): Task<int>
+}
+ThankYouNote --> NoteState
+SendThankYousHandler --> ThankYouNote
+@enduml

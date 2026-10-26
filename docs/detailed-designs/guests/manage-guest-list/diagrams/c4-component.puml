@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage the guest list
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "GuestsController", "ASP.NET Core controller", "Guest endpoints")
+  Component(add, "AddGuestHandler", "MediatR handler", "Validation and limits")
+  Component(rm, "RemoveGuestHandler", "MediatR handler", "Soft delete and restore")
+  Component(party, "Party", "Domain aggregate", "Owns guests")
+  Component(q, "GuestListQuery", "Query handler", "Search, filters, counts")
+}
+
+Rel(ctrl, q, "List")
+Rel(ctrl, add, "AddGuestCommand")
+Rel(ctrl, rm, "RemoveGuestCommand")
+Rel(add, party, "AddGuest")
+Rel(rm, party, "RemoveGuest")
+Rel(add, db, "Saves", "EF Core")
+Rel(q, db, "Reads", "EF Core")
+@enduml

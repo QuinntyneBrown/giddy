@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Delete a party — typed confirmation
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "DeletePartyDialog" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartiesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "DeletePartyHandler" as h
+  participant "Party" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Continue, type party name
+page -> page : Enable Delete only when name matches
+page -> ctrl : DELETE /api/parties/{id} {confirmName}
+ctrl -> ctrl : Require Owner, else 403 (L2-014)
+ctrl -> h : DeletePartyCommand
+h -> h : ConfirmName == Name?
+alt mismatch
+  h --> ctrl : ValidationProblem
+  ctrl --> page : 400; inline error
+else match
+  h -> db : Delete party graph (keep payment records)
+  h --> ctrl : NoContent
+  ctrl --> page : 204
+  page --> actor : Back to My parties
+end
+@enduml

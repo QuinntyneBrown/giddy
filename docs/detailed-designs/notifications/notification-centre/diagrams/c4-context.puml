@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Notification centre
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+Person(coplanner, "Co-planner", "Helps plan a shared party")
+System(giddy, "Giddy", "Agentic kids' birthday planner for the GTA")
+
+Rel(parent, giddy, "Uses")
+Rel(coplanner, giddy, "Uses")
+@enduml

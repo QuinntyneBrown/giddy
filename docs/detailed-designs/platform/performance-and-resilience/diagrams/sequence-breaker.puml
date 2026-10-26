@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Resilience — venue provider outage
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Backend — Giddy API application" #D1FADF
+  participant "VenuesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "ResiliencePipeline" as res
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Venue partner APIs" as venues
+end box
+actor -> ctrl : Search venues
+ctrl -> res : Call partner
+res -> venues : HTTPS (10 s timeout)
+venues --> res : Timeout
+res -> venues : Retry once
+venues --> res : Timeout
+res -> res : Failure count 5 → open breaker 30 s
+res --> ctrl : ProviderUnavailable
+ctrl --> actor : 503 → venue error state; other pages unaffected
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Work offline on party day
+
+Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+Container_Boundary(web_b, "Giddy Web") {
+  Component(sw, "ServiceWorker", "Angular service worker", "Caches shell and data groups")
+  ComponentDb(store, "OfflineStore", "IndexedDB", "Data + outbox")
+  Component(sync, "SyncService", "Angular service", "Replays outbox")
+  Component(banner, "ConnectionBanner", "Angular component", "Connection states")
+}
+
+Rel(sw, store, "Serves cached data")
+Rel(sync, store, "Reads outbox")
+Rel(sync, api, "Replays with If-Match", "HTTPS")
+Rel(sync, banner, "Status")
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+title UML sequence behaviour — Over budget — suggest swaps
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "BudgetPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "BudgetController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SuggestSwapsQuery" as q
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Vendor directory" as vendors
+  database "Giddy database" as db
+end box
+actor -> page : Open budget ($958 of $800)
+page -> ctrl : GET budget + swaps
+ctrl -> q : Run
+q -> db : Plan items and lines
+q -> vendors : Cheaper available alternatives per category
+q -> q : Smallest set that saves >= $158
+q --> ctrl : Swaps
+ctrl --> page : 200
+page --> actor : Warning "$158 over" + swap buttons
+@enduml

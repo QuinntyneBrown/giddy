@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Reset a forgotten password
+
+class ResetToken {
+  +Guid Id
+  +Guid ParentId
+  +byte[] TokenHash
+  +DateTimeOffset ExpiresAt
+  +bool Used
+}
+class RequestResetHandler {
+  +Handle(cmd: RequestPasswordResetCommand): Task<Result>
+}
+class ResetPasswordHandler {
+  +Handle(cmd: ResetPasswordCommand): Task<Result>
+}
+class ResetPasswordCommand {
+  +string Token
+  +string NewPassword
+  +string ConfirmPassword
+}
+ResetPasswordHandler ..> ResetPasswordCommand
+ResetPasswordHandler --> ResetToken : consumes
+RequestResetHandler --> ResetToken : issues
+ResetPasswordHandler ..> SessionService : revokes others
+@enduml

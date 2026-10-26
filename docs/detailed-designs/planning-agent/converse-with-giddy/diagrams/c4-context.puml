@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Converse with Giddy
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+System(giddy, "Giddy", "Agentic kids' birthday planner for the GTA")
+System_Ext(llm, "Anthropic Claude API", "Large language model behind the planning agent")
+
+Rel(parent, giddy, "Uses")
+Rel(giddy, llm, "Generates replies and tool calls with", "HTTPS")
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Authorise and validate every request
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(hdr, "SecurityHeadersMiddleware", "Middleware", "CSP, HSTS, nosniff")
+  Component(auth, "Authentication", "Cookie + ToolScope schemes", "Identifies caller")
+  Component(csrf, "AntiforgeryFilter", "Filter", "Anti-CSRF")
+  Component(pol, "PartyAccessHandler", "Authorization handler", "Membership and role")
+  Component(val, "ValidationBehavior", "MediatR behaviour", "Allow-list validation")
+  Component(h, "Command handlers", "MediatR handlers", "Business logic")
+}
+
+Rel(hdr, auth, "Next")
+Rel(auth, csrf, "Next")
+Rel(csrf, pol, "Authorise resource")
+Rel(pol, db, "Membership", "EF Core")
+Rel(pol, val, "Next")
+Rel(val, h, "Valid command")
+@enduml

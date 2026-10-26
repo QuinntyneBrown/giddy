@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Request pipeline — authorise then validate
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "Any page" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "Middleware pipeline" as mw
+  participant "PartyAccessHandler" as pol
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "ValidationBehavior" as val
+  participant "Command handler" as h
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+page -> mw : PUT /api/parties/{id}/guests/{gid}
+mw -> mw : Security headers, authenticate cookie, anti-CSRF
+mw -> pol : Authorise(PartyRequirement Editor, id)
+pol -> db : Membership for caller and party
+alt no membership
+  pol --> page : 404 (no existence leak)
+else Viewer on write
+  pol --> page : 403
+else Editor/Owner
+  pol -> val : Validate command (allow-list)
+  alt invalid
+    val --> page : 400 ValidationProblemDetails
+  else valid
+    val -> h : Handle (parameterised EF Core queries)
+    h --> page : 200 (encoded output)
+  end
+end
+@enduml

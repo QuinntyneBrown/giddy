@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Select guests and send reminders
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+System_Ext(email, "Email provider", "Sends transactional and marketing email")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "RemindersController", "ASP.NET Core controller", "Send reminders")
+  Component(h, "SendRemindersHandler", "MediatR handler", "Cooldown and scheduling")
+  Component(ds, "DeliveryStatusHandler", "MediatR handler", "Bounces and failures")
+}
+
+Rel(ctrl, h, "SendRemindersCommand")
+Rel(h, db, "Last reminded", "EF Core")
+Rel(h, bus, "Jobs", "AMQP")
+Rel(email, ds, "Bounce", "HTTPS")
+Rel(ds, db, "Delivery status", "EF Core")
+@enduml

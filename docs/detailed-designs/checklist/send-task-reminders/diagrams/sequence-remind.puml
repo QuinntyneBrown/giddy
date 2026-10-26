@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Task reminders — daily run with quiet hours
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Scheduler (9:00 am Toronto)" as clock
+box "Backend — Background Worker application" #ECFDF3
+  participant "TaskReminderJob" as job
+  participant "NotificationDispatcher" as disp
+  participant "QuietHoursPolicy" as qh
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+clock -> job : Trigger
+job -> db : Tasks due tomorrow with reminders; overdue per owner
+loop each notification
+  job -> disp : Dispatch
+  disp -> qh : Decide(now, prefs)
+  alt urgent or outside quiet hours
+    disp -> bus : Send now
+  else inside quiet hours
+    disp -> bus : Schedule at 7:00 am
+  end
+end
+@enduml

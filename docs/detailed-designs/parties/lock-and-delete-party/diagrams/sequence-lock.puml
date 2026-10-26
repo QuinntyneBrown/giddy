@@ -1,0 +1,34 @@
+@startuml
+title UML sequence behaviour — Lock — reject a write after the party
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PartyOverviewPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartyLockFilter" as lock
+  participant "PartiesController" as ctrl
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Try to edit a past party (stale tab)
+page -> lock : PUT /api/parties/{id}/...
+lock -> db : Party.Locked?
+db --> lock : true
+lock --> page : 409 Conflict (ProblemDetails)
+page --> actor : "This party has happened" read-only view
+@enduml

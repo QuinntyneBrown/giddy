@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Import — class list spreadsheet
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "ImportGuestsDialog" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "ImportsController" as ctrl
+end box
+box "Backend — Background Worker application" #ECFDF3
+  participant "ImportJob" as job
+  participant "SpreadsheetReader" as read
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "File storage" as blob
+  participant "Malware scanner" as av
+  database "Giddy database" as db
+end box
+actor -> page : Choose "Grade 2 Room 12 class list.csv"
+page -> page : Reject if not .csv/.xlsx or > 2 MB
+page -> ctrl : POST /imports (request upload)
+ctrl --> page : SAS URL + jobId
+page -> blob : Upload file
+page -> ctrl : Start job
+ctrl -> job : ImportRequested
+job -> av : Scan blob
+alt infected or unreadable
+  job --> ctrl : Failed
+else clean
+  job -> read : Parse values only
+  read --> job : 18 rows
+  job -> job : Validate; skip duplicates; collect missing emails
+  job -> db : Create guests, save report
+end
+job -> blob : Delete file
+page -> ctrl : Poll job (progress)
+ctrl --> page : Report: 14 imported, 2 skipped (duplicates)
+page --> actor : Success or partial-import choice
+@enduml

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · error — Giddy mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="sign-in">
+<meta name="mock:state" content="error">
+<meta name="mock:requirements" content="L2-002 L2-004">
+<meta name="description" content="Sign-in rejected by the server: wrong email or password.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="auth-layout confetti">
+<main id="main" class="auth-card">
+  <div class="logo"><a class="topbar__brand" href="../../pages/landing/default.html" style="font-size: var(--font-size-2xl);"><svg class="logo-mark" aria-hidden="true" viewBox="0 0 32 32"><path class="balloon" d="M16 2c-6 0-10 4.4-10 10 0 6.4 5.6 11 10 11s10-4.6 10-11C26 6.4 22 2 16 2z"/><ellipse class="shine" cx="12" cy="8" rx="2" ry="3.2" transform="rotate(-25 12 8)"/><path class="string" d="M16 23c0 3-3 3-2 7"/></svg>Giddy</a></div>
+  <div class="card stack">
+
+    <div class="stack stack--sm" style="text-align: center; align-items: center;"><svg class="mascot" role="img" aria-label="Giddy the balloon waving" viewBox="0 -8 64 80"><path class="balloon" d="M32 4C19 4 10 13.5 10 26c0 14 12 24 22 24s22-10 22-24C54 13.5 45 4 32 4z"/><ellipse class="shine" cx="21" cy="16" rx="4" ry="7" transform="rotate(-25 21 16)"/><circle class="cheek" cx="20" cy="33" r="3.5"/><circle class="cheek" cx="44" cy="33" r="3.5"/><circle class="face" cx="25" cy="26" r="2.8"/><circle class="face" cx="39" cy="26" r="2.8"/><path class="smile" d="M24 34c4 5 12 5 16 0"/><path class="knot" d="M28 50h8l-4 5z"/><path class="string" d="M32 55c0 6-5 7-3 14"/></svg><h1 style="font: var(--text-h2);">Welcome back!</h1><p class="text-muted">Sign in to keep planning the fun.</p></div>
+    <div class="alert alert--danger " role="alert"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><div class="alert__body"><div class="alert__title">That email and password don’t match</div><div>Check for typos, or reset your password. After 5 tries we pause sign-in for 15 minutes to keep your account safe.</div><div class="alert__actions"><a href="../../pages/forgot-password/default.html">Reset password</a></div></div></div>
+    <form class="stack" novalidate>
+      <div class="field"><label class="field__label" for="email">Email</label>
+<input class="input" id="email" type="email" value="amara.okafor@example.com" autocomplete="email"></div>
+      <div class="field"><label class="field__label" for="password">Password</label>
+<input class="input" id="password" type="password" value="••••••••••" autocomplete="current-password"></div>
+      <div class="cluster cluster--between"><label class="choice"><input type="checkbox" checked><span>Keep me signed in</span></label><a href="../../pages/forgot-password/default.html" class="text-sm">Forgot password?</a></div>
+      <button class="btn btn--primary btn--block btn--lg" type="submit">Sign in</button>
+    </form>
+    <div class="cluster" style="justify-content: center;"><span class="text-caption">or</span></div>
+    <button class="btn btn--block" type="button">Continue with Google</button>
+    <button class="btn btn--block" type="button">Continue with Apple</button>
+    <p class="text-sm" style="text-align: center; margin-inline: auto;">New to Giddy? <a href="../../pages/sign-up/default.html">Create a free account</a></p>
+  </div>
+  <p class="text-caption" style="text-align: center; margin: var(--space-4) auto 0;"><a href="../../pages/help/default.html">Need help?</a> · <a href="../../pages/legal/default.html">Terms &amp; privacy</a></p>
+</main>
+</div>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Sign in</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="invalid.html">invalid</a></li><li><a href="submitting.html">submitting</a></li><li><a href="error.html" aria-current="page">error</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

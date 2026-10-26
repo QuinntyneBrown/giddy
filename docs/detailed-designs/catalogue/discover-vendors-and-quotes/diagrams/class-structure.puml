@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Discover vendors and request quotes
+
+enum VendorCategory {
+  Entertainer
+  Activity
+  FoodAndCake
+  Rental
+}
+class Vendor {
+  +Guid Id
+  +VendorCategory Category
+  +string Name
+  +List<string> ServiceAreas
+  +DietaryCapabilities Dietary
+  +Money FromPrice
+}
+class QuoteRequest {
+  +Guid PartyId
+  +Guid VendorId
+  +DateTime Start
+  +int Kids
+  +string Message
+  +QuoteRequestStatus Status
+}
+class Quote {
+  +Guid Id
+  +Money Price
+  +DateOnly ExpiresOn
+}
+Vendor --> VendorCategory
+QuoteRequest "1" --> "0..1" Quote
+RequestQuoteHandler ..> QuoteRequest : creates
+QuoteReceivedHandler ..> Quote : records
+@enduml

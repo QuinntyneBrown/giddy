@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Respond to an invitation
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "RsvpController", "ASP.NET Core controller", "Anonymous RSVP endpoints")
+  Component(view, "RsvpViewQuery", "Query handler", "Invitation + own reply only")
+  Component(h, "SubmitRsvpHandler", "MediatR handler", "Updates the reply")
+  Component(guest, "Guest", "Domain entity", "Reply state")
+}
+
+Rel(ctrl, view, "Load")
+Rel(ctrl, h, "SubmitRsvpCommand")
+Rel(h, guest, "Reply")
+Rel(h, db, "Saves", "EF Core")
+Rel(h, bus, "RsvpChanged", "AMQP")
+@enduml

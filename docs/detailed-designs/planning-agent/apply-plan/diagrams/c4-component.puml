@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Apply Giddy's plan with confirmation
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PlanController", "ASP.NET Core controller", "Apply proposal")
+  Component(h, "ApplyPlanHandler", "MediatR handler", "One unit of work")
+  Component(gen, "ChecklistGenerator", "Domain service", "Dated tasks")
+  Component(party, "Party", "Domain aggregate", "Plan state")
+}
+
+Rel(ctrl, h, "ApplyPlanCommand")
+Rel(h, party, "ApplyProposal")
+Rel(h, gen, "Generate tasks")
+Rel(h, db, "Saves", "EF Core")
+@enduml

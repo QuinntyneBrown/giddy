@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Propose a priced plan
+
+System_Ext(llm, "Anthropic Claude API", "Large language model behind the planning agent")
+Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(agent_b, "Planning Agent") {
+  Component(loop, "AgentLoop", "Application service", "Model ↔ tool loop")
+  Component(san, "ToolResultSanitizer", "Application service", "Quotes untrusted text")
+  Component(allergy, "AllergyGuard", "Domain service", "Allergy compatibility")
+  Component(prop, "ProposePlanTool", "Agent tool", "Structured plan output")
+  Component(val, "ProposalValidator", "Domain service", "Grounding and constraint checks")
+  Component(log, "TurnLogger", "Infrastructure", "90-day turn log")
+}
+
+Rel(loop, llm, "Messages API", "HTTPS")
+Rel(loop, api, "search tools", "HTTPS")
+Rel(loop, san, "Wrap tool results")
+Rel(san, allergy, "Annotate options")
+Rel(loop, prop, "propose_plan call")
+Rel(prop, val, "Validate")
+Rel(loop, log, "Record turn")
+Rel(log, db, "Writes", "EF Core")
+@enduml

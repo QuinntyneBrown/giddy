@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Localise for the GTA
+
+interface IClock {
+  +Today(): LocalDate
+  +Now(): ZonedDateTime
+}
+class TorontoClock {
+  +Zone = "America/Toronto"
+}
+class Countdown {
+  +DaysUntil(date: LocalDate, clock: IClock): int
+}
+IClock <|.. TorontoClock
+Countdown ..> IClock
+@enduml

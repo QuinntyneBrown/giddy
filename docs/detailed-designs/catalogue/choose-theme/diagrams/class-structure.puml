@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Browse and choose a theme
+
+class Theme {
+  +string Slug
+  +string Name
+  +string Description
+  +int MinAge
+  +int MaxAge
+  +List<string> InterestTags
+  +bool Outdoor
+  +bool BudgetFriendly
+}
+class ThemeQuery {
+  +int? ChildAge
+  +AgeBand? Band
+  +bool? Outdoor
+  +bool? BudgetFriendly
+}
+class ThemeCatalogue {
+  +Search(q: ThemeQuery): List<ThemeResult>
+}
+class SetPartyThemeHandler {
+  +Handle(cmd: SetPartyThemeCommand): Task<Result<string?>>
+}
+ThemeCatalogue ..> ThemeQuery
+ThemeCatalogue "1" o-- "*" Theme
+SetPartyThemeHandler ..> Party
+@enduml

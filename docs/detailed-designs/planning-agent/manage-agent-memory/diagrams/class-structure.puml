@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Manage what Giddy remembers
+
+class FamilyMemory {
+  +Guid Id
+  +Guid FamilyId
+  +MemoryKind Kind
+  +string Fact
+  +Guid SourceTurnId
+  +DateTimeOffset CreatedAt
+}
+enum MemoryKind {
+  Interest
+  Allergy
+  Preference
+}
+class MemoryPolicy {
+  +Allow(fact: string, kind: MemoryKind): bool
+}
+class RememberTool
+class ForgetMemoryHandler {
+  +Handle(cmd: ForgetMemoryCommand): Task<Result>
+}
+RememberTool ..> MemoryPolicy
+RememberTool --> FamilyMemory : creates
+ForgetMemoryHandler --> FamilyMemory : deletes
+FamilyMemory --> MemoryKind
+@enduml

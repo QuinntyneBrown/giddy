@@ -1,0 +1,63 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Converse with Giddy
+
+class Conversation {
+  +Guid Id
+  +Guid? PartyId
+  +Guid FamilyId
+  +List<Message> Messages
+  +Append(m: Message): void
+}
+class Message {
+  +Guid Id
+  +MessageRole Role
+  +string Text
+  +MessageStatus Status
+  +DateTimeOffset At
+}
+class AgentTurn {
+  +Guid Id
+  +Guid ConversationId
+  +TurnState State
+  +List<ToolStep> Steps
+  +Cancel(): void
+}
+class ToolStep {
+  +string Tool
+  +string Label
+  +int? ResultCount
+  +StepState State
+}
+class AgentLoop {
+  +int MaxRounds = 8
+  +RunAsync(turn: AgentTurn, ct: CancellationToken): Task<Reply>
+}
+interface IAgentTool {
+  +string Name
+  +JsonSchema InputSchema
+  +ExecuteAsync(input: JsonElement, scope: FamilyScope, ct): Task<ToolResult>
+}
+class ToolRegistry {
+  +Resolve(name: string): IAgentTool
+}
+class ModelClient {
+  +CreateMessageAsync(req: ModelRequest, ct): Task<ModelResponse>
+}
+Conversation "1" *-- "*" Message
+Conversation "1" --> "*" AgentTurn
+AgentTurn "1" *-- "*" ToolStep
+AgentLoop --> ModelClient
+AgentLoop --> ToolRegistry
+ToolRegistry o-- "*" IAgentTool
+AgentLoop ..> AgentTurn : updates
+@enduml

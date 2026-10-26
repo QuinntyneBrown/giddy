@@ -1,0 +1,29 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Authorise and validate every request
+
+class PartyRequirement {
+  +PartyRole MinimumRole
+}
+class PartyAccessHandler {
+  +HandleRequirementAsync(ctx, req: PartyRequirement, party: PartyRef): Task
+}
+class ValidationBehavior<TRequest, TResponse> {
+  +Handle(req, next, ct): Task<TResponse>
+}
+class ProblemDetailsFactory {
+  +Validation(errors): ValidationProblemDetails
+  +NotFound(): ProblemDetails
+}
+PartyAccessHandler ..> PartyRequirement
+ValidationBehavior ..> ProblemDetailsFactory
+@enduml

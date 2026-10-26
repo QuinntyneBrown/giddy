@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage children
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "FamilyController", "ASP.NET Core controller", "Children endpoints")
+  Component(h, "SaveChildHandler", "MediatR handler", "Validates and saves")
+  Component(fam, "Family", "Domain aggregate", "Household")
+  Component(child, "Child", "Domain entity", "Birthday logic")
+  Component(cat, "InterestCatalogue", "Domain service", "Allowed interests")
+}
+
+Rel(ctrl, h, "SaveChildCommand")
+Rel(h, fam, "Loads and mutates")
+Rel(fam, child, "Owns")
+Rel(h, cat, "Validates interests")
+Rel(h, db, "Saves", "EF Core")
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Import guests in bulk
+
+class ImportJob {
+  +Guid Id
+  +Guid PartyId
+  +ImportSource Source
+  +string BlobPath
+  +int Progress
+  +ImportReport Report
+}
+class ImportReport {
+  +int Imported
+  +List<RowIssue> Skipped
+  +List<RowIssue> Invalid
+}
+class RowIssue {
+  +int Row
+  +string ChildName
+  +string Reason
+}
+class SpreadsheetReader {
+  +ReadRows(stream: Stream, kind: FileKind): IAsyncEnumerable<GuestRow>
+}
+ImportJob *-- ImportReport
+ImportReport "1" *-- "*" RowIssue
+ImportJob ..> SpreadsheetReader
+@enduml

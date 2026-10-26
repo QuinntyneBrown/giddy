@@ -1,0 +1,34 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Deliver email, text and push
+
+class Preferences {
+  +Guid ParentId
+  +Dictionary<NotificationCategory, ChannelSet> Channels
+  +bool QuietHours
+  +bool SmsOptedOut
+}
+class ChannelSet {
+  +bool Email
+  +bool Text
+  +bool Push
+}
+class NotificationDispatcher {
+  +Dispatch(n: Notification): Task
+}
+interface IChannelSender {
+  +Send(n: Notification, to: Recipient): Task<DeliveryResult>
+}
+NotificationDispatcher --> Preferences
+NotificationDispatcher o-- "3" IChannelSender
+Preferences *-- ChannelSet
+@enduml

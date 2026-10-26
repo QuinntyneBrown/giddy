@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Observability, alerting and recovery
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+Person(ops, "Giddy operator", "Runs and supports the production service")
+System(giddy, "Giddy", "Agentic kids' birthday planner for the GTA")
+System_Ext(otel, "Observability platform", "Traces, metrics, logs and alerts")
+
+Rel(parent, giddy, "Uses")
+Rel(ops, giddy, "Uses")
+Rel(giddy, otel, "Calls", "OTLP")
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Apply Giddy's plan with confirmation
+
+class ApplyPlanCommand {
+  +Guid PartyId
+  +Guid ProposalId
+}
+class ApplyPlanHandler {
+  +Handle(cmd: ApplyPlanCommand): Task<Result>
+}
+class Party {
+  +ApplyProposal(p: PlanProposal): void
+}
+class ChecklistGenerator {
+  +Generate(party: Party, today: DateOnly): List<PartyTask>
+}
+ApplyPlanHandler ..> ApplyPlanCommand
+ApplyPlanHandler --> Party
+ApplyPlanHandler --> ChecklistGenerator
+@enduml

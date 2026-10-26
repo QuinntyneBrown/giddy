@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Deliver email, text and push
+
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(email, "Email provider", "Sends transactional and marketing email")
+System_Ext(sms, "SMS provider", "Sends text messages and receives STOP replies")
+System_Ext(push, "Web Push service", "Browser push delivery (VAPID)")
+Container_Boundary(worker_b, "Background Worker") {
+  Component(disp, "NotificationDispatcher", "Application service", "Channel choice")
+  Component(em, "EmailSender", "Adapter", "Email")
+  Component(sm, "SmsSender", "Adapter", "Text")
+  Component(pu, "PushSender", "Adapter", "Web Push")
+}
+
+Rel(bus, disp, "Jobs", "AMQP")
+Rel(disp, db, "Preferences", "EF Core")
+Rel(disp, em, "Email")
+Rel(disp, sm, "Text")
+Rel(disp, pu, "Push")
+Rel(em, email, "HTTPS")
+Rel(sm, sms, "HTTPS")
+Rel(pu, push, "Web Push")
+@enduml

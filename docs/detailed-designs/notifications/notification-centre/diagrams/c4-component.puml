@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Notification centre
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "NotificationsController", "ASP.NET Core controller", "List and read")
+  Component(w, "NotificationWriter", "Event handler", "Creates notifications")
+  Component(hub, "UserHub", "SignalR hub", "Unread count")
+  Component(n, "Notification", "Domain entity", "Stored message")
+}
+
+Rel(bus, w, "Events", "AMQP")
+Rel(w, n, "Creates")
+Rel(w, db, "Saves", "EF Core")
+Rel(w, hub, "Unread++")
+Rel(ctrl, db, "Reads", "EF Core")
+@enduml

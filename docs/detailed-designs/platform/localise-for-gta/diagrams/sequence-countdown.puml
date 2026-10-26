@@ -1,0 +1,35 @@
+@startuml
+title UML sequence behaviour — Localisation — compute a countdown
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PartyHero" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartiesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "Countdown" as cd
+  participant "TorontoClock" as clock
+end box
+page -> ctrl : GET overview
+ctrl -> cd : DaysUntil(2026-11-14)
+cd -> clock : Today() in America/Toronto
+clock --> cd : 2026-10-25
+cd --> ctrl : 20
+ctrl --> page : daysToGo = 20
+page --> actor : "20 days to go"
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — RSVP — guest parent replies
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Guest parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "RsvpPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "RsvpController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SubmitRsvpHandler" as h
+  participant "Guest" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+actor -> page : Open /rsvp/{token}
+page -> ctrl : GET /api/rsvp/{token}
+ctrl -> db : Token hash valid and not revoked?
+alt invalid
+  ctrl --> page : 404
+  page --> actor : "This invitation link doesn't work anymore"
+else valid
+  ctrl --> page : RsvpView (invitation + own reply)
+  actor -> page : Yes; dairy-free; I'll stay; Lily Chen
+  page -> ctrl : PUT /api/rsvp/{token}
+  ctrl -> h : SubmitRsvpCommand
+  h -> ent : Reply (before RSVP-by)
+  h -> db : Save
+  h -> bus : RsvpChanged
+  h --> ctrl : Ok
+  ctrl --> page : 200
+  page --> actor : "Yay! Maya is coming" + Add to my calendar
+end
+@enduml

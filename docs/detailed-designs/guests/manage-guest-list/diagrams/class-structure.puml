@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Manage the guest list
+
+enum RsvpStatus {
+  NotSent
+  Waiting
+  Coming
+  CantCome
+}
+class Guest {
+  +Guid Id
+  +string ChildName
+  +string ParentName
+  +Email ParentEmail
+  +PhoneNumber? ParentMobile
+  +RsvpStatus Status
+  +string? Allergy
+  +bool ParentStays
+  +DateTimeOffset? RemovedAt
+}
+class Party {
+  +int MaxGuests = 60
+  +List<Guest> Guests
+  +AddGuest(g: Guest): Result
+  +RemoveGuest(id: Guid): void
+  +RestoreGuest(id: Guid): void
+}
+class PhoneNumber {
+  +string E164
+  +IsCanadianMobile(): bool
+}
+Party "1" *-- "0..60" Guest
+Guest --> RsvpStatus
+Guest *-- PhoneNumber
+@enduml

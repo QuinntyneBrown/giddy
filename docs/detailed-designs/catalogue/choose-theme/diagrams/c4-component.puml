@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse and choose a theme
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "ThemesController", "ASP.NET Core controller", "Catalogue and selection")
+  Component(cat, "ThemeCatalogue", "Query service", "Filters themes")
+  Component(h, "SetPartyThemeHandler", "MediatR handler", "Sets the theme")
+  Component(party, "Party", "Domain aggregate", "Theme reference")
+}
+
+Rel(ctrl, cat, "Query")
+Rel(cat, cache, "Reads", "RESP")
+Rel(ctrl, h, "SetPartyThemeCommand")
+Rel(h, party, "SetTheme")
+Rel(h, db, "Saves", "EF Core")
+@enduml

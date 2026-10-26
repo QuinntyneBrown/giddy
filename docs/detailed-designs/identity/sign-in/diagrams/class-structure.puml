@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Sign in
+
+class SignInCommand {
+  +string Email
+  +string Password
+  +bool KeepSignedIn
+  +string ReturnUrl
+}
+class SignInCommandHandler {
+  +Handle(cmd: SignInCommand): Task<Result<SessionTicket>>
+}
+class SignInAttemptPolicy {
+  +int MaxFailures = 5
+  +TimeSpan Window = 15 min
+  +TimeSpan Pause = 15 min
+  +IsPaused(parentId: Guid): bool
+  +RecordFailure(parentId: Guid): void
+}
+class Session {
+  +Guid Id
+  +Guid ParentId
+  +DateTimeOffset ExpiresAt
+  +bool Persistent
+  +string DeviceId
+  +Revoke(): void
+}
+class SessionService {
+  +Issue(parent: Guid, persistent: bool): Session
+  +Rotate(session: Session): Session
+  +RevokeAll(parent: Guid, except: Guid?): void
+}
+class DeviceRegistry {
+  +IsKnown(parent: Guid, device: string): bool
+}
+SignInCommandHandler ..> SignInCommand : handles
+SignInCommandHandler --> SignInAttemptPolicy : enforces L2-004
+SignInCommandHandler --> SessionService : issues
+SignInCommandHandler --> DeviceRegistry : checks
+SessionService "1" --> "*" Session : manages
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — List parties and view a party overview
+
+class PartyOverviewDto {
+  +Guid Id
+  +string Name
+  +DateOnly Date
+  +int DaysToGo
+  +int ReadinessPercent
+  +RsvpCounts Rsvps
+  +BudgetSummary Budget
+  +List<TaskDto> NextTasks
+  +List<MemberDto> Members
+}
+class ReadinessCalculator {
+  +Calculate(tasks: TaskCounts, bookings: BookingCounts): int
+}
+class BookingStatusDto {
+  +string Category
+  +string VendorName
+  +BookingState State
+  +Money Price
+}
+class GetPartyOverviewQuery
+GetPartyOverviewQuery ..> PartyOverviewDto : returns
+GetPartyOverviewQuery --> ReadinessCalculator
+BookingStatusQuery ..> BookingStatusDto : returns
+@enduml

@@ -1,0 +1,46 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Create a party plan
+
+enum TimeOfDay {
+  Morning
+  Afternoon
+  Evening
+}
+class Party {
+  +Guid Id
+  +Guid ChildId
+  +string Name
+  +DateOnly Date
+  +TimeOfDay TimeOfDay
+  +int GuestCount
+  +Money Budget
+  +Area Area
+  +PartyStatus Status
+  +Create(cmd): Party
+}
+class Area {
+  +PostalCode PostalCode
+  +int RadiusKm
+}
+class Money {
+  +decimal Amount
+  +string Currency = "CAD"
+}
+class CreatePartyHandler {
+  +Handle(cmd: CreatePartyCommand): Task<Result<Guid>>
+}
+Party *-- Area
+Party *-- Money
+Party --> TimeOfDay
+CreatePartyHandler --> Party : creates
+@enduml

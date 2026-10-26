@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Discover vendors and request quotes
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(vendors, "Vendor directory", "Entertainers, caterers and bakeries with quotes")
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "VendorsController", "ASP.NET Core controller", "Search and quotes")
+  Component(search, "SearchVendorsQuery", "Query handler", "Filters and allergy notes")
+  Component(req, "RequestQuoteHandler", "MediatR handler", "Sends requests")
+  Component(recv, "QuoteReceivedHandler", "MediatR handler", "Records replies")
+  Component(quote, "Quote", "Domain entity", "Price and expiry")
+}
+
+Rel(ctrl, search, "Search")
+Rel(ctrl, req, "RequestQuoteCommand")
+Rel(req, vendors, "Quote request", "HTTPS")
+Rel(vendors, recv, "Webhook", "HTTPS")
+Rel(recv, quote, "Creates")
+Rel(recv, db, "Saves", "EF Core")
+Rel(recv, bus, "QuoteReceived", "AMQP")
+@enduml

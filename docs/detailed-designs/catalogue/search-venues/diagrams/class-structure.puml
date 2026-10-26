@@ -1,0 +1,54 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Search venues by availability and fit
+
+class VenueSearch {
+  +DateOnly Date
+  +int Kids
+  +PostalCode Near
+  +int RadiusKm
+  +Money? MaxPrice
+  +bool Indoor
+  +bool NutFree
+  +bool Parking
+  +bool StepFree
+  +VenueSort Sort
+}
+class Venue {
+  +Guid Id
+  +string Name
+  +string Neighbourhood
+  +GeoPoint Location
+  +int Capacity
+  +AgeRange Ages
+  +List<string> Features
+  +Money Price
+  +TimeSpan Duration
+  +decimal Rating
+  +int ReviewCount
+}
+class Slot {
+  +DateTime Start
+  +TimeSpan Duration
+  +bool Free
+}
+class AvailabilityService {
+  +GetSlots(venueIds, date): Task<Dictionary<Guid, List<Slot>>>
+}
+class RelaxationAdvisor {
+  +Suggest(search: VenueSearch): RelaxationHint?
+}
+SearchVenuesQuery ..> VenueSearch
+SearchVenuesQuery --> AvailabilityService
+SearchVenuesQuery --> RelaxationAdvisor
+Venue "1" --> "*" Slot
+@enduml

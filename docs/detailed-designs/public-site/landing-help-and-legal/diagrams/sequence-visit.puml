@@ -1,0 +1,29 @@
+@startuml
+title UML sequence behaviour — Public site — visit the landing page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "LandingPage" as page
+  participant "SignedInRedirectGuard" as guard
+end box
+actor -> guard : GET /
+alt signed in
+  guard --> actor : Redirect /home
+else visitor
+  guard -> page : Serve prerendered HTML (title, description, OG tags)
+  page --> actor : Landing with "Start planning free"
+end
+@enduml

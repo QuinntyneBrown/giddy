@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Track booking status and cancellations
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+System_Ext(pay, "Payment provider", "PCI DSS Level 1 card processing and hosted fields")
+Container_Boundary(api_b, "Giddy API") {
+  Component(hook, "WebhooksController", "ASP.NET Core controller", "Verifies signatures")
+  Component(ev, "BookingEventsHandler", "MediatR handler", "Applies partner events")
+  Component(cancel, "CancelBookingHandler", "MediatR handler", "Cancellation and refund")
+  Component(bk, "Booking", "Domain aggregate", "State")
+}
+
+Rel(venues, hook, "Webhook", "HTTPS")
+Rel(pay, hook, "Webhook", "HTTPS")
+Rel(hook, ev, "Event")
+Rel(ev, bk, "Transition")
+Rel(cancel, bk, "Cancel")
+Rel(cancel, pay, "Refund", "HTTPS")
+Rel(ev, db, "Saves", "EF Core")
+@enduml

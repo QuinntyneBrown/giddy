@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Accessible user interface
+
+Container_Boundary(web_b, "Giddy Web") {
+  Component(shell, "AppShell", "Angular component", "Skip link and landmarks")
+  Component(trap, "FocusTrap", "Angular CDK", "Dialogs")
+  Component(ann, "LiveAnnouncer", "Angular CDK", "Status messages")
+  Component(sum, "FormErrorSummary", "Angular component", "Error summary")
+  ComponentDb(tok, "Design tokens", "CSS", "Contrast, targets, motion")
+}
+
+Rel(shell, tok, "Styles")
+Rel(trap, shell, "Inert background")
+Rel(sum, ann, "Announces")
+@enduml

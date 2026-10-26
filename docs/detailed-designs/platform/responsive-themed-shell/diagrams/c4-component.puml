@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Responsive, themed application shell
+
+Container_Boundary(web_b, "Giddy Web") {
+  Component(shell, "AppShell", "Angular component", "Layout")
+  Component(bp, "BreakpointService", "Angular service", "Breakpoints")
+  Component(theme, "ThemeService", "Angular service", "Light/dark")
+  ComponentDb(ds, "Design system CSS", "tokens.css + components.css", "Styles")
+}
+
+Rel(shell, bp, "Observes")
+Rel(shell, theme, "Applies")
+Rel(shell, ds, "Styled by")
+Rel(theme, ds, "Sets data-theme")
+@enduml

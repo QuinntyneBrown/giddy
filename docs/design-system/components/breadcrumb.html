@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breadcrumb — Giddy design system</title>
+<meta name="description" content="Shows where a page sits: My parties / Zuri’s Dino Dig 7th / Guests.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html"><svg class="logo-mark" aria-hidden="true" viewBox="0 0 32 32"><path class="balloon" d="M16 2c-6 0-10 4.4-10 10 0 6.4 5.6 11 10 11s10-4.6 10-11C26 6.4 22 2 16 2z"/><ellipse class="shine" cx="12" cy="8" rx="2" ry="3.2" transform="rotate(-25 12 8)"/><path class="string" d="M16 23c0 3-3 3-2 7"/></svg>Giddy DS</a><button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button></div>
+    <details open><summary>Foundations</summary><ul><li><a href="../foundations/color.html">Color</a></li><li><a href="../foundations/typography.html">Typography</a></li><li><a href="../foundations/spacing.html">Spacing</a></li><li><a href="../foundations/layout.html">Layout</a></li><li><a href="../foundations/elevation.html">Elevation</a></li><li><a href="../foundations/shape.html">Shape</a></li><li><a href="../foundations/motion.html">Motion</a></li><li><a href="../foundations/iconography.html">Iconography</a></li><li><a href="../foundations/theming.html">Theming</a></li><li><a href="../foundations/responsive.html">Responsive</a></li><li><a href="../foundations/accessibility.html">Accessibility</a></li><li><a href="../foundations/content.html">Content</a></li></ul></details>
+    <details open><summary>Components</summary><ul><li class="ds-nav__group">Actions</li><li><a href="../components/button.html">Button</a></li><li><a href="../components/link.html">Link</a></li><li><a href="../components/menu.html">Menu</a></li><li class="ds-nav__group">Inputs</li><li><a href="../components/text-field.html">Text field</a></li><li><a href="../components/textarea.html">Textarea</a></li><li><a href="../components/select.html">Select</a></li><li><a href="../components/checkbox.html">Checkbox</a></li><li><a href="../components/radio-group.html">Radio group</a></li><li><a href="../components/choice-card.html">Choice card</a></li><li><a href="../components/switch.html">Switch</a></li><li><a href="../components/file-upload.html">File upload</a></li><li><a href="../components/form-field.html">Form field</a></li><li><a href="../components/form-layout.html">Form layout</a></li><li class="ds-nav__group">Navigation</li><li><a href="../components/top-bar.html">Top bar</a></li><li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li><li><a href="../components/bottom-nav.html">Bottom navigation</a></li><li><a href="../components/tabs.html">Tabs</a></li><li><a href="../components/breadcrumb.html">Breadcrumb</a></li><li><a href="../components/pagination.html">Pagination</a></li><li><a href="../components/stepper.html">Stepper</a></li><li><a href="../components/footer.html">Footer</a></li><li><a href="../components/skip-link.html">Skip link</a></li><li class="ds-nav__group">Containers</li><li><a href="../components/card.html">Card</a></li><li><a href="../components/accordion.html">Accordion</a></li><li><a href="../components/dialog.html">Dialog</a></li><li><a href="../components/tooltip.html">Tooltip</a></li><li><a href="../components/divider.html">Divider</a></li><li><a href="../components/layout.html">Layout primitives</a></li><li class="ds-nav__group">Data display</li><li><a href="../components/table.html">Table</a></li><li><a href="../components/list.html">List</a></li><li><a href="../components/description-list.html">Description list</a></li><li><a href="../components/avatar.html">Avatar</a></li><li><a href="../components/badge.html">Badge</a></li><li><a href="../components/chip.html">Chip</a></li><li><a href="../components/stat.html">Stat</a></li><li><a href="../components/timeline.html">Timeline</a></li><li><a href="../components/tile.html">Tile</a></li><li class="ds-nav__group">Feedback</li><li><a href="../components/toast.html">Toast</a></li><li><a href="../components/alert.html">Alert &amp; banner</a></li><li><a href="../components/inline-message.html">Inline message</a></li><li><a href="../components/progress.html">Progress</a></li><li><a href="../components/spinner.html">Spinner</a></li><li><a href="../components/skeleton.html">Skeleton</a></li><li><a href="../components/empty-state.html">Empty state</a></li><li><a href="../components/error-page.html">Error page</a></li><li class="ds-nav__group">Giddy</li><li><a href="../components/chat.html">Chat</a></li><li><a href="../components/hero.html">Hero &amp; party card</a></li><li><a href="../components/meter.html">Budget meter</a></li><li><a href="../components/mascot.html">Mascot &amp; logo</a></li></ul></details>
+    <details open><summary>Patterns</summary><ul><li><a href="../patterns/forms.html">Forms</a></li><li><a href="../patterns/feedback.html">Feedback &amp; loading</a></li><li><a href="../patterns/empty-and-error.html">Empty &amp; error states</a></li><li><a href="../patterns/navigation.html">Navigation &amp; page structure</a></li><li><a href="../patterns/dialogs.html">Dialogs &amp; overlays</a></li><li><a href="../patterns/tables-and-lists.html">Data tables &amp; lists</a></li><li><a href="../patterns/notifications.html">Notifications</a></li><li><a href="../patterns/content-and-tone.html">Content &amp; tone</a></li><li><a href="../patterns/agent-conversation.html">Talking with Giddy</a></li></ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Navigation</p>
+      <h1>Breadcrumb</h1>
+      <p class="ds-lead">Breadcrumbs show the way back up: My parties, then the party, then the section.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+<section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+<p>Used on party pages, venue detail and compare. Not on top-level pages.</p>
+</section>
+<section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy"><figure class="ds-anatomy__figure"><nav aria-label="Breadcrumb"><ol class="breadcrumb"><li><a href="#anatomy">My parties</a></li><li><a href="#anatomy">Zuri’s Dino Dig 7th</a></li><li aria-current="page">Guests</li></ol></nav><span class="ds-callout" style="left: 4%; top: 10%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 32%; top: 10%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 82%; top: 10%;" aria-hidden="true">3</span></figure><ol class="ds-anatomy__list"><li><div><b>Ancestor links</b><small>Muted, underline on hover.</small></div></li><li><div><b>Separator</b><small>“/”, decorative.</small></div></li><li><div><b>Current page</b><small>Default colour, not a link.</small></div></li></ol></div>
+</section>
+<section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<div class="ds-example"><div class="ds-example__canvas"><nav aria-label="Breadcrumb example"><ol class="breadcrumb"><li><a href="#variants">Venues</a></li><li aria-current="page">Dino Den Play Café</li></ol></nav></div><div class="ds-example__caption"><span>Two levels.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;nav aria-label=&quot;Breadcrumb example&quot;&gt;&lt;ol class=&quot;breadcrumb&quot;&gt;&lt;li&gt;&lt;a href=&quot;#variants&quot;&gt;Venues&lt;/a&gt;&lt;/li&gt;&lt;li aria-current=&quot;page&quot;&gt;Dino Den Play Café&lt;/li&gt;&lt;/ol&gt;&lt;/nav&gt;</code></pre></details></div>
+</section>
+<section class="ds-section" id="sizes" data-na="Small body text only."><h2><a href="#sizes">Sizes</a></h2><p class="ds-na">Not applicable: Small body text only.</p></section>
+<section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th></tr></thead><tbody><tr><th scope="row">Ancestor</th><td><ol class="breadcrumb"><li><a href="#states" >My parties</a></li></ol></td><td><ol class="breadcrumb"><li><a href="#states" data-state="hover">My parties</a></li></ol></td><td><ol class="breadcrumb"><li><a href="#states" data-state="focus">My parties</a></li></ol></td></tr></tbody></table></div><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas" style="padding: 0;"><nav aria-label="Theme example"><ol class="breadcrumb"><li><a href="#states">Venues</a></li><li aria-current="page">Compare</li></ol></nav></div></div><div data-theme="dark"><div class="ds-example__canvas" style="padding: 0;"><nav aria-label="Theme example"><ol class="breadcrumb"><li><a href="#states">Venues</a></li><li aria-current="page">Compare</li></ol></nav></div></div></div>
+</section>
+<section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li>Wraps on phones; the current page can drop to the next line.</li></ul>
+</section>
+<section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<p>Muted links, default current.</p>
+</section>
+<section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3><p><code>&lt;nav aria-label="Breadcrumb"&gt;</code> + <code>&lt;ol&gt;</code>; last item <code>aria-current="page"</code>.</p>
+<h3>Keyboard</h3><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr></tbody></table>
+<h3>Focus</h3><p>The shared ring (<code>--focus-ring-width</code> 2px of <code>--color-focus-ring</code>, 2px offset) appears on <code>:focus-visible</code> only.</p>
+<h3>Labelling</h3><p>Separators are CSS, not read out.</p>
+<h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);"><div class="ds-pair"><span>Links</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div></div>
+<h3>Motion</h3><p>None.</p>
+<h3>Touch</h3><p>Text links, 24px line height.</p>
+</section>
+<section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Use the same names as page titles.</li></ul>
+</section>
+<section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><span class="text-sm">Current page is plain text</span></div><figcaption>Current is not a link.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><span class="text-sm">Current page links to itself</span></div><figcaption>Self-links confuse.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><span class="text-sm">Only on nested pages</span></div><figcaption>Nested only.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><span class="text-sm">“Home” breadcrumb on the home page</span></div><figcaption>Breadcrumbs on top-level pages.</figcaption></figure></div>
+</section>
+<section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Links</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Current</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;nav aria-label=&quot;Breadcrumb&quot;&gt;&lt;ol class=&quot;breadcrumb&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;/parties&quot;&gt;My parties&lt;/a&gt;&lt;/li&gt;
+  &lt;li aria-current=&quot;page&quot;&gt;Guests&lt;/li&gt;
+&lt;/ol&gt;&lt;/nav&gt;</code></pre><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.breadcrumb</code></td><td>List with separators.</td></tr></tbody></table>
+</section>
+<section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/guests/default.html">pages/guests/default</a></li><li><a href="../../mocks/pages/venue-detail/default.html">pages/venue-detail/default</a></li></ul><p>Drift fixed during extraction: none; every mock used the kit classes.</p>
+</section>
+
+    <footer class="ds-footer"><span>Giddy design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on Sun 25 Oct 2026</span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

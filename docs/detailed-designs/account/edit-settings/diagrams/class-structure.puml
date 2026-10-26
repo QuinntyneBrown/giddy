@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Edit profile and notification settings
+
+class ParentProfile {
+  +string FirstName
+  +string LastName
+  +PhoneNumber? Mobile
+  +PostalCode PostalCode
+  +string? PhotoBlobPath
+}
+class PendingEmailChange {
+  +string NewEmail
+  +byte[] TokenHash
+  +DateTimeOffset ExpiresAt
+}
+class CookieConsent {
+  +bool Analytics
+  +DateTimeOffset DecidedAt
+  +ExpiresAt = DecidedAt + 12 months
+}
+Parent *-- ParentProfile
+Parent *-- "0..1" PendingEmailChange
+@enduml

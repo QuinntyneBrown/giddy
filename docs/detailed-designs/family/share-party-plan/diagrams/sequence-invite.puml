@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Share — invite a co-planner
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "SharePlanDialog" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "PartyMembersController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "InviteMemberHandler" as h
+  participant "Party" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+  queue "Message bus" as bus
+end box
+actor -> page : Email + "Edit everything"
+page -> ctrl : POST /api/parties/{id}/members
+ctrl -> ctrl : Require role Owner (L2-069)
+ctrl -> h : InviteMemberCommand
+h -> h : Validate email
+h -> db : Load Party
+h -> ent : AddMember(email, Editor)
+h -> db : Save
+h -> bus : MemberInvited
+h --> ctrl : Created
+ctrl --> page : 201
+page --> actor : Member listed as pending
+@enduml

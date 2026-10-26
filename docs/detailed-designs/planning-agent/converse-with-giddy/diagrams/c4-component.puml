@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Converse with Giddy
+
+ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+System_Ext(llm, "Anthropic Claude API", "Large language model behind the planning agent")
+Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+Container_Boundary(agent_b, "Planning Agent") {
+  Component(cons, "AgentTurnConsumer", "Service Bus consumer", "Starts and cancels turns")
+  Component(loop, "AgentLoop", "Application service", "Model ↔ tool loop, max 8 rounds")
+  Component(tools, "ToolRegistry", "Application service", "Tool name → internal API call")
+  Component(model, "ModelClient", "HTTP adapter", "Anthropic Claude API client")
+  Component(pub, "StreamPublisher", "Infrastructure", "Step and reply events")
+}
+
+Rel(bus, cons, "AgentTurn", "AMQP")
+Rel(cons, loop, "Run(turn, ct)")
+Rel(loop, model, "Create message")
+Rel(model, llm, "Messages API", "HTTPS")
+Rel(loop, tools, "Execute tool_use blocks")
+Rel(tools, api, "Internal tool endpoints", "HTTPS")
+Rel(loop, pub, "Step/reply events")
+Rel(pub, cache, "Publish", "RESP")
+@enduml

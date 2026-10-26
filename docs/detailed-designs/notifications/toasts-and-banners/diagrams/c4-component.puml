@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Toasts and banners
+
+Container_Boundary(web_b, "Giddy Web") {
+  Component(ts, "ToastService", "Angular service", "Queue and timers")
+  Component(tr, "ToastRegion", "Angular component", "Live region")
+  Component(bs, "BannerService", "Angular service", "Active conditions")
+  Component(bh, "BannerHost", "Angular component", "Under the top bar")
+  ComponentDb(ls, "LocalPreferences", "localStorage", "Dismissed banners")
+}
+
+Rel(ts, tr, "Renders")
+Rel(bs, bh, "Renders")
+Rel(bs, ls, "Dismissals")
+@enduml

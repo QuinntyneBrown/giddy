@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Observability — unexpected error with reference code
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "Any page" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "ReferenceCodeMiddleware" as ref
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "Handler" as h
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Observability platform" as otel
+end box
+page -> ref : Request (traceparent)
+ref -> h : Handle
+h --> ref : Unhandled exception
+ref -> otel : Error span + log (redacted)
+ref --> page : 500 ProblemDetails {reference: GDY-5XR1}
+page --> actor : Error page with reference code
+otel -> otel : Error rate > 1% for 5 min → page on-call
+@enduml

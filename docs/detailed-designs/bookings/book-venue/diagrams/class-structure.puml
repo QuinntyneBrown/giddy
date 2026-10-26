@@ -1,0 +1,57 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+title Class structure — Book a venue and pay the deposit
+
+enum BookingState {
+  Holding
+  Authorised
+  Confirmed
+  Failed
+  Cancelled
+}
+class Booking {
+  +Guid Id
+  +Guid PartyId
+  +Guid VenueId
+  +Slot Slot
+  +BookingState State
+  +string ConfirmationNumber
+  +Money Deposit
+  +Money BalanceDue
+  +DateOnly FreeCancellationUntil
+  +Confirm(number: string): void
+  +Fail(reason: string): void
+}
+class PaymentMethodRef {
+  +string ProviderToken
+  +string Brand
+  +string Last4
+}
+interface IPaymentGateway {
+  +Authorise(amount: Money, method: PaymentMethodRef): Task<AuthResult>
+  +Capture(authId: string): Task
+  +Cancel(authId: string): Task
+}
+interface IVenuePartnerClient {
+  +Hold(slot: Slot): Task<HoldResult>
+  +Confirm(holdId: string): Task<string>
+  +Release(holdId: string): Task
+}
+class BookVenueHandler {
+  +Handle(cmd: BookVenueCommand): Task<Result<BookingDto>>
+}
+BookVenueHandler --> Booking
+BookVenueHandler ..> IPaymentGateway
+BookVenueHandler ..> IVenuePartnerClient
+Booking --> BookingState
+Booking *-- PaymentMethodRef
+@enduml

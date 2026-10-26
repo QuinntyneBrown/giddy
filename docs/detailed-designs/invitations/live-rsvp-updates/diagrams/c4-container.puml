@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Live RSVP updates and the allergy list
+
+Person(parent, "Parent", "Plans kids' birthday parties with Giddy")
+System_Boundary(giddy, "Giddy") {
+  Container(web, "Giddy Web", "Angular SPA + service worker", "Parent and guest UI, installable PWA")
+  Container(api, "Giddy API", "ASP.NET Core", "REST endpoints, SignalR hub, application and domain logic")
+  ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+  ContainerQueue(bus, "Message bus", "Azure Service Bus", "Domain events and notification jobs")
+  ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+}
+System_Ext(email, "Email provider", "Sends transactional and marketing email")
+System_Ext(venues, "Venue partner APIs", "Live venue availability, holds and bookings")
+
+Rel(parent, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(api, db, "Reads and writes", "EF Core")
+Rel(bus, api, "RsvpChanged", "AMQP")
+Rel(api, cache, "SignalR backplane", "RESP")
+Rel(api, web, "Pushes events", "SignalR")
+Rel(api, venues, "Allergy list", "HTTPS")
+Rel(email, api, "Opens, bounces", "HTTPS")
+@enduml

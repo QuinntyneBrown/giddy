@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — List parties and view a party overview
+
+ContainerDb(db, "Giddy database", "Azure SQL Database (Canada Central)", "Families, parties, guests, bookings, audit")
+ContainerDb(cache, "Cache", "Azure Cache for Redis", "Availability cache, SignalR backplane, rate limits")
+Container_Boundary(api_b, "Giddy API") {
+  Component(ctrl, "PartiesController", "ASP.NET Core controller", "Read endpoints")
+  Component(ov, "GetPartyOverviewQuery", "Query handler", "Overview read model")
+  Component(bs, "BookingStatusQuery", "Query handler", "Vendor and venue status")
+  Component(rc, "ReadinessCalculator", "Domain service", "Readiness formula")
+}
+
+Rel(ctrl, ov, "Overview")
+Rel(ctrl, bs, "Bookings")
+Rel(ov, rc, "Compute readiness")
+Rel(ov, db, "Reads", "EF Core")
+Rel(bs, cache, "Reads/writes", "RESP")
+@enduml

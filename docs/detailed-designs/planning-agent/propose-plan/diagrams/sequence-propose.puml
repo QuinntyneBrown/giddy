@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Propose — build and validate a plan
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "PlannerChatPage" as page
+end box
+box "Backend — Planning Agent application" #D1FADF
+  participant "AgentLoop" as loop
+  participant "ToolResultSanitizer" as san
+  participant "ProposalValidator" as val
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "Internal tool API" as tools
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  participant "Anthropic Claude API" as llm
+end box
+loop -> tools : search_venues / compare_entertainers / find_bakeries / estimate_food
+tools --> loop : Results (availability <= 15 min old)
+loop -> san : Wrap third-party text as quoted data
+san --> loop : Sanitised results + allergy annotations
+loop -> llm : tool_results
+llm --> loop : propose_plan {items, total}
+loop -> val : Validate against results, slot, area, capacity, allergies
+alt valid
+  loop --> page : reply.done with PlanCard (total vs budget)
+  page --> actor : Plan card with Use this plan / Swap something
+else invalid (ungrounded or conflict)
+  loop -> llm : Validation errors; retry once
+  llm --> loop : Corrected proposal or explanation
+  loop --> page : Closest plan with amount over and suggested changes (L2-017)
+end
+@enduml

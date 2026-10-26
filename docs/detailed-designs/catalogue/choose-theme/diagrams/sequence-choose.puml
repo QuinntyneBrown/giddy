@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Themes — choose and undo
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Parent" as actor
+box "Frontend — Giddy Web application" #E0F2FE
+  participant "ThemesPage" as page
+end box
+box "Backend — Giddy API application" #D1FADF
+  participant "ThemesController" as ctrl
+end box
+box "Backend — Giddy Application and Domain" #ECFDF3
+  participant "SetPartyThemeHandler" as h
+  participant "Party" as ent
+end box
+box "Backend — Giddy Infrastructure" #FFF4E5
+  database "Giddy database" as db
+end box
+actor -> page : Use this theme (Dino Dig)
+page -> ctrl : PUT /api/parties/{id}/theme {slug}
+ctrl -> h : SetPartyThemeCommand
+h -> db : Load party
+h -> ent : SetTheme(dino-dig) returns previous
+h -> db : Save
+h --> ctrl : previous = null
+ctrl --> page : 200 {previous}
+page --> actor : Tile "Chosen for Zuri" + toast with Undo (8 s)
+opt Undo pressed while visible
+  page -> ctrl : PUT theme {previous}
+  ctrl --> page : 200
+end
+@enduml
