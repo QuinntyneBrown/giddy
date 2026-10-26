@@ -1,6 +1,14 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { BOOKINGS_API } from './bookings/bookings-api.token';
 import { HttpBookingsApi } from './bookings/http-bookings-api';
+import { GUESTS_API } from './guests/guests-api.token';
+import { HttpGuestsApi } from './guests/http-guests-api';
+import { HttpInvitationsApi } from './invitations/http-invitations-api';
+import { INVITATIONS_API } from './invitations/invitations-api.token';
+import { HttpLiveUpdatesApi } from './live/http-live-updates-api';
+import { LIVE_UPDATES_API } from './live/live-updates-api.token';
+import { HttpRsvpApi } from './rsvps/http-rsvp-api';
+import { RSVP_API } from './rsvps/rsvp-api.token';
 import { CONVERSATIONS_API } from './conversations/conversations-api.token';
 import { HttpConversationsApi } from './conversations/http-conversations-api';
 import { FAMILY_API } from './family/family-api.token';
@@ -27,5 +35,9 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: HOME_API, useClass: HttpHomeApi },
     { provide: VENUES_API, useClass: HttpVenuesApi },
     { provide: BOOKINGS_API, useClass: HttpBookingsApi },
+    { provide: GUESTS_API, useClass: HttpGuestsApi },
+    { provide: INVITATIONS_API, useClass: HttpInvitationsApi },
+    { provide: RSVP_API, useClass: HttpRsvpApi },
+    { provide: LIVE_UPDATES_API, useClass: HttpLiveUpdatesApi },
   ]);
 }
