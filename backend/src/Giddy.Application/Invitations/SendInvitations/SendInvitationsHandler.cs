@@ -12,7 +12,7 @@ namespace Giddy.Application.Invitations.SendInvitations;
 /// they have details for. Needs the sender's email to be verified.
 /// </summary>
 public sealed class SendInvitationsHandler(
-    IGiddyDbContext db, InvitationReader reader, IEmailSender email, ISmsSender sms, IWebLinks links, ISecretProtector protector, ICurrentParent parent, IClock clock)
+    IGiddyDbContext db, InvitationReader reader, InvitationDelivery delivery, ICurrentParent parent, IClock clock)
     : IRequestHandler<SendInvitationsCommand, InvitationsSent>
 {
     public async Task<InvitationsSent> Handle(SendInvitationsCommand request, CancellationToken cancellationToken)
@@ -34,18 +34,7 @@ public sealed class SendInvitationsHandler(
         var now = clock.GetCurrentInstant();
         foreach (var guest in guests)
         {
-            var token = RsvpTokens.Create();
-            guest.Invite(RsvpTokens.Hash(token), protector.Protect(token), now);
-            var link = links.To($"/rsvp/{token}");
-            if (invitation.ByEmail && guest.Email is { } address)
-            {
-                await email.SendAsync(InvitationMessages.Email(address, invitation, details, link, guest.Id.ToString()), cancellationToken);
-            }
-
-            if (invitation.ByText && guest.Mobile is { } mobile)
-            {
-                await sms.SendAsync(InvitationMessages.Text(mobile, invitation, details, link), cancellationToken);
-            }
+            await delivery.DeliverAsync(guest, invitation, details, now, cancellationToken);
         }
 
         invitation.MarkSent(now);

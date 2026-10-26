@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<Venues.Search.VenueCandidates>();
         services.AddScoped<Bookings.BookingCompletion>();
         services.AddScoped<Invitations.InvitationReader>();
+        services.AddScoped<Invitations.InvitationDelivery>();
         services.AddScoped<Rsvps.RsvpLinks>();
         services.AddSingleton<TurnCancellations>();
         services.AddScoped<IAgentTool, ListThemesTool>();
