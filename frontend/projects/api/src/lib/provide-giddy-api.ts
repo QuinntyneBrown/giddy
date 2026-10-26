@@ -1,4 +1,6 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { BOOKINGS_API } from './bookings/bookings-api.token';
+import { HttpBookingsApi } from './bookings/http-bookings-api';
 import { CONVERSATIONS_API } from './conversations/conversations-api.token';
 import { HttpConversationsApi } from './conversations/http-conversations-api';
 import { FAMILY_API } from './family/family-api.token';
@@ -24,5 +26,6 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: FAMILY_API, useClass: HttpFamilyApi },
     { provide: HOME_API, useClass: HttpHomeApi },
     { provide: VENUES_API, useClass: HttpVenuesApi },
+    { provide: BOOKINGS_API, useClass: HttpBookingsApi },
   ]);
 }

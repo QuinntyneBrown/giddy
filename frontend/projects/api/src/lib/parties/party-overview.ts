@@ -12,6 +12,8 @@ export interface PartyOverview {
   endsAt: string;
   timeOfDay: 'morning' | 'afternoon' | 'evening';
   daysToGo: number;
+  childName: string | null;
+  turningAge: number | null;
   area: string | null;
   venueName: string | null;
   theme: string | null;

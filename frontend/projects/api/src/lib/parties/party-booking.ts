@@ -4,4 +4,6 @@ export interface PartyBooking {
   name: string;
   price: number;
   status: 'toBook' | 'confirmed';
+  /** Paid so far, for example a venue's deposit. */
+  paid: number;
 }
