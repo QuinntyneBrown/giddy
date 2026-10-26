@@ -6,6 +6,7 @@ import { partiesRoutes } from '@giddy/parties';
 import { plannerRoutes } from '@giddy/planner';
 import { settingsRoutes } from '@giddy/settings';
 import { notFoundRoute, systemRoutes } from '@giddy/system';
+import { themesRoutes } from '@giddy/themes';
 import { vendorsRoutes } from '@giddy/vendors';
 import { venuesRoutes } from '@giddy/venues';
 
@@ -16,6 +17,7 @@ export const routes: Routes = [
   ...partiesRoutes,
   ...plannerRoutes,
   ...settingsRoutes,
+  ...themesRoutes,
   ...vendorsRoutes,
   ...venuesRoutes,
   ...systemRoutes,

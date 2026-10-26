@@ -15,6 +15,7 @@
       "@giddy/planner": ["./projects/planner/src/public-api.ts"],
       "@giddy/settings": ["./projects/settings/src/public-api.ts"],
       "@giddy/system": ["./projects/system/src/public-api.ts"],
+      "@giddy/themes": ["./projects/themes/src/public-api.ts"],
       "@giddy/vendors": ["./projects/vendors/src/public-api.ts"],
       "@giddy/venues": ["./projects/venues/src/public-api.ts"]
     },

@@ -1,0 +1,121 @@
+<div class="page-header">
+  <div>
+    <h1>Party themes</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  <a giddy-button routerLink="/ask-giddy"><svg giddy-icon="sparkle"></svg>Ask Giddy to pick</a>
+</div>
+
+<div class="cluster section" role="group" aria-label="Filter themes">
+  @if (child(); as c) {
+    <button giddy-chip type="button" [pressed]="forChild()" (click)="forChild.set(!forChild())">
+      For {{ c.name }} ({{ c.age }})
+    </button>
+  }
+  @for (band of ageBands; track band.value) {
+    <button
+      giddy-chip
+      type="button"
+      [pressed]="ageBand() === band.value"
+      (click)="chooseBand(band.value)"
+    >
+      {{ band.label }}
+    </button>
+  }
+  <button giddy-chip type="button" [pressed]="outdoor()" (click)="outdoor.set(!outdoor())">
+    Outdoor
+  </button>
+  <button giddy-chip type="button" [pressed]="budget()" (click)="budget.set(!budget())">
+    Budget-friendly
+  </button>
+</div>
+
+@switch (themes.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load themes"
+      text="Your filters are kept. Try again in a moment."
+      [referenceCode]="themes.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="themes.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="No themes match these filters"
+      text="Loosen a filter, or let Giddy suggest one."
+    >
+      <button giddy-button type="button" (click)="clearFilters()">Clear filters</button>
+      <a giddy-button variant="primary" routerLink="/ask-giddy"
+        ><svg giddy-icon="sparkle"></svg>Ask Giddy instead</a
+      >
+    </section>
+  }
+  @case ('ready') {
+    <ul class="grid-3 section themes__grid" aria-label="Themes">
+      @for (theme of themes.value()!.results; track theme.id; let i = $index) {
+        <li
+          giddy-tile
+          [selected]="theme.chosen"
+          [heading]="theme.name"
+          [emoji]="theme.emoji"
+          [pop]="pop(i)"
+          [badge]="badge(theme)"
+          badgeTone="warning"
+        >
+          <p class="text-sm text-muted">{{ theme.description }}</p>
+          <span giddyTileFooter class="text-caption"
+            >Ages {{ theme.minAge }}–{{ theme.maxAge }}</span
+          >
+          @if (theme.chosen) {
+            <span giddyTileFooter class="themes__chosen-note"
+              ><svg giddy-icon="check-circle" size="sm"></svg>Chosen for
+              {{ child()?.name ?? 'the party' }}</span
+            >
+          } @else if (canChoose()) {
+            <button
+              giddyTileFooter
+              giddy-button
+              size="sm"
+              type="button"
+              [busy]="choosing() === theme.id"
+              [disabled]="!!choosing()"
+              (click)="use(theme)"
+            >
+              Use this theme
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+  @default {
+    @if (themes.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading themes…</span>
+        <giddy-skeleton shape="rect" height="16rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @if (undoOffer(); as offer) {
+    <giddy-toast
+      tone="success"
+      dismissible
+      [heading]="offer.heading"
+      text="Giddy will use it for invites, the cake and activity ideas."
+      (dismissed)="dismissUndo()"
+    >
+      <button giddyToastAction class="toast__action" type="button" (click)="undo()">Undo</button>
+    </giddy-toast>
+  }
+</giddy-toast-region>

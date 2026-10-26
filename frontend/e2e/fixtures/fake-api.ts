@@ -3,6 +3,7 @@ import { FakeBookings } from './fake-bookings';
 import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
+import { FakeThemes } from './fake-themes';
 import { FakeVendors } from './fake-vendors';
 import { FakeVenues } from './fake-venues';
 import { amara, SeedSession, xsrfToken } from './seed-data';
@@ -37,6 +38,7 @@ export class FakeApi {
   readonly venueStore = new FakeVenues();
   readonly bookingStore = new FakeBookings(() => this.venueStore.venues);
   readonly guestStore = new FakeGuests(() => this.session);
+  readonly themeStore = new FakeThemes();
   readonly vendorStore = new FakeVendors(
     () =>
       this.guestStore.guests
@@ -96,6 +98,7 @@ export class FakeApi {
     this.bookingStore.register((method, path, handler) => this.on(method, path, handler));
     this.guestStore.register((method, path, handler) => this.on(method, path, handler));
     this.vendorStore.register((method, path, handler) => this.on(method, path, handler));
+    this.themeStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),
