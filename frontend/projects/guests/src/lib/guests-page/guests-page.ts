@@ -18,9 +18,12 @@ import {
   BreadcrumbComponent,
   ButtonComponent,
   CardComponent,
+  ChipComponent,
   ChoiceComponent,
+  GiddyDialog,
   EmptyStateComponent,
   IconComponent,
+  SearchFieldComponent,
   SkeletonComponent,
   TabNavComponent,
   TableWrapComponent,
@@ -30,6 +33,9 @@ import {
 } from '@giddy/components';
 import { LiveUpdates, ResourceLoader, joinNames, partySections } from '@giddy/core';
 import { firstValueFrom } from 'rxjs';
+import { RemoveGuestData } from '../remove-guest-dialog/remove-guest-data';
+import { RemoveGuestDialog } from '../remove-guest-dialog/remove-guest-dialog';
+import { GuestFilter } from './guest-filter';
 import { PageToast } from './page-toast';
 
 const rsvpBadges: Record<RsvpStatus, { label: string; tone: BadgeTone }> = {
@@ -49,9 +55,11 @@ const rsvpBadges: Record<RsvpStatus, { label: string; tone: BadgeTone }> = {
     BreadcrumbComponent,
     ButtonComponent,
     CardComponent,
+    ChipComponent,
     ChoiceComponent,
     EmptyStateComponent,
     IconComponent,
+    SearchFieldComponent,
     SkeletonComponent,
     TabNavComponent,
     TableWrapComponent,
@@ -66,6 +74,7 @@ const rsvpBadges: Record<RsvpStatus, { label: string; tone: BadgeTone }> = {
 export class GuestsPage {
   private readonly guestsApi = inject(GUESTS_API);
   private readonly partiesApi = inject(PARTIES_API);
+  private readonly dialog = inject(GiddyDialog);
   private nextToast = 0;
 
   /** From the route. */
@@ -82,6 +91,8 @@ export class GuestsPage {
     false,
   );
   protected readonly selected = signal<string[]>([]);
+  protected readonly search = signal('');
+  protected readonly filter = signal<GuestFilter>('all');
   protected readonly toasts = signal<PageToast[]>([]);
   protected readonly sharing = signal(false);
   protected readonly reminding = signal(false);
@@ -117,6 +128,38 @@ export class GuestsPage {
           { value: counts.cantCome, label: 'Can’t come', pop: 'grape' as const },
         ]
       : [];
+  });
+  protected readonly chips = computed(() => {
+    const guests = this.list.value()?.guests ?? [];
+    return [
+      { filter: 'all' as const, label: 'All', count: guests.length },
+      {
+        filter: 'coming' as const,
+        label: 'Coming',
+        count: guests.filter((g) => g.rsvp === 'coming').length,
+      },
+      {
+        filter: 'waiting' as const,
+        label: 'Waiting',
+        count: guests.filter((g) => g.rsvp === 'waiting').length,
+      },
+      {
+        filter: 'allergies' as const,
+        label: 'Allergies',
+        count: guests.filter((g) => !!g.allergies).length,
+      },
+    ];
+  });
+  /** The table's rows: the chip's guests whose child or parent matches the search. */
+  protected readonly shown = computed(() => {
+    const term = this.search().trim().toLowerCase();
+    return (this.list.value()?.guests ?? []).filter(
+      (g) =>
+        matches(g, this.filter()) &&
+        (!term ||
+          g.childName.toLowerCase().includes(term) ||
+          g.parentName.toLowerCase().includes(term)),
+    );
   });
   protected readonly allergyText = computed(() =>
     (this.list.value()?.allergyList ?? []).map((a) => `${a.child} · ${a.allergy}`).join(' · '),
@@ -241,17 +284,76 @@ export class GuestsPage {
     }
   }
 
+  protected clearSearch(): void {
+    this.search.set('');
+  }
+
+  /** Overridden by the add-guest slice. */
+  protected openAdd(childName = ''): void {
+    void childName;
+  }
+
+  protected openImport(): void {}
+
+  protected confirmRemove(guest: Guest): void {
+    const ref = this.dialog.open<boolean, RemoveGuestData, RemoveGuestDialog>(
+      RemoveGuestDialog,
+      { partyId: this.partyId(), guest },
+      { autoFocus: '[data-initial-focus]' },
+    );
+    ref.closed.subscribe((removed) => {
+      if (!removed) return;
+      this.selected.update((ids) => ids.filter((id) => id !== guest.id));
+      this.list.reload();
+      const toast = this.show({
+        heading: `${guest.childName} removed`,
+        text: `${guest.parentName} wasn’t messaged.`,
+        tone: 'neutral',
+        undo: guest.id,
+      });
+      setTimeout(() => this.dismiss(toast), 8000);
+    });
+  }
+
+  protected async undo(toast: PageToast): Promise<void> {
+    this.dismiss(toast.id);
+    try {
+      await firstValueFrom(this.guestsApi.restore(this.partyId(), toast.undo!));
+      this.list.reload();
+    } catch {
+      this.show({
+        heading: 'That couldn’t be undone',
+        text: 'Add the guest again from Add guest.',
+        tone: 'danger',
+        persistent: true,
+      });
+    }
+  }
+
   protected dismiss(id: number): void {
     this.toasts.update((toasts) => toasts.filter((t) => t.id !== id));
   }
 
   private show(
-    toast: Omit<PageToast, 'id' | 'action' | 'persistent'> & Partial<PageToast>,
+    toast: Omit<PageToast, 'id' | 'action' | 'persistent' | 'undo'> & Partial<PageToast>,
   ): number {
     const id = this.nextToast++;
-    this.toasts.update((toasts) => [...toasts, { action: null, persistent: false, ...toast, id }]);
-    if (!toast.persistent) setTimeout(() => this.dismiss(id), 6000);
+    this.toasts.update((toasts) => [...toasts, { action: null, persistent: false, ...toast, undo: toast.undo ?? null, id }]);
+    if (!toast.persistent && !toast.undo) setTimeout(() => this.dismiss(id), 6000);
     return id;
+  }
+}
+
+function matches(guest: Guest, filter: GuestFilter): boolean {
+  switch (filter) {
+    case 'coming':
+      return guest.rsvp === 'coming';
+    case 'waiting':
+      return guest.rsvp === 'waiting';
+    case 'allergies':
+      return !!guest.allergies;
+    default:
+      return true;
   }
 }
 

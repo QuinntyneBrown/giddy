@@ -71,6 +71,20 @@ export class FakeGuests {
   /** Bodies of PUT /api/rsvp/{token}, newest last. */
   replies: Record<string, unknown>[] = [];
   updates: FakeLiveUpdate[] = [];
+  /** Guests removed in the last ten minutes, for Undo. */
+  removed: SeedGuest[] = [];
+  /** Uploaded file names, newest last. */
+  uploads: string[] = [];
+  /** Another of the parent's parties with guests to reuse. */
+  pastParty = {
+    partyId: '6d1e2f30-4152-4637-8849-5a6b7c8d9e01',
+    name: 'Zuri’s 6th: Mermaid Splash',
+    date: '2025-11-15',
+    guests: [
+      { childName: 'Leo Rossi', parentName: 'Marco Rossi', email: 'marco@example.com' },
+      { childName: 'Ines Duarte', parentName: 'Rita Duarte', email: 'rita@example.com' },
+    ],
+  };
   private readonly opened = new Set<string>();
 
   constructor(private readonly session: () => SeedSession | null) {}
@@ -90,7 +104,123 @@ export class FakeGuests {
     this.updates.push({ partyId: dinoParty.id, ...update, id: this.updates.length + 1 });
   }
 
+  /** Nobody is on the list yet. */
+  empty(): void {
+    this.guests = [];
+  }
+
   register(on: Register): void {
+    on('POST', '/api/parties/:partyId/guests', (request) => {
+      const body = request.postDataJSON() as {
+        childName: string;
+        parentName: string;
+        email: string;
+        mobile: string | null;
+        sendNow: boolean;
+      };
+      const errors: Record<string, string[]> = {};
+      if (!body.childName.trim()) errors['childName'] = ['Add the child’s name.'];
+      if (!body.parentName.trim()) errors['parentName'] = ['Add the parent’s name.'];
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(body.email))
+        errors['email'] = ['Enter an email like name@example.com.'];
+      if (
+        body.mobile &&
+        !/^(\+?1[ -]?)?\(?(416|647|437|905|289|365|613|514)\)?[ -]?\d{3}[ -]?\d{4}$/.test(
+          body.mobile,
+        )
+      )
+        errors['mobile'] = [
+          'Enter a Canadian mobile number, like 416-555-0131, or leave it blank.',
+        ];
+      if (Object.keys(errors).length)
+        return { status: 400, body: { status: 400, title: 'Some details need fixing.', errors } };
+      if (this.guests.length >= 60)
+        return {
+          status: 409,
+          body: { status: 409, title: 'The guest list holds up to 60 guests.' },
+        };
+      const duplicate = this.guests.find(
+        (g) =>
+          g.childName.toLowerCase() === body.childName.trim().toLowerCase() &&
+          g.email?.toLowerCase() === body.email.trim().toLowerCase(),
+      );
+      if (duplicate)
+        return {
+          status: 409,
+          body: { status: 409, title: `${duplicate.childName} is already on the list.` },
+        };
+      const guest: SeedGuest = {
+        id: `e2000000-0000-4000-8000-${String(this.guests.length + 1).padStart(12, '0')}`,
+        childName: body.childName.trim(),
+        parentName: body.parentName.trim(),
+        rsvp: body.sendNow && this.invitation.sentAt ? 'waiting' : 'notSent',
+        allergies: null,
+        parentStaying: null,
+        note: null,
+        email: body.email.trim(),
+        mobile: body.mobile?.trim() || null,
+        emailBounced: false,
+        lastRemindedAt: null,
+        token: `${body.childName.split(' ')[0].toLowerCase()}-token`,
+      };
+      this.guests.push(guest);
+      return { status: 201, body: this.view(guest) };
+    });
+    on('DELETE', '/api/parties/:partyId/guests/:guestId', (_, params) => {
+      const guest = this.guests.find((g) => g.id === params['guestId']);
+      if (!guest) return { status: 404 };
+      this.guests = this.guests.filter((g) => g !== guest);
+      this.removed.push(guest);
+      return { status: 204 };
+    });
+    on('POST', '/api/parties/:partyId/guests/:guestId/restore', (_, params) => {
+      const guest = this.removed.find((g) => g.id === params['guestId']);
+      if (!guest) return { status: 404 };
+      this.removed = this.removed.filter((g) => g !== guest);
+      this.guests.push(guest);
+      return { body: this.view(guest) };
+    });
+    on('POST', '/api/parties/:partyId/imports/check', (request) => {
+      const file = this.upload(request);
+      if (!file) return this.badFile();
+      const plan = this.plan(file.rows);
+      return {
+        body: {
+          fileName: file.name,
+          rows: file.rows.length,
+          ready: plan.ready.length,
+          missingEmail: plan.skipped.filter((s) => s.reason === 'No parent email'),
+          duplicates: plan.skipped.filter((s) => s.reason === 'Already on the list'),
+        },
+      };
+    });
+    on('POST', '/api/parties/:partyId/imports', (request) => {
+      const file = this.upload(request);
+      if (!file) return this.badFile();
+      this.uploads.push(file.name);
+      return { delayMs: 600, body: this.importRows(file.rows) };
+    });
+    on('GET', '/api/parties/:partyId/imports/sources', () => ({
+      body: [
+        {
+          partyId: this.pastParty.partyId,
+          name: this.pastParty.name,
+          date: this.pastParty.date,
+          guests: this.pastParty.guests.length,
+        },
+      ],
+    }));
+    on('POST', '/api/parties/:partyId/imports/from-party', () => ({
+      body: this.importRows(
+        this.pastParty.guests.map((g, i) => ({
+          row: i + 1,
+          child: g.childName,
+          parent: g.parentName,
+          email: g.email,
+          mobile: null,
+        })),
+      ),
+    }));
     on('GET', '/api/parties/:partyId/guests', (_, params) => ({
       body: this.list(params['partyId']),
     }));
@@ -217,6 +347,92 @@ export class FakeGuests {
       const events = this.updates.filter((u) => u.id > Number(after));
       return { body: { events, cursor: events.at(-1)?.id ?? Number(after) } };
     });
+  }
+
+  private view(guest: SeedGuest) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { token, ...g } = guest;
+    return { ...g, hasEmail: g.email !== null, hasMobile: g.mobile !== null };
+  }
+
+  private badFile(): FakeResponse {
+    return { status: 400, body: { status: 400, title: 'Choose a .csv or .xlsx file up to 2 MB.' } };
+  }
+
+  /** Reads the multipart upload's file name and its CSV rows; null for anything but a .csv. */
+  private upload(request: Request) {
+    const body = request.postDataBuffer()?.toString('utf8') ?? '';
+    const name = /filename="?([^"\r\n]+)"?/.exec(body)?.[1] ?? '';
+    if (!name.toLowerCase().endsWith('.csv')) return null;
+    const start = body.indexOf('\r\n\r\n') + 4;
+    const end = body.lastIndexOf('\r\n--');
+    const lines = body
+      .slice(start, end)
+      .split(/\r?\n/)
+      .filter((l) => l.trim());
+    const rows = lines.slice(1).map((line, i) => {
+      const [child, parent, email, mobile] = line.split(',').map((c) => c.trim());
+      return { row: i + 2, child, parent, email: email || null, mobile: mobile || null };
+    });
+    return { name, rows };
+  }
+
+  private plan(
+    rows: {
+      row: number;
+      child: string;
+      parent: string;
+      email: string | null;
+      mobile: string | null;
+    }[],
+  ) {
+    const keys = new Set(
+      this.guests.map((g) => `${g.childName.toLowerCase()}|${g.email?.toLowerCase()}`),
+    );
+    const ready: typeof rows = [];
+    const skipped: { row: number; child: string; reason: string }[] = [];
+    for (const row of rows) {
+      const key = `${row.child.toLowerCase()}|${row.email?.toLowerCase()}`;
+      if (!row.email) skipped.push({ row: row.row, child: row.child, reason: 'No parent email' });
+      else if (keys.has(key))
+        skipped.push({ row: row.row, child: row.child, reason: 'Already on the list' });
+      else if (this.guests.length + ready.length >= 60)
+        skipped.push({ row: row.row, child: row.child, reason: 'The list holds up to 60 guests' });
+      else {
+        keys.add(key);
+        ready.push(row);
+      }
+    }
+    return { ready, skipped };
+  }
+
+  private importRows(
+    rows: {
+      row: number;
+      child: string;
+      parent: string;
+      email: string | null;
+      mobile: string | null;
+    }[],
+  ) {
+    const plan = this.plan(rows);
+    for (const row of plan.ready) {
+      this.guests.push({
+        id: `e3000000-0000-4000-8000-${String(this.guests.length + 1).padStart(12, '0')}`,
+        childName: row.child,
+        parentName: row.parent,
+        rsvp: 'notSent',
+        allergies: null,
+        parentStaying: null,
+        note: null,
+        email: row.email,
+        mobile: row.mobile,
+        emailBounced: false,
+        lastRemindedAt: null,
+        token: `${row.child.split(' ')[0].toLowerCase()}-token`,
+      });
+    }
+    return { imported: plan.ready.length, skipped: plan.skipped };
   }
 
   private list(partyId: string) {

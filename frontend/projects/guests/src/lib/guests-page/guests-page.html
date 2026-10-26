@@ -4,6 +4,16 @@
     <h1>Guests</h1>
     <p class="subtitle">{{ subtitle() }}</p>
   </div>
+  @if (canPlan()) {
+    <div class="cluster">
+      <button giddy-button type="button" (click)="openImport()">
+        <svg giddy-icon="upload"></svg>Import
+      </button>
+      <button giddy-button variant="primary" type="button" (click)="openAdd()">
+        <svg giddy-icon="plus"></svg>Add guest
+      </button>
+    </div>
+  }
 </div>
 <nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
 
@@ -26,9 +36,18 @@
     <section
       giddy-empty-state
       class="card section"
-      heading="No guests yet"
-      text="Families you add appear here with their replies and allergies."
-    ></section>
+      heading="Who’s coming to the party?"
+      text="Add families one by one, or import a class list from a spreadsheet."
+    >
+      @if (canPlan()) {
+        <button giddy-button variant="primary" type="button" (click)="openAdd()">
+          <svg giddy-icon="plus"></svg>Add the first guest
+        </button>
+        <button giddy-button type="button" (click)="openImport()">
+          <svg giddy-icon="upload"></svg>Import a class list
+        </button>
+      }
+    </section>
   }
   @case ('ready') {
     @let guestList = list.value()!;
@@ -52,59 +71,128 @@
         </section>
       }
     </div>
-    <giddy-table-wrap class="section">
-      <table class="table">
-        <caption class="visually-hidden">
-          Guest list
-        </caption>
-        <thead>
-          <tr>
-            @if (canPlan()) {
-              <th scope="col"><span class="visually-hidden">Select</span></th>
-            }
-            <th scope="col">Child</th>
-            <th scope="col">RSVP</th>
-            <th scope="col">Allergies</th>
-            <th scope="col">Parent</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (guest of guestList.guests; track guest.id) {
-            <tr [id]="'guest-' + guest.id" [class.guests__row--selected]="isSelected(guest)">
-              @if (canPlan()) {
-                <td class="guests__select">
-                  <label giddy-choice>
-                    <input
-                      type="checkbox"
-                      [checked]="isSelected(guest)"
-                      (change)="toggle(guest, $any($event.target).checked)"
-                    />
-                    <span class="visually-hidden">Select {{ guest.childName }}</span>
-                  </label>
-                </td>
-              }
-              <td>
-                <span class="guests__child">
-                  <giddy-avatar size="sm" aria-hidden="true" [name]="guest.childName" />
-                  <strong>{{ guest.childName }}</strong>
-                </span>
-              </td>
-              <td>
-                <giddy-badge [tone]="badge(guest).tone">{{ badge(guest).label }}</giddy-badge>
-              </td>
-              <td>
-                @if (guest.allergies) {
-                  <giddy-allergy-tag>{{ guest.allergies }}</giddy-allergy-tag>
-                } @else {
-                  <span class="text-muted">None</span>
-                }
-              </td>
-              <td>{{ guest.parentName }}</td>
-            </tr>
+    <div class="cluster cluster--between section guests__find">
+      <giddy-search-field
+        class="guests__search"
+        label="Search kids or parents"
+        [value]="search()"
+        (valueChange)="search.set($event)"
+      />
+      <div class="cluster" role="group" aria-label="Filter guests">
+        @for (chip of chips(); track chip.filter) {
+          <button
+            giddy-chip
+            type="button"
+            [pressed]="filter() === chip.filter"
+            (click)="filter.set(chip.filter)"
+          >
+            {{ chip.label }} {{ chip.count }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (!shown().length) {
+      <section
+        giddy-empty-state
+        class="card section"
+        [heading]="search().trim() ? 'No guests match “' + search().trim() + '”' : 'No guests here'"
+        text="Check the spelling, or try another filter."
+      >
+        @if (search().trim()) {
+          <button giddy-button type="button" (click)="clearSearch()">Clear search</button>
+          @if (canPlan()) {
+            <button giddy-button variant="primary" type="button" (click)="openAdd(search().trim())">
+              Add “{{ search().trim() }}” as a guest
+            </button>
           }
-        </tbody>
-      </table>
-    </giddy-table-wrap>
+        } @else {
+          <button giddy-button type="button" (click)="filter.set('all')">Show everyone</button>
+        }
+      </section>
+    } @else {
+      <giddy-table-wrap class="section">
+        <table class="table">
+          <caption class="visually-hidden">
+            Guest list
+          </caption>
+          <thead>
+            <tr>
+              @if (canPlan()) {
+                <th scope="col"><span class="visually-hidden">Select</span></th>
+              }
+              <th scope="col">Child</th>
+              <th scope="col">RSVP</th>
+              <th scope="col">Allergies</th>
+              <th scope="col">Parent</th>
+              @if (canPlan()) {
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (guest of shown(); track guest.id) {
+              <tr [id]="'guest-' + guest.id" [class.guests__row--selected]="isSelected(guest)">
+                @if (canPlan()) {
+                  <td class="guests__select">
+                    <label giddy-choice>
+                      <input
+                        type="checkbox"
+                        [checked]="isSelected(guest)"
+                        (change)="toggle(guest, $any($event.target).checked)"
+                      />
+                      <span class="visually-hidden">Select {{ guest.childName }}</span>
+                    </label>
+                  </td>
+                }
+                <td>
+                  <span class="guests__child">
+                    <giddy-avatar size="sm" aria-hidden="true" [name]="guest.childName" />
+                    <strong>{{ guest.childName }}</strong>
+                  </span>
+                </td>
+                <td>
+                  <giddy-badge [tone]="badge(guest).tone">{{ badge(guest).label }}</giddy-badge>
+                </td>
+                <td>
+                  @if (guest.allergies) {
+                    <giddy-allergy-tag>{{ guest.allergies }}</giddy-allergy-tag>
+                  } @else {
+                    <span class="text-muted">None</span>
+                  }
+                </td>
+                <td>{{ guest.parentName }}</td>
+                @if (canPlan()) {
+                  <td class="guests__actions">
+                    @if (guest.email) {
+                      <a
+                        giddy-button
+                        variant="ghost"
+                        size="sm"
+                        iconOnly
+                        [href]="'mailto:' + guest.email"
+                        [attr.aria-label]="'Message the parent of ' + guest.childName"
+                        ><svg giddy-icon="mail"></svg
+                      ></a>
+                    }
+                    <button
+                      giddy-button
+                      variant="ghost"
+                      size="sm"
+                      iconOnly
+                      type="button"
+                      [attr.aria-label]="'Remove ' + guest.childName"
+                      (click)="confirmRemove(guest)"
+                    >
+                      <svg giddy-icon="trash"></svg>
+                    </button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </giddy-table-wrap>
+    }
   }
   @default {
     @if (list.showSkeleton()) {
@@ -126,7 +214,11 @@
       [dismissible]="toast.persistent"
       (dismissed)="dismiss(toast.id)"
     >
-      @if (toast.action; as action) {
+      @if (toast.undo) {
+        <button giddyToastAction class="toast__action" type="button" (click)="undo(toast)">
+          Undo
+        </button>
+      } @else if (toast.action; as action) {
         <a
           giddyToastAction
           class="toast__action"

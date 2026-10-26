@@ -31,3 +31,29 @@
 .guests__clear {
   color: inherit;
 }
+
+.guests__find {
+  align-items: center;
+}
+
+.guests__search {
+  flex: 1 1 16rem;
+  max-width: 28rem;
+}
+
+.guests__actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Row actions appear on hover or focus; touch screens always show them. */
+@media (hover: hover) {
+  .guests__actions > * {
+    opacity: 0;
+  }
+
+  tr:hover .guests__actions > *,
+  tr:focus-within .guests__actions > * {
+    opacity: 1;
+  }
+}
