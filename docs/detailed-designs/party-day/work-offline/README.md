@@ -61,6 +61,6 @@ Each `OutboxEntry` carries the ETag it was based on.
 
 ### Behaviour — tick tasks, then sync
 
-Offline changes queue locally and replay with ETags; a 412 becomes a conflict the parent resolves (`L2-051`, `L2-076`).
+Offline changes queue locally and replay with ETags; a 412 becomes a conflict the parent resolves (`L2-051`).
 
 ![Sequence diagram: Offline — tick tasks, then sync](diagrams/sequence-sync.png)

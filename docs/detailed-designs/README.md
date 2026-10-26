@@ -31,7 +31,7 @@ The web app talks only to the API. Long-running agent turns and outbound message
 
 ## Features
 
-50 features in 17 subsystems cover 94 of 94 L2 requirements.
+47 features in 17 subsystems cover 87 of 87 L2 requirements.
 
 | Subsystem | Feature | L2 requirements |
 |---|---|---|
@@ -77,9 +77,6 @@ The web app talks only to the API. Long-running agent turns and outbound message
 | Account, settings and privacy | [Edit profile and notification settings](account/edit-settings/README.md) | `L2-065`, `L2-068` |
 | Account, settings and privacy | [Download and delete my data](account/export-and-delete-data/README.md) | `L2-067` |
 | Platform and cross-cutting concerns | [Authorise and validate every request](platform/authorise-requests/README.md) | `L2-069`, `L2-071` |
-| Platform and cross-cutting concerns | [Protect personal data and keep an audit trail](platform/protect-personal-data/README.md) | `L2-072`, `L2-073` |
-| Platform and cross-cutting concerns | [Performance, capacity and resilience](platform/performance-and-resilience/README.md) | `L2-074`, `L2-075`, `L2-076` |
-| Platform and cross-cutting concerns | [Observability, alerting and recovery](platform/observability-and-recovery/README.md) | `L2-077`, `L2-078` |
 | Platform and cross-cutting concerns | [Accessible user interface](platform/accessible-ui/README.md) | `L2-079`, `L2-080`, `L2-081`, `L2-082`, `L2-083` |
 | Platform and cross-cutting concerns | [Responsive, themed application shell](platform/responsive-themed-shell/README.md) | `L2-084`, `L2-085`, `L2-086` |
 | Platform and cross-cutting concerns | [Loading, empty, error and offline states](platform/system-states/README.md) | `L2-087`, `L2-088`, `L2-089` |

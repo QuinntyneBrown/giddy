@@ -54,7 +54,7 @@ One event handler fans out to read models, the hub and notifications.
 
 ### Class structure
 
-`AllergyEntry` holds only a first name and the allergy (`L2-072`).
+`AllergyEntry` holds only a first name and the allergy.
 
 ![Class diagram: Live RSVP updates and the allergy list](diagrams/class-structure.png)
 

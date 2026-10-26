@@ -34,5 +34,4 @@ job -> graph : Delete(familyId)
 graph -> db : Revoke co-planner access; delete parties, guests, conversations, memories
 graph -> blob : Delete files
 graph --> job : DeletionReport (payments retained)
-job -> db : Audit record (L2-073)
 @enduml
