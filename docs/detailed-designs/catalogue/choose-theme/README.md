@@ -25,6 +25,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`SetPartyThemeHandler`** — Sets or clears a party's theme and returns the previous one for Undo.
 
 
+**As built**
+
+- Themes are catalogue items with a `ThemeProfile` (emoji, age range, outdoor, budget-friendly) and interest tags. The demo catalogue has 13 themes; the full 40 wait for the editorial process.
+- `GET /api/themes?partyId&forChild&ageBand&outdoor&budget` returns the total, the party's child, and the matching themes. Each is tagged when the child's interests, as Giddy remembers them, mention one of its tags, and marked when it is the party's theme.
+- `PUT /api/parties/{id}/theme` with a theme id (or null) sets or clears the theme and returns the previous one, so Undo restores it. Invitations and Fun & food follow the party's theme.
+
 **Open points**
 
 - Editorial process for adding themes to the catalogue `<TO SUPPLY>`
