@@ -22,6 +22,11 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`ComingUpNextCard`** — Home card for the next birthday within 120 days.
 
 
+**As built**
+
+- `BirthdayReminders` runs in the reminder worker every minute from 9:00 am Toronto time. For each child whose birthday is exactly 42 days away with no party planned for it, it queues one nudge (keyed per child and birthday) through `NotificationOutbox`, so quiet hours apply.
+- Home's "Coming up next" now only shows a birthday within 120 days.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

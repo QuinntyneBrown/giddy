@@ -35,6 +35,21 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - Apple Sign In service ID and key rotation procedure `<TO SUPPLY>`
 
+**As built**
+
+- `POST /api/auth/sign-in` checks the password with ASP.NET Core Identity's hasher (PBKDF2-HMAC-SHA512 at 210,000 iterations). It never says whether the email or the password was wrong.
+- After five failures in 15 minutes, the next attempt pauses sign-in for 15 minutes (423). A password reset lifts the pause.
+- Sessions are server-side (`ParentSession`). The `__Host-` cookie (HttpOnly, Secure, SameSite=Lax) only names the session, and it is re-issued at every sign-in.
+  - Every request checks the session in `OnValidatePrincipal`.
+  - "Keep me signed in" makes a persistent 30-day sliding session; otherwise the cookie lasts for the browser session, with a 12-hour idle limit on the server.
+- A sign-in from a device the account hasn't used before emails the parent with the device (from the user agent) and the place the edge network reports in `X-Client-City`.
+- Google and Apple are registered only when their client ids are configured (from environment variables).
+  - `/api/auth/external/{provider}` round-trips through a short-lived external cookie.
+  - The callback signs in the account with that verified email, or creates a verified one that goes to `/welcome`.
+  - Failures go back to `/sign-in?error=provider`. Only local return paths are followed.
+- Sign-in, sign-up, reset and resend are limited to 10 requests a minute per IP address, with `Retry-After`. The per-account limit is the sign-in pause.
+- The web app's `signedInGuard` sends visitors to `/sign-in?returnUrl=…`.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

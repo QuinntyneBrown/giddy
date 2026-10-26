@@ -38,6 +38,17 @@ The feature is a vertical slice from the Angular web application through the Gid
 - Template copy for the confirmation email `<TO SUPPLY>`
 - Exact breached-password service and its SLA `<TO SUPPLY>`
 
+**As built**
+
+- `POST /api/auth/sign-up` creates an unverified `Parent` and its `Family` with the postal code, and emails a 24-hour confirmation link.
+  - The password must be at least 10 characters with a number or symbol, and not in a known breach. Have I Been Pwned's range API is used, so only the first five characters of the SHA-1 leave Giddy.
+  - The postal code must be in the GTA service area.
+  - An address that already has an account gets 409 "There’s already a Giddy account for that email". The answer is the same whether or not the account is confirmed, and the password is hashed first so the timing matches too.
+- Link tokens are stored only as SHA-256 hashes (`AccountToken`). `POST /api/auth/verify` confirms the email and signs in; an expired or used link answers 410 with the address so a new link can be offered.
+- `POST /api/auth/verify/resend` waits a minute between links (429 with `retryAfterSeconds`).
+- Confirmation emails carry `parent:<id>`, so a bounce marks the parent and the shell shows the danger banner.
+- Unverified parents see the shell's confirm-your-email banner. Sending invitations was already blocked until the email is confirmed.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
