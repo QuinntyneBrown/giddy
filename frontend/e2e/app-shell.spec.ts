@@ -131,3 +131,11 @@ test('remembers a light choice on a device that prefers dark', async ({ page }) 
   await expect.poll(() => shell.theme()).toBe('light');
   await expect(shell.darkThemeToggle).toHaveAttribute('aria-pressed', 'false');
 });
+
+test('keeps the footer clear of the bottom bar on phones', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.useWidth(360);
+  await shell.open();
+
+  expect(await shell.footerClearsBottomBar()).toBe(true);
+});

@@ -117,6 +117,15 @@ export class AppShellPage {
     return (await this.bottomBar.getByRole('link').allInnerTexts()).map((text) => text.trim());
   }
 
+  /** Whether the footer's text can be scrolled clear of the fixed bottom bar. */
+  async footerClearsBottomBar(): Promise<boolean> {
+    await this.footer.scrollIntoViewIfNeeded();
+    await this.page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const footerText = await this.footer.locator('span').first().boundingBox();
+    const bar = await this.bottomBar.boundingBox();
+    return !!footerText && !!bar && footerText.y + footerText.height <= bar.y;
+  }
+
   scrollsSideways(): Promise<boolean> {
     return this.page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,

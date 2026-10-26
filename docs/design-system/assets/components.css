@@ -498,7 +498,10 @@ h1, h2, h3, h4, .card__title, .dialog__title, .drawer__title, .empty__title { fo
 .bottom-nav .badge--count { position: absolute; top: var(--space-1); left: 55%; }
 .bottom-nav a.bottom-nav__cta .icon { color: var(--color-fg-on-accent); background: var(--color-accent); border-radius: var(--radius-full); width: var(--target-comfortable); height: var(--target-comfortable); padding: 0.5rem; margin-top: calc(-1 * var(--space-5)); box-shadow: var(--shadow-press); }
 .has-bottom-nav main { padding-bottom: calc(var(--layout-bottom-nav-height) + var(--space-8)); }
-@media (min-width: 64rem) { .bottom-nav { display: none; } .has-bottom-nav main { padding-bottom: var(--space-12); } }
+/* A footer after main clears the fixed bottom bar instead of main. */
+.has-bottom-nav main:has(+ .footer) { padding-bottom: var(--space-12); }
+.has-bottom-nav .footer { padding-bottom: calc(var(--layout-bottom-nav-height) + var(--space-8)); }
+@media (min-width: 64rem) { .bottom-nav { display: none; } .has-bottom-nav main { padding-bottom: var(--space-12); } .has-bottom-nav .footer { padding-bottom: var(--space-8); } }
 .has-bottom-nav .topbar__menu { display: none; }
 .sidebar__cta { margin: var(--space-2) 0 var(--space-4); }
 .sidebar__party { margin-top: auto; }

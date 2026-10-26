@@ -117,6 +117,7 @@ Giddy additions to the standard token set:
 | pages/guests/default | Table squeezed beside an aside at 1280px | Tally and allergy list moved above the table |
 | dialogs/* | Page scrolled behind open dialogs | `body:has(> .dialog)` locks scroll |
 | assets/ui.css `.bottom-nav__cta` | `!important` widths | More specific selector, `--target-comfortable` |
+| app shell | Fixed bottom bar covered a footer placed after `main` on phones | `.has-bottom-nav .footer` clears the bar; `main` keeps normal spacing before it |
 | assets/ui.css `.menu__item` | Focus shown by background only, outline removed | Inset focus ring restored |
 | assets/ui.css loops | Raw 0.8s/1.2s/1.4s/1.6s animation durations | `--duration-spin` (800 ms), `--duration-loop` (1.4 s); typing dots and pulse snapped to 1.4 s |
 | assets/ui.css `.badge` | Raw `0.02em` letter-spacing | Uses `--letter-spacing-wide` from the overline role |
