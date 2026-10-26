@@ -788,6 +788,33 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Giddy.Domain.Catalogue.CatalogueItem", b =>
                 {
+                    b.OwnsOne("Giddy.Domain.Catalogue.ThemeProfile", "ThemeInfo", b1 =>
+                        {
+                            b1.Property<Guid>("CatalogueItemId");
+
+                            b1.Property<bool>("BudgetFriendly");
+
+                            b1.Property<string>("Emoji")
+                                .IsRequired();
+
+                            b1.Property<int>("MaxAge");
+
+                            b1.Property<int>("MinAge");
+
+                            b1.Property<bool>("Outdoor");
+
+                            b1.HasKey("CatalogueItemId");
+
+                            b1.ToTable("CatalogueItems");
+
+                            b1
+                                .ToJson("ThemeInfo")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CatalogueItemId");
+                        });
+
                     b.OwnsOne("Giddy.Domain.Catalogue.VendorProfile", "Vendor", b1 =>
                         {
                             b1.Property<Guid>("CatalogueItemId");
@@ -970,6 +997,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
                             b1.Navigation("Slots");
                         });
+
+                    b.Navigation("ThemeInfo");
 
                     b.Navigation("Vendor");
 

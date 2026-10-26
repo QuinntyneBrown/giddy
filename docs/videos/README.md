@@ -16,6 +16,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 06 | [Send invitations and track RSVPs](06-send-invitations-and-track-rsvps/README.md) | ~4 min | The invitation, private RSVP links, live updates, reminders and the allergy list |
 | 07 | [Build the guest list](07-build-the-guest-list/README.md) | ~3.5 min | Search, filters, adding, removing with undo and importing a class list |
 | 08 | [Find entertainers, food and cake](08-find-entertainers-food-and-cake/README.md) | ~3 min | Fun & food, allergy fit, quote requests and expiring quotes |
+| 09 | [Choose a theme](09-choose-a-theme/README.md) | ~2 min | Themes for the child, filters, choosing with undo |
 
 ## Making or updating a video
 

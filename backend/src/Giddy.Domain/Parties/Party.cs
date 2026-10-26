@@ -200,4 +200,7 @@ public sealed class Party
             ? [.. BookingsToDo, updated]
             : BookingsToDo.Select(b => ReferenceEquals(b, existing) ? updated : b).ToList();
     }
+
+    /// <summary>Sets or clears the party's theme; invitations, cake ideas and activities follow it.</summary>
+    public void ChooseTheme(string? theme) => Theme = string.IsNullOrWhiteSpace(theme) ? null : theme.Trim();
 }
