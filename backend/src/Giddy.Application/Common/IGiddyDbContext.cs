@@ -1,3 +1,4 @@
+using Giddy.Domain.Notifications;
 using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
@@ -53,6 +54,8 @@ public interface IGiddyDbContext
     DbSet<PartyEvent> PartyEvents { get; }
 
     DbSet<QuoteRequest> QuoteRequests { get; }
+
+    DbSet<ScheduledNotification> Notifications { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

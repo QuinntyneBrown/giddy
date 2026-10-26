@@ -39,6 +39,8 @@ public sealed class Party
 
     public IReadOnlyCollection<PartyMember> Members => members;
 
+    public Guid OwnerId => members.Single(m => m.Role == PartyRole.Owner).ParentId;
+
     /// <summary>The family's child the party is for; null for someone else.</summary>
     public Guid? ChildId { get; private set; }
 
@@ -150,7 +152,7 @@ public sealed class Party
         EndsAt = endsAt;
         if (!Checklist.Any(t => t.Title == AllergyListTask))
         {
-            Checklist = [.. Checklist, new ChecklistTask(AllergyListTask, Date.PlusDays(-7))];
+            Checklist = [.. Checklist, new ChecklistTask(AllergyListTask, Date.PlusDays(-7)) { GiddyAction = GiddyActions.AllergyList }];
         }
     }
 
@@ -164,7 +166,8 @@ public sealed class Party
     {
         AllergyListSharedAt = now;
         AllergyUpdateFor = null;
-        Checklist = Checklist.Select(t => t.Title == AllergyListTask ? t with { Done = true } : t).ToList();
+        var today = now.InZone(Calendar.TorontoCalendar.Zone).Date;
+        Checklist = Checklist.Select(t => t.Title == AllergyListTask && !t.Done ? t with { Done = true, DoneOn = today } : t).ToList();
     }
 
     public void AllergyArrivedAfterSharing(string childFirstName)
@@ -245,4 +248,41 @@ public sealed class Party
 
         BookingsToDo = estimates.ToList();
     }
+
+    public ChecklistTask? FindTask(Guid taskId) => Checklist.SingleOrDefault(t => t.TaskId == taskId);
+
+    /// <summary>Adds the task, or replaces the one with its id.</summary>
+    public void SaveTask(ChecklistTask task) =>
+        Checklist = Checklist.Any(t => t.TaskId == task.TaskId)
+            ? Checklist.Select(t => t.TaskId == task.TaskId ? task : t).ToList()
+            : [.. Checklist, task];
+
+    public bool RemoveTask(Guid taskId)
+    {
+        var before = Checklist.Count;
+        Checklist = Checklist.Where(t => t.TaskId != taskId).ToList();
+        return Checklist.Count != before;
+    }
+
+    public ChecklistTask SetTaskDone(Guid taskId, bool done, LocalDate today)
+    {
+        var task = FindTask(taskId) ?? throw new InvalidOperationException("No such task.");
+        var changed = task with { Done = done, DoneOn = done ? task.DoneOn ?? today : null };
+        SaveTask(changed);
+        return changed;
+    }
+
+    /// <summary>"Make my checklist": only for a party with no tasks yet.</summary>
+    public void MakeChecklist(IEnumerable<ChecklistTask> tasks)
+    {
+        if (Checklist.Count > 0)
+        {
+            throw new InvalidOperationException("The party already has a checklist.");
+        }
+
+        Checklist = tasks.ToList();
+    }
+
+    /// <summary>Planners can be given tasks: the owner and co-planners, not viewers.</summary>
+    public bool IsPlanner(Guid parentId) => members.Any(m => m.ParentId == parentId && m.Role != PartyRole.Viewer);
 }

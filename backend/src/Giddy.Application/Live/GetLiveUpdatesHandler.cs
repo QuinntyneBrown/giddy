@@ -11,7 +11,7 @@ public sealed class GetLiveUpdatesHandler(IGiddyDbContext db, ICurrentParent par
     public async Task<LiveUpdates> Handle(GetLiveUpdatesQuery request, CancellationToken cancellationToken)
     {
         var parties = db.Parties.Where(p => p.Members.Any(m => m.ParentId == parent.Id)).Select(p => p.Id);
-        var mine = db.PartyEvents.Where(e => parties.Contains(e.PartyId));
+        var mine = db.PartyEvents.Where(e => parties.Contains(e.PartyId) && e.ActorParentId != parent.Id);
         if (request.After is not { } after)
         {
             var latest = await db.PartyEvents.Select(e => (long?)e.Id).MaxAsync(cancellationToken) ?? 0;

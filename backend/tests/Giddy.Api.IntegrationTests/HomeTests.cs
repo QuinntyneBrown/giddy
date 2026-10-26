@@ -9,13 +9,15 @@ namespace Giddy.Api.IntegrationTests;
 /// <summary>L2-062 to L2-064: Home and Giddy's nudges.</summary>
 public sealed class HomeTests : IDisposable
 {
+    /// <summary>Within a week of the clock's Sun 25 Oct, so it is nudged as needing the parent.</summary>
+    private static readonly NodaTime.LocalDate CakeThisWeek = new(2026, 10, 31);
     private readonly GiddyApiFactory factory = new();
     private CancellationToken Cancel => TestContext.Current.CancellationToken;
 
     [Fact]
     public async Task Home_shows_the_soonest_party_its_readiness_and_the_next_birthday_not_yet_planned()
     {
-        var dinoParty = TestData.DinoParty().WithPlan(doneTasks: 3, confirmedBookings: 1);
+        var dinoParty = TestData.DinoParty().WithPlan(doneTasks: 3, confirmedBookings: 1).WithTaskDue("Order the cake", CakeThisWeek);
         await factory.SeedAsync(db =>
         {
             TestData.AddPeople(db);
@@ -43,7 +45,7 @@ public sealed class HomeTests : IDisposable
         await factory.SeedAsync(db =>
         {
             TestData.AddPeople(db);
-            db.Parties.Add(TestData.DinoParty().WithPlan(doneTasks: 1));
+            db.Parties.Add(TestData.DinoParty().WithPlan(doneTasks: 1).WithTaskDue("Order the cake", CakeThisWeek));
         });
         using var amara = factory.CreateClientFor(TestParent.Amara);
 
@@ -62,7 +64,7 @@ public sealed class HomeTests : IDisposable
         await factory.SeedAsync(db =>
         {
             TestData.AddPeople(db);
-            db.Parties.Add(TestData.DinoParty().WithPlan(doneTasks: 2));
+            db.Parties.Add(TestData.DinoParty().WithPlan(doneTasks: 2).WithTaskDue("Order the cake", CakeThisWeek));
         });
         using var amara = factory.CreateClientFor(TestParent.Amara);
 

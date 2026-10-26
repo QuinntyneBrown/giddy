@@ -82,4 +82,11 @@ public static class PartyTestExtensions
         party.ApplyPlan("Dino Dig", bookings, tasks);
         return party;
     }
+
+    /// <summary>Moves one of the plan's tasks to another date, for example into this week.</summary>
+    public static Party WithTaskDue(this Party party, string title, LocalDate due)
+    {
+        party.SaveTask(party.Checklist.Single(t => t.Title == title) with { Due = due });
+        return party;
+    }
 }
