@@ -6,4 +6,9 @@ export const invitationsRoutes: Routes = [
     loadComponent: () => import('./invitation-page/invitation-page').then((m) => m.InvitationPage),
     title: 'Invitations · Giddy',
   },
+  {
+    path: 'rsvp/:token',
+    loadComponent: () => import('./rsvp-page/rsvp-page').then((m) => m.RsvpPage),
+    title: 'Your invitation · Giddy',
+  },
 ];

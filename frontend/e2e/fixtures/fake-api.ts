@@ -88,7 +88,11 @@ export class FakeApi {
       return;
     }
 
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
+    // Like the API, private RSVP links are exempt: they carry their credential in the path.
+    if (
+      !['GET', 'HEAD', 'OPTIONS'].includes(request.method()) &&
+      !url.pathname.startsWith('/api/rsvp/')
+    ) {
       const token = await request.headerValue('x-xsrf-token');
       if (token !== xsrfToken) {
         await route.fulfill({ status: 400, json: problem(400, 'Missing anti-forgery token.') });
