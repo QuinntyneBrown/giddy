@@ -33,6 +33,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
     public FakeEmailSender Email { get; } = new();
 
+    public FakeSmsSender Sms { get; } = new();
+
     public FakeVenuePartner Partner => partner ??= new FakeVenuePartner(Clock);
 
     private FakeVenuePartner? partner;
@@ -64,6 +66,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.AddSingleton<IVenuePartner>(_ => Partner);
             services.RemoveAll<IEmailSender>();
             services.AddSingleton<IEmailSender>(Email);
+            services.RemoveAll<ISmsSender>();
+            services.AddSingleton<ISmsSender>(Sms);
 
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null);

@@ -92,6 +92,94 @@ public sealed class InvitationTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
+    [Fact]
+    public async Task A_test_goes_only_to_the_parent()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var response = await amara.PostAsync($"{Url}/test", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        var email = Assert.Single(factory.Email.Sent);
+        Assert.Equal(TestParent.Amara.Email, email.To);
+        Assert.Contains("Zuri is turning 7!", email.Subject + email.Body);
+        Assert.Empty(factory.Sms.Sent);
+        Assert.Equal("notSent", (await GuestAsync(amara, "Maya Chen")).GetProperty("rsvp").GetString());
+    }
+
+    [Fact]
+    public async Task Sending_gives_every_family_not_yet_invited_a_private_link_by_each_channel_they_can_get()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var response = await amara.PostAsync($"{Url}/send", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal(5, result.GetProperty("sent").GetInt32());
+        Assert.Equal("2026-11-03", result.GetProperty("automaticReminderOn").GetString());
+        Assert.Equal(
+            ["hodan.mohamed@example.com", "lily.chen@example.com", "marco.rossi@example.com", "priya.patel@example.com"],
+            factory.Email.Sent.Select(e => e.To).Order());
+        Assert.Equal(["416-555-0123", "416-555-0177", "416-555-0199", "647-555-0101"], factory.Sms.Sent.Select(m => m.To).Order());
+        Assert.All(factory.Email.Sent, e => Assert.Matches("/rsvp/[A-Za-z0-9_-]{22}", e.Body));
+        Assert.Equal(5, factory.Email.Sent.Select(e => e.Body).Concat(factory.Sms.Sent.Select(m => m.Body))
+            .Select(b => System.Text.RegularExpressions.Regex.Match(b, "/rsvp/([A-Za-z0-9_-]+)").Groups[1].Value).Distinct().Count());
+        Assert.All((await amara.GetFromJsonAsync<JsonElement>($"/api/parties/{dinoParty.Id}/guests", Cancel)).GetProperty("guests").EnumerateArray(),
+            g => Assert.Equal("waiting", g.GetProperty("rsvp").GetString()));
+        Assert.NotEqual(JsonValueKind.Null, (await amara.GetFromJsonAsync<JsonElement>(Url, Cancel)).GetProperty("sentAt").ValueKind);
+    }
+
+    [Fact]
+    public async Task Sending_again_only_reaches_families_added_since()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        (await amara.PostAsync($"{Url}/send", null, Cancel)).EnsureSuccessStatusCode();
+        await factory.SeedAsync(db => db.Guests.Add(new Guest(Guid.NewGuid(), dinoParty.Id, "Zara Ali", "Fatima Ali", "fatima.ali@example.com", null)));
+        factory.Email.Sent.Clear();
+
+        var result = await (await amara.PostAsync($"{Url}/send", null, Cancel)).Content.ReadFromJsonAsync<JsonElement>(Cancel);
+
+        Assert.Equal(1, result.GetProperty("sent").GetInt32());
+        Assert.Equal("fatima.ali@example.com", Assert.Single(factory.Email.Sent).To);
+    }
+
+    [Fact]
+    public async Task Text_is_skipped_when_it_is_not_chosen()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        (await amara.PutAsJsonAsync(Url, Edit(), Cancel)).EnsureSuccessStatusCode();
+
+        (await amara.PostAsync($"{Url}/send", null, Cancel)).EnsureSuccessStatusCode();
+
+        Assert.Empty(factory.Sms.Sent);
+        Assert.Equal(4, factory.Email.Sent.Count);
+    }
+
+    [Fact]
+    public async Task An_unverified_email_blocks_sending()
+    {
+        using var unverified = await factory.CreateBrowserClientFor(TestParent.Amara with { EmailVerified = false });
+
+        var response = await unverified.PostAsync($"{Url}/send", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal("email-unverified", problem.GetProperty("code").GetString());
+        Assert.Empty(factory.Email.Sent);
+    }
+
+    [Fact]
+    public async Task Viewers_cannot_send()
+    {
+        using var dev = await factory.CreateBrowserClientFor(TestParent.Dev);
+
+        var response = await dev.PostAsync($"{Url}/send", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Empty(factory.Email.Sent);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();
@@ -99,6 +187,10 @@ public sealed class InvitationTests : IAsyncLifetime
     }
 
     private string Url => $"/api/parties/{dinoParty.Id}/invitation";
+
+    private async Task<JsonElement> GuestAsync(HttpClient client, string child) =>
+        (await client.GetFromJsonAsync<JsonElement>($"/api/parties/{dinoParty.Id}/guests", Cancel))
+            .GetProperty("guests").EnumerateArray().Single(g => g.GetProperty("childName").GetString() == child);
 
     private static object Edit(string headline = "Zuri is turning 7!", string message = "Come dig for fossils!", string rsvpBy = "2026-11-06") => new
     {

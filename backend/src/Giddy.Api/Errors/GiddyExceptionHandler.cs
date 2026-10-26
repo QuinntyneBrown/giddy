@@ -25,6 +25,12 @@ public sealed class GiddyExceptionHandler(IProblemDetailsService problemDetails,
                 Status = StatusCodes.Status400BadRequest,
             },
             NotFoundException => new ProblemDetails { Title = "We couldn’t find that.", Status = StatusCodes.Status404NotFound },
+            EmailUnverifiedException unverified => new ProblemDetails
+            {
+                Title = unverified.Message,
+                Status = StatusCodes.Status403Forbidden,
+                Extensions = { ["code"] = "email-unverified" },
+            },
             ForbiddenException => new ProblemDetails { Title = "You don’t have permission to do that.", Status = StatusCodes.Status403Forbidden },
             Giddy.Application.Venues.AvailabilityUnavailableException => new ProblemDetails { Title = "We couldn’t check venue availability right now. Your filters are kept; try again in a moment.", Status = StatusCodes.Status503ServiceUnavailable },
             Giddy.Application.Bookings.PaymentDeclinedException declined => new ProblemDetails { Title = declined.Message, Status = StatusCodes.Status402PaymentRequired },

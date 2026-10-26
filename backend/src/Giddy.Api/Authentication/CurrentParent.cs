@@ -15,6 +15,8 @@ public sealed class CurrentParent(IHttpContextAccessor accessor) : ICurrentParen
 
     public string Email => Claim(ClaimTypes.Email);
 
+    public bool EmailVerified => User.FindFirstValue("email_verified") == "true";
+
     private string Claim(string type) => User.FindFirstValue(type)
         ?? throw new InvalidOperationException($"The signed-in parent has no {type} claim.");
 }

@@ -29,6 +29,7 @@ public sealed class TestAuthenticationHandler(
                 new Claim(ClaimTypes.NameIdentifier, parts[0]),
                 new Claim(ClaimTypes.Name, parts[1]),
                 new Claim(ClaimTypes.Email, parts[2]),
+                new Claim("email_verified", parts.Length > 3 && parts[3] == "unverified" ? "false" : "true"),
             ],
             Scheme);
 

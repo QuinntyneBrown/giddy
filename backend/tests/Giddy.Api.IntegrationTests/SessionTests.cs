@@ -30,10 +30,10 @@ public sealed class SessionTests : IDisposable
 
         var session = await client.GetFromJsonAsync<SessionResponse>("/api/session", TestContext.Current.CancellationToken);
 
-        Assert.Equal(new SessionResponse(TestParent.Amara.Id, "Amara Okafor", "amara.okafor@example.com"), session);
+        Assert.Equal(new SessionResponse(TestParent.Amara.Id, "Amara Okafor", "amara.okafor@example.com", true), session);
     }
 
     public void Dispose() => factory.Dispose();
 
-    private sealed record SessionResponse(Guid ParentId, string Name, string Email);
+    private sealed record SessionResponse(Guid ParentId, string Name, string Email, bool EmailVerified);
 }

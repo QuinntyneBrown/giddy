@@ -1,3 +1,3 @@
 namespace Giddy.Api.Endpoints;
 
-public sealed record SessionResponse(Guid ParentId, string Name, string Email);
+public sealed record SessionResponse(Guid ParentId, string Name, string Email, bool EmailVerified);

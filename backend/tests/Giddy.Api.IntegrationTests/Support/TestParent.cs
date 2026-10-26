@@ -14,5 +14,7 @@ public sealed record TestParent(Guid Id, string Name, string Email)
     public static readonly TestParent Stranger = new(
         Guid.Parse("9e8d7c6b-5a4f-4e3d-8c2b-1a0f9e8d7c04"), "Lena Fischer", "lena.fischer@example.com");
 
-    public string HeaderValue => $"{Id}|{Name}|{Email}";
+    public bool EmailVerified { get; init; } = true;
+
+    public string HeaderValue => $"{Id}|{Name}|{Email}|{(EmailVerified ? "verified" : "unverified")}";
 }
