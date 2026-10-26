@@ -2,6 +2,7 @@ using System.Globalization;
 using Giddy.Application.Common;
 using Giddy.Application.Notifications;
 using Giddy.Domain.Calendar;
+using Giddy.Domain.Notifications;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using NodaTime.Text;
@@ -33,8 +34,10 @@ public sealed class TaskReminders(IGiddyDbContext db, NotificationOutbox outbox,
             {
                 await outbox.QueueAsync(
                     task.OwnerId ?? party.OwnerId,
+                    NotificationCategory.Reminders,
                     $"{task.Title} is due tomorrow",
                     $"For {party.Name}: {task.Title} is due tomorrow, {Day.Format(task.Due)}. Tick it off on the checklist in Giddy when it’s done.",
+                    $"/parties/{party.Id}/checklist",
                     null,
                     $"task-reminder:{task.TaskId}:{task.Due:yyyy-MM-dd}",
                     cancellationToken);
@@ -46,8 +49,10 @@ public sealed class TaskReminders(IGiddyDbContext db, NotificationOutbox outbox,
                 var lines = string.Join("\n", overdue.Select(t => $"- {t.Title}, due {Day.Format(t.Due)}"));
                 await outbox.QueueAsync(
                     owner.Key,
+                    NotificationCategory.Reminders,
                     overdue.Count == 1 ? $"1 task is overdue for {party.Name}" : $"{overdue.Count} tasks are overdue for {party.Name}",
                     $"These checklist tasks for {party.Name} are past their dates:\n{lines}\nTick them off in Giddy when they’re done.",
+                    $"/parties/{party.Id}/checklist",
                     null,
                     $"overdue:{party.Id}:{owner.Key}:{today:yyyy-MM-dd}",
                     cancellationToken);

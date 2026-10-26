@@ -12,7 +12,7 @@ namespace Giddy.Application.Guests.SendReminders;
 /// once every 48 hours.
 /// </summary>
 public sealed class SendRemindersHandler(
-    IGiddyDbContext db, InvitationReader reader, IEmailSender email, ISmsSender sms, IWebLinks links, ISecretProtector protector, IClock clock)
+    IGiddyDbContext db, InvitationReader reader, IEmailSender email, Notifications.Texts texts, IWebLinks links, ISecretProtector protector, IClock clock)
     : IRequestHandler<SendRemindersCommand, RemindersSent>
 {
     private static readonly Duration Cooldown = Duration.FromHours(48);
@@ -64,7 +64,8 @@ public sealed class SendRemindersHandler(
 
             if (guest.Mobile is { } mobile)
             {
-                await sms.SendAsync(ReminderMessages.Text(mobile, invitation, details, link), cancellationToken);
+                var text = ReminderMessages.Text(mobile, invitation, details, link);
+                await texts.SendAsync(text.To, text.Body, cancellationToken);
             }
 
             guest.Remind(now);

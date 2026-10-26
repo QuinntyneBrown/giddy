@@ -13,6 +13,7 @@ namespace Giddy.Application.Bookings.BookVenue;
 /// left without a payment, or a payment without a booking: each failure undoes the earlier steps.
 /// </summary>
 public sealed class BookVenueHandler(
+    Notifications.PlannerNews news,
     IGiddyDbContext db,
     IVenuePartner partner,
     IPaymentGateway payments,
@@ -81,6 +82,12 @@ public sealed class BookVenueHandler(
         }
 
         await completion.CompleteAsync(booking, new BookingContact(booking.BookingName, booking.Mobile, booking.Child, booking.Notes), cancellationToken);
+        if (booking.State == BookingState.Confirmed)
+        {
+            news.TellOthers(party, "✅", $"booked {venue.Name}", $"{party.Name}: the deposit is paid.", $"/parties/{party.Id}");
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
         if (request.Payment.SaveCard && request.Payment.SavedCardId is null)
         {
             db.SavedCards.Add(new SavedCard(Guid.NewGuid(), parent.Id, token, authorisation.Brand, authorisation.Last4, clock.GetCurrentInstant()));

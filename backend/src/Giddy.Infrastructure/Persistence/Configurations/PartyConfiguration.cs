@@ -25,6 +25,8 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
             members.ToTable("PartyMembers");
             members.WithOwner().HasForeignKey("PartyId");
             members.HasKey("PartyId", nameof(PartyMember.ParentId));
+            // Set by the app: a new member added to a saved party is inserted, not updated.
+            members.Property(m => m.ParentId).ValueGeneratedNever();
             members.Property(m => m.Role).HasConversion<string>().HasMaxLength(20);
             members.HasIndex(m => m.ParentId);
         });
@@ -37,6 +39,7 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
         builder.OwnsMany(p => p.Checklist, tasks => tasks.ToJson());
         builder.OwnsMany(p => p.Expenses, expenses => expenses.ToJson());
         builder.OwnsMany(p => p.RunSheet, steps => steps.ToJson());
+        builder.Property(p => p.ShareLinkHash).HasMaxLength(64);
         builder.Ignore(p => p.Planned);
     }
 }

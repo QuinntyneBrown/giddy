@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Giddy.Application.Budget.Costs;
 
 /// <summary>Typical tax-inclusive GTA costs: a venue, an entertainer, a cake, food and loot bags per child.</summary>
-public sealed class EstimateBudgetHandler(IGiddyDbContext db, BudgetProjection projection) : IRequestHandler<EstimateBudgetCommand, BudgetView>
+public sealed class EstimateBudgetHandler(Notifications.PlannerNews news, IGiddyDbContext db, BudgetProjection projection) : IRequestHandler<EstimateBudgetCommand, BudgetView>
 {
     public async Task<BudgetView> Handle(EstimateBudgetCommand request, CancellationToken cancellationToken)
     {
@@ -26,6 +26,7 @@ public sealed class EstimateBudgetHandler(IGiddyDbContext db, BudgetProjection p
             new BookingToDo("Food", "Food (estimate)", 7 * kids, null),
             new BookingToDo("Loot bags", "Loot bags (estimate)", 4 * kids, null),
         ]);
+        news.TellOthers(party, "💰", "filled in the budget from the plan", $"Giddy’s estimates for {party.Name}.", $"/parties/{party.Id}/budget");
         await db.SaveChangesAsync(cancellationToken);
         return await projection.ViewAsync(party, cancellationToken);
     }

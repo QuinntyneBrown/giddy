@@ -8,7 +8,7 @@ using NodaTime;
 namespace Giddy.Application.Rsvps.SubmitRsvp;
 
 /// <summary>Records the family's reply, replacing any earlier one, and adds a new allergy to the party's list.</summary>
-public sealed class SubmitRsvpHandler(IGiddyDbContext db, RsvpLinks links, IClock clock) : IRequestHandler<SubmitRsvpCommand, RsvpView>
+public sealed class SubmitRsvpHandler(Notifications.PlannerNews news, IGiddyDbContext db, RsvpLinks links, IClock clock) : IRequestHandler<SubmitRsvpCommand, RsvpView>
 {
     public async Task<RsvpView> Handle(SubmitRsvpCommand request, CancellationToken cancellationToken)
     {
@@ -23,6 +23,14 @@ public sealed class SubmitRsvpHandler(IGiddyDbContext db, RsvpLinks links, ICloc
         var replied = guest.RepliedAt is not null;
         var earlierAllergies = guest.Rsvp == RsvpStatus.Coming ? guest.Allergies : null;
         guest.Reply(request.Coming, request.Allergies, request.ParentStaying, request.Siblings, request.ParentName, request.Mobile, request.Note, now);
+        news.TellPlanners(
+            party,
+            "💌",
+            replied
+                ? $"{guest.ParentName} changed their reply: {guest.ChildFirstName} {(request.Coming ? "is coming" : "can’t come")}"
+                : $"{guest.ParentName} replied: {guest.ChildFirstName} {(request.Coming ? "is coming!" : "can’t come")}",
+            request.Coming && !string.IsNullOrWhiteSpace(request.Allergies) ? $"{guest.ChildFirstName}: {request.Allergies!.Trim()}." : $"For {party.Name}.",
+            $"/parties/{party.Id}/guests");
         if (replied)
         {
             db.PartyEvents.Add(PartyEvents.Changed(guest, now));

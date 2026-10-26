@@ -12,6 +12,7 @@ namespace Giddy.Application.Invitations.SendInvitations;
 /// they have details for. Needs the sender's email to be verified.
 /// </summary>
 public sealed class SendInvitationsHandler(
+    Notifications.PlannerNews news,
     IGiddyDbContext db, InvitationReader reader, InvitationDelivery delivery, ICurrentParent parent, IClock clock)
     : IRequestHandler<SendInvitationsCommand, InvitationsSent>
 {
@@ -38,6 +39,7 @@ public sealed class SendInvitationsHandler(
         }
 
         invitation.MarkSent(now);
+        news.TellOthers(party, "✉️", "sent the invitations", $"{guests.Count} families invited to {party.Name}.", $"/parties/{party.Id}/guests");
         await db.SaveChangesAsync(cancellationToken);
         return new InvitationsSent(guests.Count, PartySummaryMapper.DatePattern.Format(invitation.AutomaticReminderOn));
     }

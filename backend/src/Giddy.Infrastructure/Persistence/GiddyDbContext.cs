@@ -64,6 +64,16 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
 
     public DbSet<ParentSession> ParentSessions => Set<ParentSession>();
 
+    public DbSet<InboxItem> InboxItems => Set<InboxItem>();
+
+    public DbSet<SmsOptOut> SmsOptOuts => Set<SmsOptOut>();
+
+    public DbSet<PushSubscription> PushSubscriptions => Set<PushSubscription>();
+
+    public DbSet<PartyInvite> PartyInvites => Set<PartyInvite>();
+
+    public DbSet<Giddy.Domain.Privacy.DataExport> DataExports => Set<Giddy.Domain.Privacy.DataExport>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Instant>().HaveConversion<InstantConverter>();

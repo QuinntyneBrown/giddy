@@ -596,6 +596,81 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Memories", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Notifications.InboxItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ReadAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId", "CreatedAt");
+
+                    b.ToTable("InboxItems", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Notifications.PushSubscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("nvarchar(800)");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Endpoint")
+                        .IsUnique();
+
+                    b.ToTable("PushSubscriptions", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Notifications.ScheduledNotification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -606,6 +681,11 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTimeOffset>("DueAt")
                         .HasColumnType("datetimeoffset");
 
@@ -613,6 +693,11 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<Guid>("ParentId")
                         .HasColumnType("uniqueidentifier");
@@ -636,6 +721,20 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.HasIndex("SentAt", "SendAt");
 
                     b.ToTable("Notifications", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Notifications.SmsOptOut", b =>
+                {
+                    b.Property<string>("Number")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Number");
+
+                    b.ToTable("SmsOptOuts", (string)null);
                 });
 
             modelBuilder.Entity("Giddy.Domain.Parents.AccountToken", b =>
@@ -701,8 +800,16 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LastName")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
                     b.Property<bool>("MarketingOptIn")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Mobile")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -712,6 +819,13 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PendingEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
+                    b.Property<bool>("QuietHours")
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("SignInPausedUntil")
                         .HasColumnType("datetimeoffset");
@@ -797,6 +911,10 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<string>("ShareLinkHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<TimeOnly>("StartsAt")
                         .HasColumnType("time");
 
@@ -810,6 +928,51 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Parties", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Parties.PartyInvite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("AcceptedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("InvitedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.ToTable("PartyInvites", (string)null);
                 });
 
             modelBuilder.Entity("Giddy.Domain.Payments.SavedCard", b =>
@@ -843,6 +1006,31 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("SavedCards", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Privacy.DataExport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Json")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("DataExports", (string)null);
                 });
 
             modelBuilder.Entity("Giddy.Domain.Proposals.Proposal", b =>
@@ -1290,6 +1478,38 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Navigation("Children");
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Parents.Parent", b =>
+                {
+                    b.OwnsMany("Giddy.Domain.Notifications.ChannelSetting", "ChannelSettings", b1 =>
+                        {
+                            b1.Property<Guid>("ParentId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<int>("Category");
+
+                            b1.Property<bool>("Email");
+
+                            b1.Property<bool>("Push");
+
+                            b1.Property<bool>("Text");
+
+                            b1.HasKey("ParentId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Parents");
+
+                            b1
+                                .ToJson("ChannelSettings")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ParentId");
+                        });
+
+                    b.Navigation("ChannelSettings");
+                });
+
             modelBuilder.Entity("Giddy.Domain.Parties.Party", b =>
                 {
                     b.OwnsMany("Giddy.Domain.Parties.BookingToDo", "BookingsToDo", b1 =>
@@ -1434,7 +1654,6 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<Guid>("ParentId")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("Role")

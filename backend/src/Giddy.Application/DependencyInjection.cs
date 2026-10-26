@@ -40,6 +40,9 @@ public static class DependencyInjection
         services.AddScoped<Checklist.View.ChecklistProjection>();
         services.AddScoped<Checklist.Reminders.TaskReminders>();
         services.AddScoped<Notifications.NotificationOutbox>();
+        services.AddScoped<Notifications.Texts>();
+        services.AddScoped<Notifications.PlannerNews>();
+        services.AddScoped<Notifications.Unsubscribe>();
         services.AddScoped<RunSheets.RunSheetReader>();
         services.AddScoped<Families.Reminders.BirthdayReminders>();
         services.AddScoped<Accounts.AccountTokens>();

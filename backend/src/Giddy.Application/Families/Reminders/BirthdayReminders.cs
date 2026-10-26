@@ -1,6 +1,7 @@
 using Giddy.Application.Notifications;
 using Giddy.Application.Common;
 using Giddy.Domain.Calendar;
+using Giddy.Domain.Notifications;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
@@ -36,8 +37,10 @@ public sealed class BirthdayReminders(IGiddyDbContext db, NotificationOutbox out
 
                 await outbox.QueueAsync(
                     family.Id,
+                    NotificationCategory.Reminders,
                     $"{child.FirstName} turns {child.TurningAge(today)} in 6 weeks",
                     $"{child.FirstName}’s birthday is on {birthday:dddd d MMMM}. Now’s a great time to start planning, while the best venues are still free:\n{links.To($"/parties/new?child={child.Id}")}",
+                    $"/parties/new?child={child.Id}",
                     null,
                     $"birthday:{child.Id}:{birthday:yyyy-MM-dd}",
                     cancellationToken);

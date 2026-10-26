@@ -12,10 +12,12 @@ public sealed class ScheduledNotification
         Body = string.Empty;
     }
 
-    public ScheduledNotification(Guid parentId, string key, string subject, string body, Instant dueAt, Instant sendAt)
+    public ScheduledNotification(Guid parentId, NotificationCategory category, string key, string subject, string body, string link, Instant dueAt, Instant sendAt)
     {
         Id = Guid.NewGuid();
         ParentId = parentId;
+        Category = category;
+        Link = link;
         Key = key;
         Subject = subject;
         Body = body;
@@ -26,6 +28,11 @@ public sealed class ScheduledNotification
     public Guid Id { get; private set; }
 
     public Guid ParentId { get; private set; }
+
+    public NotificationCategory Category { get; private set; }
+
+    /// <summary>The page in the web app it is about.</summary>
+    public string Link { get; private set; } = "/";
 
     /// <summary>Unique: the same reminder or digest is never queued twice.</summary>
     public string Key { get; private set; }

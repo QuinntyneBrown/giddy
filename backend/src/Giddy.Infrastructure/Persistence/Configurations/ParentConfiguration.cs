@@ -16,5 +16,10 @@ public sealed class ParentConfiguration : IEntityTypeConfiguration<Parent>
         builder.HasIndex(p => p.Email).IsUnique();
         builder.Property(p => p.PasswordHash).HasMaxLength(200);
         builder.Ignore(p => p.EmailVerified);
+        builder.Ignore(p => p.FullName);
+        builder.Property(p => p.LastName).HasMaxLength(60);
+        builder.Property(p => p.Mobile).HasMaxLength(20);
+        builder.Property(p => p.PendingEmail).HasMaxLength(254);
+        builder.OwnsMany(p => p.ChannelSettings, channels => channels.ToJson());
     }
 }

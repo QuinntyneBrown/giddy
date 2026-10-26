@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Giddy.Application.Vendors.Quotes;
 
-public sealed class ConfirmQuoteHandler(IGiddyDbContext db) : IRequestHandler<ConfirmQuoteCommand>
+public sealed class ConfirmQuoteHandler(Notifications.PlannerNews news, IGiddyDbContext db) : IRequestHandler<ConfirmQuoteCommand>
 {
     public async Task Handle(ConfirmQuoteCommand request, CancellationToken cancellationToken)
     {
@@ -19,6 +19,7 @@ public sealed class ConfirmQuoteHandler(IGiddyDbContext db) : IRequestHandler<Co
         quote.Accept();
         var party = await db.Parties.SingleAsync(p => p.Id == quote.PartyId, cancellationToken);
         party.RecordVendorConfirmed(quote.VendorId, quote.VendorName);
+        news.TellOthers(party, "✅", $"booked {quote.VendorName}", $"For {party.Name}.", $"/parties/{party.Id}");
         await db.SaveChangesAsync(cancellationToken);
     }
 }
