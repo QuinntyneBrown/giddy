@@ -20,6 +20,18 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`BannerHost`** — Renders banners under the top bar.
 
 
+**As built**
+
+**Toasts**
+- Toasts last 8 seconds (12 for a warning) and pause while pointed at or focused.
+- Danger toasts are alerts and stay until dismissed.
+- The toast region shows at most three toasts.
+
+**Banners**
+- Banners sit under the top bar: offline, syncing, back online, unverified or bounced email, booking status, push and cookie consent.
+- A persistent banner has no dismiss button.
+- A dismissed booking banner stays dismissed for that booking on that device (`giddy.dismissed-booking-notices` in local storage).
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

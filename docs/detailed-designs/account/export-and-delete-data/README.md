@@ -23,6 +23,17 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - Legal retention period for payment records `<TO SUPPLY>`
 
+**As built**
+
+**Downloading data**
+- "Download my data" calls `POST /api/privacy/export`. The parent is emailed "Your Giddy data is ready", linking to `/api/privacy/exports/{id}`.
+- The link needs sign-in and works for 7 days, then answers 410.
+
+**Deleting the account**
+- "Delete my account" opens `DeleteAccountDialog`. It reads `GET /api/privacy/deletion-check` and warns when bookings aren't cancelled.
+- The parent must type their sign-in email to confirm. Deletion removes the account, children, owned parties and what hangs off them, conversations and memories, and keeps payment bookings only as the law requires.
+- The dialog then clears what this device saved and returns to sign-in.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

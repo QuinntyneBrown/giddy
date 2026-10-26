@@ -24,6 +24,13 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`NotificationRetentionJob`** — Deletes notifications older than 90 days.
 
 
+**As built**
+
+- Every message Giddy queues through `NotificationOutbox` is also an item in the centre, under New or Earlier, with a link to what it is about.
+- Opening an item marks it read. "Mark all as read" clears the count.
+- The top bar's bell is labelled "Notifications, N unread", and the sidebar shows the same count. Both update live.
+- Items older than 90 days are deleted by the worker.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

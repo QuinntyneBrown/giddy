@@ -26,6 +26,19 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`ShareLink`** — Token hash, created by, revoked flag.
 
 
+**As built**
+
+**Inviting planners**
+- The overview's "Share plan" opens `SharePlanDialog`. It invites by email as "Edit everything" (co-planner) or "View only" (viewer), lists who's planning, and removes members. The owner can't be removed; the API answers 403.
+- The invitation email links to `/join/{token}`. Opening it signed in adds the parent with the invited role, and the inviter gets an item in the notification centre.
+
+**The view-only link**
+- "Copy link" makes a new link each time; the old one stops working. The party stores only a hash of the token.
+- `/shared/{token}` is public and rate-limited. It shows a summary without guests' details.
+
+**Telling the others**
+- `PlannerNews` puts a notification-centre item in front of the other planners when someone changes costs, swaps a vendor, sends invitations, books or confirms. Planners are also told when a guest replies.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
