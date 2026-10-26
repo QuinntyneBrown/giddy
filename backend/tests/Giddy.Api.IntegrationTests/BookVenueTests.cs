@@ -177,6 +177,41 @@ public sealed class BookVenueTests : IAsyncLifetime
         Assert.Empty(factory.Partner.Confirmed);
     }
 
+    [Fact]
+    public async Task A_card_saved_while_booking_can_be_chosen_next_time_and_only_its_brand_and_last_four_are_shown()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        var nextParty = TestData.DinoParty(new NodaTime.LocalDate(2026, 11, 21)).WithPlan();
+        await factory.SeedAsync(db => db.Parties.Add(nextParty));
+
+        (await amara.PostAsJsonAsync(BookingsUrl, Booking(token: "tok_mastercard", saveCard: true), Cancel)).EnsureSuccessStatusCode();
+        var cards = await amara.GetFromJsonAsync<JsonElement>("/api/payment-methods", Cancel);
+        var card = Assert.Single(cards.EnumerateArray());
+        Assert.Equal(("Mastercard", "4444"), (card.GetProperty("brand").GetString(), card.GetProperty("last4").GetString()));
+        Assert.False(card.TryGetProperty("token", out _));
+
+        var again = await amara.PostAsJsonAsync($"/api/parties/{nextParty.Id}/bookings", Booking(date: "2026-11-21", savedCardId: card.GetProperty("id").GetGuid()), Cancel);
+
+        Assert.Equal(HttpStatusCode.Created, again.StatusCode);
+        Assert.Equal(2, factory.Payments.Authorised.Count(p => p.PaymentMethodToken == "tok_mastercard"));
+    }
+
+    [Fact]
+    public async Task A_parent_cannot_pay_with_someone_elses_saved_card()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        using var kemi = await factory.CreateBrowserClientFor(TestParent.Kemi);
+        (await amara.PostAsJsonAsync(BookingsUrl, Booking(saveCard: true), Cancel)).EnsureSuccessStatusCode();
+        var amarasCard = (await amara.GetFromJsonAsync<JsonElement>("/api/payment-methods", Cancel))[0].GetProperty("id").GetGuid();
+        var nextParty = TestData.DinoParty(new NodaTime.LocalDate(2026, 11, 21)).WithPlan();
+        await factory.SeedAsync(db => db.Parties.Add(nextParty));
+
+        var response = await kemi.PostAsJsonAsync($"/api/parties/{nextParty.Id}/bookings", Booking(date: "2026-11-21", savedCardId: amarasCard), Cancel);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Empty(await kemi.GetFromJsonAsync<JsonElement[]>("/api/payment-methods", Cancel) ?? []);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();
@@ -185,15 +220,16 @@ public sealed class BookVenueTests : IAsyncLifetime
 
     private string BookingsUrl => $"/api/parties/{dinoParty.Id}/bookings";
 
-    private static object Booking(string mobile = "416-555-0188", string start = "13:00", string token = "tok_visa") => new
+    private static object Booking(
+        string mobile = "416-555-0188", string start = "13:00", string? token = "tok_visa", bool saveCard = false, string date = "2026-11-14", Guid? savedCardId = null) => new
     {
         venueId = DemoCatalogue.DinoDen,
-        date = "2026-11-14",
+        date,
         start,
         bookingName = "Amara Okafor",
         mobile,
         child = "Zuri, turning 7",
         notes = "Peanut allergy in the group. We’ll bring our own nut-free cake.",
-        payment = new { token },
+        payment = savedCardId is null ? new { token, savedCardId, saveCard } : new { token = (string?)null, savedCardId, saveCard },
     };
 }

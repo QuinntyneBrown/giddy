@@ -1,6 +1,7 @@
 using Giddy.Application.Common;
 using Giddy.Domain.Bookings;
 using Giddy.Domain.Calendar;
+using Giddy.Domain.Payments;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -22,6 +23,7 @@ public sealed class BookVenueHandler(
 {
     public async Task<BookingView> Handle(BookVenueCommand request, CancellationToken cancellationToken)
     {
+        var token = await PaymentTokenAsync(request.Payment, cancellationToken);
         var party = await db.Parties.SingleAsync(p => p.Id == request.PartyId, cancellationToken);
         var venue = await db.CatalogueItems.SingleOrDefaultAsync(i => i.Id == request.VenueId && i.Venue != null, cancellationToken)
             ?? throw new NotFoundException("Venue not found.");
@@ -58,7 +60,7 @@ public sealed class BookVenueHandler(
         db.Bookings.Add(booking);
 
         var authorisation = await payments.AuthoriseAsync(
-            new PaymentRequest(request.Payment.Token!, booking.Deposit, booking.Id.ToString(), $"{venue.Name} deposit for {party.Name}"),
+            new PaymentRequest(token, booking.Deposit, booking.Id.ToString(), $"{venue.Name} deposit for {party.Name}"),
             cancellationToken);
         booking.Paying(authorisation.PaymentId, authorisation.Brand, authorisation.Last4);
 
@@ -72,7 +74,27 @@ public sealed class BookVenueHandler(
         }
 
         await completion.CompleteAsync(booking, new BookingContact(booking.BookingName, booking.Mobile, booking.Child, booking.Notes), cancellationToken);
+        if (request.Payment.SaveCard && request.Payment.SavedCardId is null)
+        {
+            db.SavedCards.Add(new SavedCard(Guid.NewGuid(), parent.Id, token, authorisation.Brand, authorisation.Last4, clock.GetCurrentInstant()));
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
         return BookingViews.From(booking, venue.Venue.Contact, calendar.Today);
+    }
+
+    private async Task<string> PaymentTokenAsync(PaymentChoice payment, CancellationToken cancellationToken)
+    {
+        if (payment.SavedCardId is not { } savedCardId)
+        {
+            return payment.Token!;
+        }
+
+        return await db.SavedCards
+            .Where(c => c.Id == savedCardId && c.ParentId == parent.Id)
+            .Select(c => c.ProviderToken)
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("Saved card not found.");
     }
 
     private static SlotUnavailableException SlotUnavailable(Domain.Catalogue.CatalogueItem venue, LocalDate date, Domain.Catalogue.VenueSlot taken) => new(

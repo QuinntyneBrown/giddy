@@ -1,5 +1,6 @@
 using Giddy.Application.Bookings;
 using Giddy.Application.Bookings.BookVenue;
+using Giddy.Application.Payments;
 using Giddy.Domain.Bookings;
 using MediatR;
 
@@ -20,6 +21,8 @@ public static class BookingEndpoints
                 cancel);
             return Created(partyId, booking);
         });
+
+        app.MapGet("/api/payment-methods", (ISender sender, CancellationToken cancel) => sender.Send(new GetPaymentMethodsQuery(), cancel));
 
         return app;
     }

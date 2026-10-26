@@ -6,6 +6,7 @@ using Giddy.Domain.Families;
 using Giddy.Domain.Memories;
 using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
+using Giddy.Domain.Payments;
 using Giddy.Domain.Proposals;
 using Giddy.Infrastructure.Persistence.Conversions;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,8 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<VenueWaitlistEntry> VenueWaitlist => Set<VenueWaitlistEntry>();
 
     public DbSet<Booking> Bookings => Set<Booking>();
+
+    public DbSet<SavedCard> SavedCards => Set<SavedCard>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
