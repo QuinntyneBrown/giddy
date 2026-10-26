@@ -57,3 +57,10 @@ test('shows a plain-language no-access page', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'You do not have access to this page' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
 });
+
+test('shows a recoverable server-error page', async ({ page }) => {
+  await page.goto('/500');
+
+  await expect(page.getByRole('heading', { name: 'Something went wrong' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
+});
