@@ -88,6 +88,61 @@
       </div>
     }
   }
+  @switch (push.state()) {
+    @case ('asking') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          heading="Get a buzz when friends RSVP?"
+          (dismissed)="push.notNow()"
+        >
+          <div>
+            Turn on notifications for RSVPs and party-day reminders. You can change this in
+            Settings.
+          </div>
+          <div class="alert__actions">
+            <button giddy-button size="sm" type="button" (click)="push.turnOn()">Turn on</button>
+            <button giddy-button size="sm" variant="ghost" type="button" (click)="push.notNow()">
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+    @case ('on') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          tone="success"
+          heading="Notifications on"
+          (dismissed)="push.dismiss()"
+        >
+          <div>We’ll buzz you for RSVPs and reminders. Quiet hours are 9 pm to 7 am.</div>
+        </div>
+      </div>
+    }
+    @case ('blocked') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          tone="warning"
+          heading="Notifications are blocked in your browser"
+          (dismissed)="push.dismiss()"
+        >
+          <div>
+            To turn them on, open your browser’s site settings for Giddy and allow notifications.
+          </div>
+          <div class="alert__actions"><a routerLink="/help">Show me how</a></div>
+        </div>
+      </div>
+    }
+  }
   @if (!connection.online()) {
     <div class="offline-banner">
       <div giddy-alert banner tone="warning" heading="You’re offline">

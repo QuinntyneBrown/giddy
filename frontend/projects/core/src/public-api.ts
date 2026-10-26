@@ -21,4 +21,6 @@ export * from './lib/offline/sync-result';
 export * from './lib/offline/task-change';
 export * from './lib/offline/task-sync';
 export * from './lib/session/signed-in.guard';
+export * from './lib/notifications/push-prompt';
+export * from './lib/notifications/push-prompt-state';
 export * from './lib/notifications/unread-notifications';

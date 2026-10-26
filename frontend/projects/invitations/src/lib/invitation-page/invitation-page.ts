@@ -37,11 +37,12 @@ import {
   ToastRegionComponent,
 } from '@giddy/components';
 import {
-  ResourceLoader,
-  SessionStore,
   formatDate,
   formatTimeRange,
   partySections,
+  PushPrompt,
+  ResourceLoader,
+  SessionStore,
   torontoToday,
 } from '@giddy/core';
 import { firstValueFrom } from 'rxjs';
@@ -79,6 +80,7 @@ const messageMax = 280;
 })
 export class InvitationPage {
   private readonly invitationsApi = inject(INVITATIONS_API);
+  private readonly pushPrompt = inject(PushPrompt);
   private readonly partiesApi = inject(PARTIES_API);
   private readonly guestsApi = inject(GUESTS_API);
   private readonly session = inject(SessionStore).session;
@@ -239,6 +241,7 @@ export class InvitationPage {
     try {
       await this.save();
       this.sent.set(await firstValueFrom(this.invitationsApi.send(this.partyId())));
+      this.pushPrompt.invitationsSent();
       this.invitation.reload();
       this.guests.reload();
     } catch (error) {

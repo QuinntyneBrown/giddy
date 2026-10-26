@@ -16,6 +16,7 @@ import { filter, firstValueFrom, map } from 'rxjs';
 import {
   ConnectionStatus,
   OfflineStore,
+  PushPrompt,
   SessionStore,
   SyncConflict,
   TaskSync,
@@ -94,6 +95,7 @@ export class AppShellComponent {
   });
 
   protected readonly unread = inject(UnreadNotifications).count;
+  protected readonly push = inject(PushPrompt);
   protected readonly bellLabel = computed(() =>
     this.unread() ? `Notifications, ${this.unread()} unread` : 'Notifications',
   );
