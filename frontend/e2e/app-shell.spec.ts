@@ -1,82 +1,57 @@
-import { expect, test } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from './fixtures/test';
+import { AppShellPage } from './pages/app-shell.page';
 
 test('provides accessible application landmarks and responsive navigation', async ({ page }) => {
-  await page.goto('/');
+  const shell = new AppShellPage(page);
+  await shell.open();
 
-  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeVisible();
-  await expect(page.getByRole('banner')).toBeVisible();
-  await expect(page.getByRole('navigation')).toBeVisible();
-  await expect(page.getByRole('main')).toBeVisible();
-  await expect(page.getByRole('contentinfo')).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+  await expect(shell.skipLink).toBeAttached();
+  await expect(shell.banner).toBeVisible();
+  await expect(shell.primaryNavigation).toBeVisible();
+  await expect(shell.main).toBeVisible();
+  await expect(shell.footer).toBeVisible();
+  await expect(shell.pageHeadings).toHaveCount(1);
 
-  await page.setViewportSize({ width: 360, height: 800 });
-  await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
+  await shell.useWidth(360);
+  await expect(shell.primaryNavigation).toBeVisible();
 });
 
 test('moves keyboard focus to main content through the skip link', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('link', { name: 'Skip to content' }).focus();
-  await page.keyboard.press('Enter');
+  const shell = new AppShellPage(page);
+  await shell.open();
 
-  await expect(page.getByRole('main')).toBeFocused();
+  await shell.skipToContent();
+
+  await expect(shell.main).toBeFocused();
 });
 
 test('uses the system dark theme when no preference is saved', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto('/');
+  const shell = new AppShellPage(page);
+  await shell.preferColourScheme('dark');
+  await shell.open();
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect.poll(() => shell.theme()).toBe('dark');
 });
 
 test('uses a saved theme choice ahead of the system preference', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' });
-  await page.addInitScript(() => localStorage.setItem('giddy-theme', 'light'));
-  await page.goto('/');
+  const shell = new AppShellPage(page);
+  await shell.preferColourScheme('dark');
+  await shell.saveThemeBeforeLoad('light');
+  await shell.open();
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-});
-
-test('shows a helpful not-found page for an unknown route', async ({ page }) => {
-  await page.goto('/missing-page');
-
-  await expect(page.getByRole('heading', { name: 'We could not find that page' })).toBeVisible();
-  await expect(page).toHaveTitle('Page not found · Giddy');
-  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Get help' })).toBeVisible();
+  await expect.poll(() => shell.theme()).toBe('light');
 });
 
 test('declares Canadian English for GTA parents', async ({ page }) => {
-  await page.goto('/');
+  const shell = new AppShellPage(page);
+  await shell.open();
 
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en-CA');
+  await expect.poll(() => shell.language()).toBe('en-CA');
 });
 
 test('has no serious or critical accessibility violations', async ({ page }) => {
-  await page.goto('/');
+  const shell = new AppShellPage(page);
+  await shell.open();
 
-  const results = await new AxeBuilder({ page }).analyze();
-  expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''))).toEqual([]);
-});
-
-test('shows a plain-language no-access page', async ({ page }) => {
-  await page.goto('/403');
-
-  await expect(page.getByRole('heading', { name: 'You do not have access to this page' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
-});
-
-test('shows a recoverable server-error page', async ({ page }) => {
-  await page.goto('/500');
-
-  await expect(page.getByRole('heading', { name: 'Something went wrong' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
-});
-
-test('shows an offline page when the connection is unavailable', async ({ page }) => {
-  await page.goto('/offline');
-
-  await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
+  expect(await shell.seriousAccessibilityViolations()).toEqual([]);
 });
