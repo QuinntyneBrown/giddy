@@ -20,7 +20,17 @@ public sealed class SetTaskDoneHandler(IGiddyDbContext db, ChecklistProjection p
             throw new NotFoundException("Task not found.");
         }
 
-        var task = party.SetTaskDone(request.TaskId, request.Done, calendar.Today);
+        if (request.ExpectedVersion is { } expected && expected != TaskVersion.Of(before))
+        {
+            var changedBy = before.ChangedBy is { } id ? await db.Parents.Where(p => p.Id == id).Select(p => p.Name).SingleOrDefaultAsync(cancellationToken) : null;
+            throw new TaskChangedException(
+                $"{changedBy?.Split(' ')[0] ?? "Someone"} changed this task while you were offline.",
+                await projection.TaskAsync(party, before, cancellationToken));
+        }
+
+        party.SetTaskDone(request.TaskId, request.Done, calendar.Today);
+        var task = party.FindTask(request.TaskId)! with { ChangedBy = parent.Id };
+        party.SaveTask(task);
         if (request.Done && !before.Done)
         {
             var firstName = parent.Name.Split(' ')[0];

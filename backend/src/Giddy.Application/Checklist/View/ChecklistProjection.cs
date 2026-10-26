@@ -65,6 +65,7 @@ public sealed class ChecklistProjection(IGiddyDbContext db, TorontoCalendar cale
             owner,
             names.GetValueOrDefault(owner, "A planner"),
             task.RemindMe,
-            task.Done ? null : task.GiddyAction);
+            task.Done ? null : task.GiddyAction,
+            TaskVersion.Of(task));
     }
 }

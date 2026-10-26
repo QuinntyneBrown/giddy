@@ -51,6 +51,7 @@ app.MapVendorEndpoints();
 app.MapThemeEndpoints();
 app.MapBudgetEndpoints();
 app.MapChecklistEndpoints();
+app.MapRunSheetEndpoints();
 
 app.Run();
 

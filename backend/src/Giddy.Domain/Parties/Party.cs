@@ -70,6 +70,9 @@ public sealed class Party
 
     public List<Expense> Expenses { get; private set; } = [];
 
+    /// <summary>The party day, step by step; empty until Giddy drafts it.</summary>
+    public List<RunStep> RunSheet { get; private set; } = [];
+
     /// <summary>Everything planned: Giddy's bookings and the parent's own costs.</summary>
     public decimal Planned => BookingsToDo.Sum(b => b.Estimate) + Expenses.Sum(e => e.Amount);
 
@@ -285,4 +288,14 @@ public sealed class Party
 
     /// <summary>Planners can be given tasks: the owner and co-planners, not viewers.</summary>
     public bool IsPlanner(Guid parentId) => members.Any(m => m.ParentId == parentId && m.Role != PartyRole.Viewer);
+
+    public void DraftRunSheet(IEnumerable<RunStep> steps)
+    {
+        if (RunSheet.Count > 0)
+        {
+            throw new InvalidOperationException("The party already has a run sheet.");
+        }
+
+        RunSheet = steps.OrderBy(s => s.Time).ToList();
+    }
 }

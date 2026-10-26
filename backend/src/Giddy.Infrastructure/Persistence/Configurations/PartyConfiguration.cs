@@ -36,6 +36,7 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
         });
         builder.OwnsMany(p => p.Checklist, tasks => tasks.ToJson());
         builder.OwnsMany(p => p.Expenses, expenses => expenses.ToJson());
+        builder.OwnsMany(p => p.RunSheet, steps => steps.ToJson());
         builder.Ignore(p => p.Planned);
     }
 }

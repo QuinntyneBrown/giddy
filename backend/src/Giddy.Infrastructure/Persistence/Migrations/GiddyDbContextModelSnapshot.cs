@@ -157,6 +157,10 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -180,6 +184,10 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
@@ -1224,6 +1232,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                             b1.Property<int>("__synthesizedOrdinal")
                                 .ValueGeneratedOnAddOrUpdate();
 
+                            b1.Property<Guid?>("ChangedBy");
+
                             b1.Property<bool>("Done");
 
                             b1.Property<DateOnly?>("DoneOn");
@@ -1339,6 +1349,40 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("PartyId");
                         });
 
+                    b.OwnsMany("Giddy.Domain.Parties.RunStep", "RunSheet", b1 =>
+                        {
+                            b1.Property<Guid>("PartyId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<string>("Details")
+                                .IsRequired();
+
+                            b1.Property<string>("Reminder");
+
+                            b1.Property<Guid>("StepId");
+
+                            b1.Property<TimeOnly>("Time");
+
+                            b1.Property<string>("Title")
+                                .IsRequired();
+
+                            b1.Property<string>("Who")
+                                .IsRequired();
+
+                            b1.HasKey("PartyId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Parties");
+
+                            b1
+                                .ToJson("RunSheet")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PartyId");
+                        });
+
                     b.Navigation("Area");
 
                     b.Navigation("BookingsToDo");
@@ -1348,6 +1392,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Navigation("Expenses");
 
                     b.Navigation("Members");
+
+                    b.Navigation("RunSheet");
                 });
 
             modelBuilder.Entity("Giddy.Domain.Proposals.Proposal", b =>

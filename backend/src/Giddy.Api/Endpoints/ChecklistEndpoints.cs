@@ -30,8 +30,9 @@ public static class ChecklistEndpoints
             return Results.NoContent();
         });
 
-        tasks.MapPut("/{taskId:guid}/done", (Guid partyId, Guid taskId, TaskDoneRequest request, ISender sender, CancellationToken cancel) =>
-            sender.Send(new SetTaskDoneCommand(partyId, taskId, request.Done), cancel));
+        // A change made offline sends the version it saw as If-Match; 412 means someone changed it since.
+        tasks.MapPut("/{taskId:guid}/done", (Guid partyId, Guid taskId, TaskDoneRequest request, HttpRequest http, ISender sender, CancellationToken cancel) =>
+            sender.Send(new SetTaskDoneCommand(partyId, taskId, request.Done, IfMatch(http)), cancel));
 
         tasks.MapPost("/{taskId:guid}/giddy", (Guid partyId, Guid taskId, ISender sender, CancellationToken cancel) =>
             sender.Send(new LetGiddyDoTaskCommand(partyId, taskId), cancel));
@@ -41,4 +42,7 @@ public static class ChecklistEndpoints
 
         return app;
     }
+
+    private static string? IfMatch(HttpRequest http) =>
+        http.Headers.IfMatch.FirstOrDefault()?.Trim().Trim('"') is { Length: > 0 } version ? version : null;
 }
