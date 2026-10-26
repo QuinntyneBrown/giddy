@@ -7,6 +7,7 @@ let nextId = 0;
 @Component({
   selector: 'section[giddy-card]',
   templateUrl: './card.html',
+  styleUrl: './card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'card stack',

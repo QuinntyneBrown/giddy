@@ -1,6 +1,7 @@
 import { Page, Request, Route } from '@playwright/test';
+import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
-import { amara, dinoParty, SeedParty, SeedSession, xsrfToken } from './seed-data';
+import { amara, SeedSession, xsrfToken } from './seed-data';
 
 export interface FakeResponse {
   status?: number;
@@ -27,8 +28,8 @@ export class FakeApi {
   private readonly overrides: RouteDefinition[] = [];
   readonly unrouted: string[] = [];
   session: SeedSession | null = { ...amara };
-  parties: SeedParty[] = [{ ...dinoParty }];
   readonly planner = new FakePlanner();
+  readonly partyStore = new FakeParties();
 
   constructor() {
     this.registerDefaults();
@@ -50,8 +51,11 @@ export class FakeApi {
         ? { body: this.session }
         : { status: 401, body: problem(401, 'Sign in to continue.') },
     );
-    this.on('GET', '/api/parties', () => ({ body: this.parties }));
     this.planner.register((method, path, handler) => this.on(method, path, handler));
+    this.partyStore.register(
+      (method, path, handler) => this.on(method, path, handler),
+      (partyId) => this.planner.startFor(partyId),
+    );
     this.on('GET', '/api/antiforgery', () =>
       this.session
         ? {

@@ -1,0 +1,13 @@
+<label class="field__label" [for]="controlId()"
+  >{{ label() }}
+  @if (optional()) {
+    <span class="optional">(optional)</span>
+  }
+</label>
+<ng-content />
+@if (error(); as text) {
+  <span class="field__error" [id]="errorId()">{{ text }}</span>
+}
+@if (help(); as text) {
+  <span class="field__help" [id]="helpId()">{{ text }}</span>
+}

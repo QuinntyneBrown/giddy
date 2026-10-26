@@ -1,0 +1,152 @@
+<div class="wizard">
+  <nav giddy-breadcrumb [items]="breadcrumb"></nav>
+  <div class="page-header">
+    <div>
+      <h1>Plan a new party</h1>
+      <p class="subtitle">The basics first. Giddy fills in the rest.</p>
+    </div>
+  </div>
+  <ol giddy-stepper aria-label="New party progress" [steps]="steps" [current]="0"></ol>
+  <div class="stack">
+    @if (summaryErrors().length) {
+      <giddy-error-summary [errors]="summaryErrors()" />
+    }
+    @if (state() === 'failed') {
+      <div giddy-alert tone="danger" heading="Your party didn’t save">
+        <div>Everything you typed is still here. Try again in a moment.</div>
+      </div>
+    }
+    <form class="card stack" novalidate [formGroup]="form" (ngSubmit)="submit()">
+      <fieldset giddy-choice-group legend="Who’s the birthday star?">
+        @for (child of children(); track child.id) {
+          <label giddy-choice-card>
+            <input
+              type="radio"
+              name="child"
+              [value]="child.id"
+              [checked]="form.controls.child.value === child.id"
+              (change)="chooseChild(child)"
+            />
+            <giddy-avatar size="lg" aria-hidden="true" [name]="child.firstName" pop="mint" />
+            <span
+              >{{ child.firstName }}<br /><span class="text-caption">{{
+                childCaption(child)
+              }}</span></span
+            >
+          </label>
+        }
+        <label giddy-choice-card>
+          <input
+            type="radio"
+            name="child"
+            [value]="someoneElse"
+            [checked]="form.controls.child.value === someoneElse"
+            (change)="chooseChild(null)"
+          />
+          <span class="avatar avatar--lg new-party__someone" aria-hidden="true"
+            ><svg giddy-icon="plus"></svg
+          ></span>
+          <span>Someone else</span>
+        </label>
+      </fieldset>
+
+      @if (form.controls.child.value === someoneElse) {
+        <div class="grid-2">
+          <giddy-form-field
+            inputId="np-childName"
+            label="Their first name"
+            [error]="errors().childName ?? null"
+          >
+            <input giddyInput type="text" autocomplete="off" formControlName="childName" />
+          </giddy-form-field>
+          <giddy-form-field
+            inputId="np-turningAge"
+            label="Age they’re turning"
+            [error]="errors().turningAge ?? null"
+          >
+            <input
+              giddyInput
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="17"
+              formControlName="turningAge"
+            />
+          </giddy-form-field>
+        </div>
+      }
+
+      <div class="grid-2">
+        <giddy-form-field
+          inputId="np-date"
+          label="Party date"
+          [help]="dateHelp()"
+          [error]="errors().date ?? null"
+        >
+          <input giddyInput type="date" formControlName="date" />
+        </giddy-form-field>
+        <giddy-form-field
+          inputId="np-guests"
+          label="How many kids?"
+          [help]="guestsHelp()"
+          [error]="errors().guests ?? null"
+        >
+          <input
+            giddyInput
+            type="number"
+            inputmode="numeric"
+            min="1"
+            max="60"
+            formControlName="guests"
+          />
+        </giddy-form-field>
+      </div>
+
+      <fieldset giddy-choice-group legend="Time of day">
+        <label giddy-choice-card>
+          <input type="radio" value="morning" formControlName="timeOfDay" />
+          <span class="emoji" aria-hidden="true">🌅</span>
+          <span>Morning<br /><span class="text-caption">9 am–12 pm</span></span>
+        </label>
+        <label giddy-choice-card>
+          <input type="radio" value="afternoon" formControlName="timeOfDay" />
+          <span class="emoji" aria-hidden="true">☀️</span>
+          <span>Afternoon<br /><span class="text-caption">12–4 pm</span></span>
+        </label>
+        <label giddy-choice-card>
+          <input type="radio" value="evening" formControlName="timeOfDay" />
+          <span class="emoji" aria-hidden="true">🌙</span>
+          <span>Evening<br /><span class="text-caption">4–7 pm</span></span>
+        </label>
+      </fieldset>
+
+      <div class="grid-2">
+        <giddy-form-field
+          inputId="np-budget"
+          label="Budget"
+          [help]="budgetHelp()"
+          [error]="errors().budget ?? null"
+        >
+          <giddy-input-group prefix="$">
+            <input giddyInput inputmode="numeric" formControlName="budget" />
+          </giddy-input-group>
+        </giddy-form-field>
+        <giddy-form-field
+          inputId="np-postalCode"
+          label="Near (postal code)"
+          [help]="areaHelp()"
+          [error]="errors().postalCode ?? null"
+        >
+          <input giddyInput type="text" autocomplete="postal-code" formControlName="postalCode" />
+        </giddy-form-field>
+      </div>
+
+      <div class="form-actions">
+        <a giddy-button variant="ghost" routerLink="/parties">Cancel</a>
+        <button giddy-button variant="primary" type="submit" [busy]="state() === 'saving'">
+          <svg giddy-icon="sparkle"></svg>Plan it with Giddy
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

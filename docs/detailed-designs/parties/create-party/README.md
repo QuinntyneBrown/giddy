@@ -28,7 +28,8 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Open points**
 
-- Source data and refresh cadence for `BudgetGuide` ranges `<TO SUPPLY>`
+- `BudgetGuide` uses Giddy's GTA price guide (a base plus a per-child cost, HST included) until there is enough booking history to replace it.
+- Children come from the family (`GET /api/family`); journey 13 adds managing them. The area is resolved from the postal code by `GtaAreas`.
 
 ## Requirements
 

@@ -1,0 +1,7 @@
+@for (segment of segments(); track $index) {
+  <span
+    class="meter__seg"
+    [class]="'pop--' + segment.pop"
+    [style.--value]="segment.percent + '%'"
+  ></span>
+}

@@ -1,0 +1,23 @@
+:host {
+  text-decoration: none;
+  color: inherit;
+  flex-wrap: nowrap;
+}
+
+.link-card__art {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: var(--font-size-3xl);
+}
+
+.link-card__title-row {
+  gap: var(--space-2);
+}
+
+.link-card__title {
+  font-size: var(--font-size-lg);
+}
+
+.link-card__meta {
+  display: block;
+}

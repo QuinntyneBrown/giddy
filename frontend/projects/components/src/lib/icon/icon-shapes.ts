@@ -14,9 +14,17 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
   ],
   check: [path('m5 12 5 5L20 7')],
   'check-circle': [circle(12, 12, 9), path('m8 12 3 3 5-6')],
+  'chevron-right': [path('m9 6 6 6-6 6')],
+  clock: [circle(12, 12, 9), path('M12 7v5l3 2')],
   close: [path('M6 6l12 12M18 6 6 18')],
   explore: [circle(12, 12, 9), path('m15.5 8.5-2 5-5 2 2-5z')],
   family: [
+    circle(9, 8, 3.5),
+    path('M2.5 20a6.5 6.5 0 0 1 13 0'),
+    circle(17, 9, 2.5),
+    path('M16 14a5 5 0 0 1 5.5 5'),
+  ],
+  guests: [
     circle(9, 8, 3.5),
     path('M2.5 20a6.5 6.5 0 0 1 13 0'),
     circle(17, 9, 2.5),
@@ -47,6 +55,12 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
       'M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3.9a7 7 0 0 0-1.7-1L14.5 3h-5l-.4 2.4a7 7 0 0 0-1.7 1L5.1 5.5l-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-.9a7 7 0 0 0 1.7 1l.4 2.4h5l.4-2.4a7 7 0 0 0 1.7-1l2.3.9 2-3.4-2-1.5c.1-.3.1-.7.1-1z',
     ),
   ],
+  share: [
+    circle(18, 5, 2.5),
+    circle(6, 12, 2.5),
+    circle(18, 19, 2.5),
+    path('m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6'),
+  ],
   sparkle: [
     path('M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z'),
     path('M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z'),
@@ -57,6 +71,7 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
       'M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
     ),
   ],
+  trash: [path('M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3')],
   themes: [
     path('M3 21 8 8l8 8z'),
     path('M14 4c0 2 2 2 2 4M18 9h3M17 3l1 2M20 13c-1.5 0-2 1.5-3 1.5'),

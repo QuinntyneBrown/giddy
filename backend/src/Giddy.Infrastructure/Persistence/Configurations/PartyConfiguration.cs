@@ -28,7 +28,11 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
             members.HasIndex(m => m.ParentId);
         });
         builder.Navigation(p => p.Members).HasField("members").UsePropertyAccessMode(PropertyAccessMode.Field);
-        builder.OwnsMany(p => p.BookingsToDo, bookings => bookings.ToJson());
+        builder.OwnsMany(p => p.BookingsToDo, bookings =>
+        {
+            bookings.ToJson();
+            bookings.Property(b => b.Status).HasConversion<string>();
+        });
         builder.OwnsMany(p => p.Checklist, tasks => tasks.ToJson());
     }
 }

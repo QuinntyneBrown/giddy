@@ -1,15 +1,17 @@
 <div class="page-header">
   <div>
     <h1>{{ heading() }}</h1>
-    @if (parties.status() === 'empty') {
+    @if (home.status() === 'empty') {
       <p class="subtitle">No parties yet. Let’s fix that.</p>
+    } @else if (subtitle(); as text) {
+      <p class="subtitle">{{ text }}</p>
     }
   </div>
 </div>
 
-@switch (parties.status()) {
+@switch (home.status()) {
   @case ('loading') {
-    @if (parties.showSkeleton()) {
+    @if (home.showSkeleton()) {
       <div aria-busy="true" aria-live="polite">
         <span class="visually-hidden">Loading your home…</span>
         <div class="hero home__skeleton-hero">
@@ -26,24 +28,134 @@
     }
   }
   @case ('ready') {
-    @if (nextParty(); as party) {
-      <section giddy-hero aria-labelledby="party-hero-title">
-        <giddy-party-card
-          headingId="party-hero-title"
-          eyebrow="Next up"
-          [heading]="party.name"
-          [daysToGo]="party.daysToGo"
+    @let data = home.value()!;
+    @if (data.nextParty; as party) {
+      <section
+        giddy-party-hero
+        [heading]="party.name"
+        [daysToGo]="party.daysToGo"
+        [readiness]="party.readiness"
+        [readinessDetail]="stepsDetail(party.doneSteps, party.totalSteps, party.nextStep)"
+      >
+        <span giddyPartyHeroMeta
+          ><svg giddy-icon="calendar" size="sm"></svg
+          ><time [attr.datetime]="party.date + 'T' + party.startsAt"
+            >{{ party.date | giddyDate: true }} ·
+            {{ party.startsAt | giddyTimeRange: party.endsAt }}</time
+          ></span
         >
-          <span
-            ><svg giddy-icon="calendar" size="sm"></svg
-            ><time [attr.datetime]="party.date + 'T' + party.startsAt"
-              >{{ party.date | giddyDate: true }} ·
-              {{ party.startsAt | giddyTimeRange: party.endsAt }}</time
-            ></span
+        @if (party.venueName) {
+          <span giddyPartyHeroMeta
+            ><svg giddy-icon="pin" size="sm"></svg>{{ party.venueName }}</span
           >
-        </giddy-party-card>
+        }
+        @if (party.guests) {
+          <span giddyPartyHeroMeta
+            ><svg giddy-icon="guests" size="sm"></svg>{{ party.guests }} kids</span
+          >
+        }
+        <a giddy-button variant="primary" [routerLink]="['/parties', party.id]">Open plan</a>
+        <a giddy-button routerLink="/ask-giddy"><svg giddy-icon="sparkle"></svg>Ask Giddy</a>
       </section>
     }
+    <div class="split section">
+      <div class="stack stack--lg">
+        <section giddy-card heading="Giddy’s nudges" class="card--flush home__nudges">
+          @switch (nudges.status()) {
+            @case ('error') {
+              <div giddy-alert tone="warning" heading="Nudges didn’t load">
+                <div>The rest of your home is fine. Try again in a moment.</div>
+                <div class="alert__actions">
+                  <button giddy-button size="sm" type="button" (click)="nudges.reload()">
+                    Try again
+                  </button>
+                </div>
+              </div>
+            }
+            @case ('ready') {
+              @if (nudges.value()?.length) {
+                <ul class="list">
+                  @for (nudge of nudges.value(); track nudge.partyId + nudge.title) {
+                    <li
+                      giddy-list-item
+                      [emoji]="style(nudge).emoji"
+                      [pop]="style(nudge).pop"
+                      [heading]="nudge.title"
+                    >
+                      <span giddyListItemBody class="stack stack--sm">
+                        <giddy-badge [tone]="style(nudge).tone">{{
+                          style(nudge).label
+                        }}</giddy-badge>
+                        <span class="list__meta">{{ nudge.context }}</span>
+                        <a
+                          giddy-button
+                          size="sm"
+                          class="home__nudge-action"
+                          [routerLink]="['/parties', nudge.partyId]"
+                          >{{ nudge.actionLabel }}</a
+                        >
+                      </span>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="text-sm home__caught-up">
+                  You’re all caught up. Giddy will nudge you when something needs you.
+                </p>
+              }
+            }
+            @default {
+              <giddy-skeleton />
+            }
+          }
+        </section>
+        <section aria-labelledby="quick-title">
+          <h2 id="quick-title" class="home__section-title">Quick start</h2>
+          <div class="grid-4">
+            <a giddy-quick-action emoji="✨" pop="grape" routerLink="/ask-giddy">Ask Giddy</a>
+            <a giddy-quick-action emoji="📍" pop="sky" routerLink="/venues">Find a venue</a>
+            <a giddy-quick-action emoji="🎨" pop="pink" routerLink="/themes">Browse themes</a>
+            <a
+              giddy-quick-action
+              emoji="💌"
+              pop="mint"
+              [routerLink]="data.nextParty ? ['/parties', data.nextParty.id, 'guests'] : '/parties'"
+              >Guest list</a
+            >
+          </div>
+        </section>
+      </div>
+      <aside class="stack" aria-label="Guests and birthdays">
+        <section giddy-card heading="RSVPs">
+          <giddy-tally [items]="tally()" />
+          <p class="text-sm text-muted inline-icon">
+            <svg giddy-icon="alert" size="sm"></svg>{{ data.allergies }}
+            {{ data.allergies === 1 ? 'allergy' : 'allergies' }} to plan for
+          </p>
+        </section>
+        @if (data.nextBirthday; as birthday) {
+          <section giddy-card heading="Coming up next" pop="sky">
+            <div class="cluster home__birthday">
+              <giddy-avatar size="lg" pop="sky" aria-hidden="true" [name]="birthday.firstName" />
+              <div>
+                <div class="list__title">
+                  {{ birthday.firstName }} turns {{ birthday.turningAge }}
+                </div>
+                <div class="list__meta">{{ birthdayWhen(birthday.date, birthday.daysAway) }}</div>
+              </div>
+            </div>
+            <a
+              giddy-button
+              size="sm"
+              class="home__birthday-action"
+              routerLink="/parties/new"
+              [queryParams]="{ child: birthday.childId }"
+              >Start {{ birthday.firstName }}’s plan early</a
+            >
+          </section>
+        }
+      </aside>
+    </div>
   }
   @case ('empty') {
     <section giddy-hero aria-labelledby="first-title">
@@ -58,9 +170,19 @@
             <a giddy-button variant="primary" size="lg" routerLink="/parties/new"
               ><svg giddy-icon="plus"></svg>Plan a party</a
             >
+            <a giddy-button size="lg" routerLink="/family">Add my kids first</a>
           </div>
         </div>
         <svg giddy-mascot size="xl" mood="party" ariaLabel="Giddy wearing a party hat"></svg>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="ideas-title">
+      <h2 id="ideas-title" class="home__section-title">Not sure where to start?</h2>
+      <div class="grid-4">
+        <a giddy-quick-action emoji="🎨" pop="pink" routerLink="/themes">Browse themes</a>
+        <a giddy-quick-action emoji="📍" pop="sky" routerLink="/venues">Venues near me</a>
+        <a giddy-quick-action emoji="🤹" pop="sun" routerLink="/vendors">Entertainers</a>
+        <a giddy-quick-action emoji="✨" pop="grape" routerLink="/ask-giddy">Just chat</a>
       </div>
     </section>
   }
@@ -71,9 +193,9 @@
       tone="error"
       heading="We couldn’t load your home"
       text="Your parties are safe; we just couldn’t reach them. Check your connection and try again."
-      [referenceCode]="parties.problem()?.referenceCode ?? null"
+      [referenceCode]="home.problem()?.referenceCode ?? null"
     >
-      <button giddy-button variant="primary" type="button" (click)="parties.reload()">
+      <button giddy-button variant="primary" type="button" (click)="home.reload()">
         <svg giddy-icon="refresh"></svg>Try again
       </button>
       <a giddy-button routerLink="/parties">See my parties</a>

@@ -172,6 +172,21 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("TurnLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Families.Family", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Families", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Memories.Memory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -195,6 +210,26 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Memories", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Parents.Parent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Parents", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Parties.Party", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,6 +242,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("Budget")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<Guid?>("ChildId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ChildName")
                         .HasMaxLength(40)
@@ -381,6 +419,37 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Families.Family", b =>
+                {
+                    b.OwnsMany("Giddy.Domain.Families.Child", "Children", b1 =>
+                        {
+                            b1.Property<Guid>("FamilyId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<DateOnly>("Birthday");
+
+                            b1.Property<string>("FirstName")
+                                .IsRequired();
+
+                            b1.Property<Guid>("Id");
+
+                            b1.HasKey("FamilyId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Families");
+
+                            b1
+                                .ToJson("Children")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("FamilyId");
+                        });
+
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("Giddy.Domain.Parties.Party", b =>
                 {
                     b.OwnsMany("Giddy.Domain.Parties.BookingToDo", "BookingsToDo", b1 =>
@@ -401,6 +470,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                             b1.Property<string>("Name")
                                 .IsRequired();
 
+                            b1.Property<string>("Status")
+                                .IsRequired();
+
                             b1.HasKey("PartyId", "__synthesizedOrdinal");
 
                             b1.ToTable("Parties");
@@ -419,6 +491,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
                             b1.Property<int>("__synthesizedOrdinal")
                                 .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<bool>("Done");
 
                             b1.Property<DateOnly>("Due");
 

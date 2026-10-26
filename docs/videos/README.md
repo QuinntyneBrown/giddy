@@ -10,6 +10,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 |---|---|---|---|
 | 01 | [Set up the foundation](01-set-up-the-foundation/README.md) | ~4 min | The shell, server-side authorisation, system states and GTA localisation |
 | 02 | [Chat with Giddy](02-chat-with-giddy/README.md) | ~4 min | Visible steps, grounded priced plans, confirmation, Stop, failures and memories |
+| 03 | [Start a party plan](03-start-a-party-plan/README.md) | ~4 min | New party basics, readiness, the overview, locking, deleting and Home |
 
 ## Making or updating a video
 

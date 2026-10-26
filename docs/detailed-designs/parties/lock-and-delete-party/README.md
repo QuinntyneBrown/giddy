@@ -19,9 +19,9 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Backend (Giddy API)**
 
-- **`PartyLockFilter`** — Endpoint filter returning 409 for writes to locked parties.
+- **Party lock** — `PartyAuthorizationBehavior` answers 409 to any request needing `PartyAccess.Plan` once the party date is before today in Toronto (`Party.IsLockedOn`); deleting (`PartyAccess.Own`) and reading are not affected.
 - **`DeletePartyHandler`** — Owner-only; deletes the party and dependent data, keeps payment records.
-- **`PartyLockJob`** — Worker job at 00:05 Toronto time that sets `Locked` on yesterday's parties.
+- Locking is computed from the Toronto calendar on every request, so no nightly job is needed.
 
 
 ## Requirements

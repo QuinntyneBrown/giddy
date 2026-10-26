@@ -1,0 +1,11 @@
+:host {
+  align-items: flex-start;
+}
+
+.list-item__body {
+  gap: 0;
+}
+
+.list-item__trailing {
+  align-items: flex-end;
+}

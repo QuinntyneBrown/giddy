@@ -1,0 +1,38 @@
+<div class="party-card">
+  <div class="countdown">
+    @if (done()) {
+      <span class="countdown__value" aria-hidden="true">🎉</span>&ngsp;<span
+        class="countdown__label"
+        >party done</span
+      >
+    } @else {
+      @switch (daysToGo()) {
+        @case (0) {
+          <span class="countdown__value">Today</span>
+        }
+        @case (1) {
+          <span class="countdown__value">Tomorrow</span>
+        }
+        @default {
+          <span class="countdown__value">{{ daysToGo() }}</span
+          >&ngsp;<span class="countdown__label">days to go</span>
+        }
+      }
+    }
+  </div>
+  <div class="stack stack--sm">
+    <p class="hero__eyebrow">{{ eyebrow() }}</p>
+    <h2 [id]="headingId">{{ heading() }}</h2>
+    <div class="meta-row"><ng-content select="[giddyPartyHeroMeta]" /></div>
+  </div>
+</div>
+<div class="cluster cluster--between party-hero__footer">
+  <div class="cluster">
+    <giddy-progress-ring [value]="readiness()" [label]="readinessLabel()" />
+    <div>
+      <div class="list__title">{{ readinessLabel() }}</div>
+      <div class="text-sm">{{ readinessDetail() }}</div>
+    </div>
+  </div>
+  <div class="cluster"><ng-content /></div>
+</div>

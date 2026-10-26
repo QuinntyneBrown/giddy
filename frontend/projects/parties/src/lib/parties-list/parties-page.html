@@ -1,0 +1,122 @@
+<div class="page-header">
+  <div>
+    <h1>My parties</h1>
+    @if (parties.status() === 'ready') {
+      <p class="subtitle">{{ subtitle() }}</p>
+    }
+  </div>
+  <a giddy-button variant="primary" routerLink="/parties/new"
+    ><svg giddy-icon="plus"></svg>Plan a party</a
+  >
+</div>
+
+@switch (parties.status()) {
+  @case ('loading') {
+    @if (parties.showSkeleton()) {
+      <div class="stack" aria-busy="true">
+        <span class="visually-hidden">Loading your parties…</span>
+        <giddy-skeleton shape="rect" height="12rem" />
+        <giddy-skeleton shape="rect" height="5rem" />
+      </div>
+    }
+  }
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t load your parties"
+      text="Your plans are safe; we just couldn’t reach them. Check your connection and try again."
+      [referenceCode]="parties.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="parties.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/">Go to my home</a>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card"
+      heading="No parties yet"
+      text="Plan your first party and Giddy will keep everything for it here."
+    >
+      <a giddy-button variant="primary" routerLink="/parties/new"
+        ><svg giddy-icon="plus"></svg>Plan a party</a
+      >
+    </section>
+  }
+  @default {
+    @if (upcoming().length) {
+      <section class="stack" aria-labelledby="up-title">
+        <h2 id="up-title" class="parties__group">Upcoming</h2>
+        @for (party of upcoming(); track party.id) {
+          <section
+            giddy-party-hero
+            [heading]="party.name"
+            [daysToGo]="party.daysToGo"
+            [readiness]="party.readiness"
+            [readinessDetail]="readinessDetail(party)"
+          >
+            <span giddyPartyHeroMeta
+              ><svg giddy-icon="calendar" size="sm"></svg
+              ><time [attr.datetime]="party.date"
+                >{{ party.date | giddyDate: true }} ·
+                {{ party.startsAt | giddyTimeRange: party.endsAt }}</time
+              ></span
+            >
+            @if (party.guests) {
+              <span giddyPartyHeroMeta
+                ><svg giddy-icon="guests" size="sm"></svg>{{ party.guests }} kids</span
+              >
+            }
+            <a giddy-button variant="primary" [routerLink]="['/parties', party.id]">Open plan</a>
+          </section>
+        }
+      </section>
+    }
+    @if (drafts().length) {
+      <section class="section stack" aria-labelledby="draft-title">
+        <h2 id="draft-title" class="parties__group">Drafts</h2>
+        <ul class="stack parties__list">
+          @for (party of drafts(); track party.id; let i = $index) {
+            <li>
+              <a
+                giddy-link-card
+                emoji="✏️"
+                badge="Draft"
+                badgeTone="info"
+                actionLabel="Keep planning"
+                [pop]="pop(i)"
+                [meta]="draftMeta(party)"
+                [routerLink]="['/parties', party.id]"
+                >{{ party.name }}</a
+              >
+            </li>
+          }
+        </ul>
+      </section>
+    }
+    @if (past().length) {
+      <section class="section stack" aria-labelledby="past-title">
+        <h2 id="past-title" class="parties__group">Past parties</h2>
+        <ul class="stack parties__list">
+          @for (party of past(); track party.id; let i = $index) {
+            <li>
+              <a
+                giddy-link-card
+                emoji="🎉"
+                badge="Done"
+                [pop]="pop(i + 2)"
+                [meta]="pastMeta(party)"
+                [routerLink]="['/parties', party.id]"
+                >{{ party.name }}</a
+              >
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+}

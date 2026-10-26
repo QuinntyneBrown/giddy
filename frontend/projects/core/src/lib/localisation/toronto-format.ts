@@ -127,3 +127,20 @@ export function ordinal(n: number): string {
     : (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th');
   return `${n}${suffix}`;
 }
+
+/** Today's calendar date in Toronto, as an ISO date. */
+export function torontoToday(now = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: torontoTimeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+}
+
+/** Adds calendar days to an ISO date. */
+export function addDays(isoDate: string, days: number): string {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + days));
+  return date.toISOString().slice(0, 10);
+}

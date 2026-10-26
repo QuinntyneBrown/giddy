@@ -1,0 +1,14 @@
+<span class="notif__icon" [class]="'pop--' + pop()"
+  ><span class="emoji" aria-hidden="true">{{ emoji() }}</span></span
+>
+<span class="list__body stack stack--sm list-item__body">
+  @if (overline(); as text) {
+    <span class="overline">{{ text }}</span>
+  }
+  <span class="list__title">{{ heading() }}</span>
+  @if (meta(); as text) {
+    <span class="list__meta">{{ text }}</span>
+  }
+  <ng-content select="[giddyListItemBody]" />
+</span>
+<span class="stack stack--sm list-item__trailing"><ng-content /></span>

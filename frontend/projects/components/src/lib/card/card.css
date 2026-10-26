@@ -1,0 +1,3 @@
+:host(.card--flush) .card__title {
+  padding: var(--space-4) var(--space-4) 0;
+}

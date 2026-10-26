@@ -25,12 +25,16 @@ export class ResourceLoader<T> {
   readonly problem: Signal<ApiProblem | null> = this.currentProblem.asReadonly();
   readonly showSkeleton = computed(() => this.currentStatus() === 'loading' && this.slow());
 
+  /**
+   * @param autoLoad false when the source depends on route inputs: call reload() once they are set.
+   */
   constructor(
     private readonly source: () => Observable<T>,
     private readonly isEmpty: (value: T) => boolean = () => false,
+    autoLoad = true,
   ) {
     this.destroyRef.onDestroy(() => this.stop());
-    this.reload();
+    if (autoLoad) this.reload();
   }
 
   reload(): void {

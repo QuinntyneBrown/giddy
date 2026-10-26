@@ -12,4 +12,13 @@ export interface PartySummary {
   role: PartyRole;
   /** Calendar days from today in Toronto; 0 on party day. */
   daysToGo: number;
+  /** upcoming, draft (no plan yet) or past. */
+  status: 'upcoming' | 'draft' | 'past';
+  /** Whole percent; the same number on Home, My parties and the overview. */
+  readiness: number;
+  venueName: string | null;
+  theme: string | null;
+  locked: boolean;
+  guests: number | null;
+  budget: number | null;
 }

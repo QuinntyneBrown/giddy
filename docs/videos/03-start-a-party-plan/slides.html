@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 03 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="03" data-video-title="Start a party plan" data-parts="Introduction|Promises|Basics|Errors|Overview|Delete|After|Home|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 03</div>
+  <h1>Start a party plan</h1>
+  <p class="lead">Basics, readiness, the overview, locking and deleting</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="A party takes about a minute to start.">
+  <h2>What starting a plan promises</h2>
+  <ul>
+    <li>A party starts from a few basics</li>
+    <li>One readiness number on Home, My parties and the overview</li>
+    <li>A party that has happened is read-only</li>
+    <li>Only the owner deletes, and never by accident</li>
+  </ul>
+</section>
+
+<section id="basics" data-part="2" data-cue="Here is Amara planning Zuri's party on a laptop." data-clip="clips/new-party-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>The basics</h3><p>Birthday and postal-code defaults, a typical-budget hint, then straight into Ask Giddy.</p></div>
+</section>
+
+<section id="errors" data-part="3" data-cue="A date that is today or in the past">
+  <h2>When something needs fixing</h2>
+  <div class="cols">
+    <img class="shot" alt="Error summary with links to each field" src="shots/phone-invalid.png">
+    <ul>
+      <li>Dates from tomorrow; 1–60 kids</li>
+      <li>A focused summary links to each field</li>
+      <li>Inline errors, nothing created</li>
+      <li>A failed save keeps every input</li>
+      <li>"Someone else" asks for a name and age</li>
+    </ul>
+  </div>
+</section>
+
+<section id="overview" data-part="4" data-cue="Home now leads with the soonest party" data-clip="clips/overview-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>The overview and readiness</h3><p>(done tasks + confirmed bookings) ÷ (all tasks + planned bookings): (3 + 1) ÷ (10 + 5) = 27%. Bookings load on their own.</p></div>
+</section>
+
+<section id="delete" data-part="5" data-cue="Delete this party explains exactly what is lost" data-clip="clips/delete-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Deleting a party</h3><p>Cancel first; the exact name to confirm. Owner only: co-planners and viewers get 403, strangers 404.</p></div>
+</section>
+
+<section id="after" data-part="6" data-cue="On a phone, My parties groups upcoming parties" data-clip="clips/parties-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>My parties, and after the party</h3><p>A past party is read-only, with thank-yous and Reuse this plan. The server answers 409 to changes.</p></div>
+</section>
+
+<section id="home" data-part="7" data-cue="Home's subtitle counts parties in progress">
+  <h2>Home and Giddy's nudges</h2>
+  <img class="shot" alt="Home with the next party, nudges, quick start, RSVPs and the next birthday" src="shots/desktop-home.png">
+</section>
+
+<section id="testing" data-part="8" data-cue="The API tests create parties and reject past dates">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 85 tests</h3><p>Creation and validation, readiness, overview, the Toronto-midnight lock, owner-only delete with another family's token, nudges.</p></div>
+    <div class="card"><h3>Browser · 92 tests</h3><p>Form, lists, overview, delete dialog and Home against the fake API at 360 and 1280px, with axe.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="9" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>A party starts from a few basics, then Ask Giddy</li><li>Readiness is one formula, shown everywhere</li><li>Past parties are read-only on the server</li><li>Only the owner deletes, after typing the name</li></ul>
+  <p class="muted">Next: find and compare venues</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

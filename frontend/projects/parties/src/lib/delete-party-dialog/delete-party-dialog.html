@@ -1,0 +1,71 @@
+<giddy-dialog
+  tone="danger"
+  [heading]="'Delete ' + data.partyName + '?'"
+  description="This removes the whole plan for everyone who can see it."
+  [busy]="state() === 'busy'"
+>
+  @if (data.confirmedBookings.length) {
+    <div
+      giddy-alert
+      tone="warning"
+      [heading]="
+        bookingNames() + (data.confirmedBookings.length === 1 ? ' is booked' : ' are booked')
+      "
+    >
+      <div>
+        Deleting the plan does not cancel bookings or refund deposits. Cancel with them first.
+      </div>
+    </div>
+  }
+  @if (state() === 'failed') {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>We couldn’t delete the party. Nothing was removed; try again.</div>
+    </div>
+  }
+  <p>
+    You’ll lose the guest list, RSVPs, the budget, the checklist and Giddy’s chat. Guests won’t be
+    notified.
+  </p>
+  @if (step() === 'confirm') {
+    <giddy-form-field
+      [label]="'Type ' + data.partyName + ' to confirm'"
+      help="This can’t be undone."
+      [error]="mismatch() ? 'Type the party name exactly: ' + data.partyName : null"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="off"
+        [value]="typed()"
+        (input)="type($any($event.target).value)"
+      />
+    </giddy-form-field>
+  }
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="state() === 'busy'"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  @if (step() === 'consequences') {
+    <button giddyDialogFooter giddy-button variant="danger" type="button" (click)="continue()">
+      Continue
+    </button>
+  } @else {
+    <button
+      giddyDialogFooter
+      giddy-button
+      variant="danger"
+      type="button"
+      [disabled]="!typed().trim() || state() === 'busy'"
+      [busy]="state() === 'busy'"
+      (click)="delete()"
+    >
+      Delete party
+    </button>
+  }
+</giddy-dialog>
