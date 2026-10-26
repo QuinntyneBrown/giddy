@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 11 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="11" data-video-title="Follow the checklist" data-parts="Introduction|Promises|Tasks|Menu|Together|Start and finish|Reminders|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 11</div>
+  <h1>Follow the checklist</h1>
+  <p class="lead">Dated tasks, shared work, and reminders that respect quiet hours</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Tasks are dated working back from the party">
+  <h2>What the checklist promises</h2>
+  <ul>
+    <li>Dated back from the party: cake 10 days, food 2, kit the day before</li>
+    <li>Overdue, This week, Before the party, Done, with progress</li>
+    <li>"Giddy can do this", always confirmed first</li>
+    <li>Co-planners see ticks within 5 seconds</li>
+  </ul>
+</section>
+
+<section id="tasks" data-part="2" data-cue="Here is Zuri's checklist on a laptop." data-clip="clips/checklist-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Tick, let Giddy do it, add</h3><p>Overdue in words; reminders sent after confirming; a task for Kemi in date order.</p></div>
+</section>
+
+<section id="menu" data-part="3" data-cue="Each task's menu offers Edit">
+  <h2>The task menu</h2>
+  <img class="shot" alt="The task menu with Edit task, Let Giddy do it, a divider and Delete task" src="shots/desktop-menu.png">
+</section>
+
+<section id="together" data-part="4" data-cue="On a phone, Amara has the checklist open" data-clip="clips/coplanner-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Planning together</h3><p>Kemi's tick arrives as a toast and the task moves to Done; nobody is told about their own tick.</p></div>
+</section>
+
+<section id="start-finish" data-part="5" data-cue="A party without a checklist offers to make one">
+  <h2>Starting and finishing</h2>
+  <div class="cols">
+    <img class="shot" alt="No tasks yet, with Make my checklist and Add a task myself" src="shots/desktop-empty.png">
+    <img class="shot" alt="Everything's ready for Zuri's big day, with Open the run sheet" src="shots/desktop-all-done.png">
+  </div>
+</section>
+
+<section id="reminders" data-part="6" data-cue="Every morning at nine, Toronto time">
+  <h2>Reminders and quiet hours</h2>
+  <ul>
+    <li>9:00 am: "Order the cake is due tomorrow" to the task's owner</li>
+    <li>One digest per planner listing every overdue task</li>
+    <li>Quiet 9:00 pm to 7:00 am: messages wait until 7</li>
+    <li>Urgent on the party day: sent straight away</li>
+  </ul>
+  <p class="file">backend/src/Giddy.Domain/Notifications/QuietHours.cs</p>
+</section>
+
+<section id="testing" data-part="7" data-cue="The API tests cover the dates and groups">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 243 tests</h3><p>Dates and groups, ticking and live updates, task rules, making a checklist, Giddy's allergy list, viewers, reminders, digest, quiet hours.</p></div>
+    <div class="card"><h3>Browser · 230 tests</h3><p>Groups, ticking, co-planners, menu order, adding, editing, deleting, Giddy's tasks, empty and all-done, axe at 360 and 1280 px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Dated back from the party</li><li>Giddy asks before it acts</li><li>Ticks are shared within seconds</li><li>Reminders respect quiet hours</li></ul>
+  <p class="muted">Next: the party day</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
