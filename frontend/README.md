@@ -1,59 +1,29 @@
-# Frontend
+# Giddy Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.4.
+Angular application for Giddy, the birthday planner for GTA families.
 
-## Development server
+## Workspace
 
-To start a local development server, run:
+| Path | Library | Contents |
+|---|---|---|
+| `src/` | app | Bootstrap, routes and the application shell |
+| `projects/components` | `@giddy/components` | Every design-system component, built once (mandatory for all UI) |
+| `projects/api` | `@giddy/api` | API contracts, injection tokens and HTTP implementations |
+| `projects/core` | `@giddy/core` | Session, connection status, section loading state and GTA formatting |
+| `projects/home` | `@giddy/home` | Home page |
+| `projects/system` | `@giddy/system` | 404, 403, 500 and offline pages |
 
-```bash
-ng serve
+Styles come from `docs/design-system` (tokens and component classes) through `projects/components/src/styles/giddy.css`.
+
+## Commands
+
+```sh
+npm ci
+npm start               # http://localhost:4200 (proxy /api to the Giddy API yourself)
+npm run lint            # ESLint (with template accessibility) and Stylelint
+npm run format:check    # Prettier
+npm run build
+npx playwright test     # Chromium only; the API is faked by e2e/fixtures/fake-api.ts
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The Playwright suite never needs a backend: `e2e/fixtures/fake-api.ts` answers every `/api` call with seeded data and fails the test on any request it does not know. Page objects in `e2e/pages/` own every selector.

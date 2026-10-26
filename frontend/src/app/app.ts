@@ -5,7 +5,7 @@ import { ThemeService } from './theme/theme.service';
 
 @Component({
   imports: [AppShellComponent, RouterOutlet],
-  selector: 'app-root',
+  selector: 'giddy-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

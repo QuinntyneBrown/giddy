@@ -3,26 +3,37 @@ name: CI
 on:
   pull_request:
   push:
+    branches: [main]
 
 jobs:
-  verify:
+  api:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+      - run: dotnet test backend/Giddy.slnx
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - run: dotnet test backend/tests/Giddy.Api.IntegrationTests/Giddy.Api.IntegrationTests.csproj
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python ../.agents/skills/extracting-design-systems/scripts/check_contrast.py ../docs/design-system/tokens/tokens.css
       - run: npm ci
-        working-directory: frontend
-      - run: npx playwright install --with-deps chromium
-        working-directory: frontend
+      - run: npm run format:check
+      - run: npm run lint
       - run: npm run build
-        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
       - run: npx playwright test
-        working-directory: frontend
