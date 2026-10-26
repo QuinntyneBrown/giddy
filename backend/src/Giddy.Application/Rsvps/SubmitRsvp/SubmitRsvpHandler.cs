@@ -1,4 +1,7 @@
 using Giddy.Application.Common;
+using Giddy.Application.Live;
+using Giddy.Domain.Guests;
+using Microsoft.EntityFrameworkCore;
 using MediatR;
 using NodaTime;
 
@@ -16,10 +19,27 @@ public sealed class SubmitRsvpHandler(IGiddyDbContext db, RsvpLinks links, ICloc
         }
 
         var (guest, party, _) = context;
-        guest.Reply(request.Coming, request.Allergies, request.ParentStaying, request.Siblings, request.ParentName, request.Mobile, request.Note, clock.GetCurrentInstant());
+        var now = clock.GetCurrentInstant();
+        var replied = guest.RepliedAt is not null;
+        var earlierAllergies = guest.Rsvp == RsvpStatus.Coming ? guest.Allergies : null;
+        guest.Reply(request.Coming, request.Allergies, request.ParentStaying, request.Siblings, request.ParentName, request.Mobile, request.Note, now);
+        if (replied)
+        {
+            db.PartyEvents.Add(PartyEvents.Changed(guest, now));
+        }
+        else
+        {
+            var othersComing = await db.Guests.CountAsync(g => g.PartyId == party.Id && g.Id != guest.Id && g.Rsvp == RsvpStatus.Coming, cancellationToken);
+            db.PartyEvents.Add(PartyEvents.Replied(guest, othersComing + (request.Coming ? 1 : 0), now));
+        }
+
         if (request.Coming && guest.Allergies is { } allergy)
         {
             party.NoteAllergy(allergy);
+            if (!string.Equals(allergy, earlierAllergies, StringComparison.OrdinalIgnoreCase))
+            {
+                db.PartyEvents.Add(PartyEvents.NewAllergy(guest, party, now));
+            }
         }
 
         await db.SaveChangesAsync(cancellationToken);

@@ -41,6 +41,7 @@ app.MapBookingEndpoints();
 app.MapGuestEndpoints();
 app.MapInvitationEndpoints();
 app.MapRsvpEndpoints();
+app.MapLiveUpdateEndpoints();
 
 app.Run();
 

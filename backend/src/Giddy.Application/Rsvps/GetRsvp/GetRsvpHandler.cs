@@ -1,4 +1,5 @@
 using Giddy.Application.Common;
+using Giddy.Application.Live;
 using MediatR;
 using NodaTime;
 
@@ -9,8 +10,10 @@ public sealed class GetRsvpHandler(IGiddyDbContext db, RsvpLinks links, IClock c
     public async Task<RsvpView> Handle(GetRsvpQuery request, CancellationToken cancellationToken)
     {
         var context = await links.ResolveAsync(request.Token, cancellationToken);
-        if (context.Guest.RecordOpen(clock.GetCurrentInstant()))
+        var now = clock.GetCurrentInstant();
+        if (context.Guest.RecordOpen(now))
         {
+            db.PartyEvents.Add(PartyEvents.Opened(context.Guest, now));
             await db.SaveChangesAsync(cancellationToken);
         }
 
