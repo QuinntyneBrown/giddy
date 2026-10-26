@@ -12,4 +12,6 @@ export interface ChecklistTask {
   ownerName: string;
   remindMe: boolean;
   giddyCanDo: GiddyAction | null;
+  /** Sent back as If-Match with a change made offline, so a co-planner's change isn't overwritten. */
+  version: string;
 }

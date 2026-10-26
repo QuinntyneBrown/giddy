@@ -2,6 +2,7 @@ import { Page, Request, Route } from '@playwright/test';
 import { FakeBookings } from './fake-bookings';
 import { FakeBudget } from './fake-budget';
 import { FakeChecklist } from './fake-checklist';
+import { FakeRunSheet } from './fake-run-sheet';
 import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
@@ -93,6 +94,21 @@ export class FakeApi {
         ?.name ?? null,
   );
 
+  readonly runSheetStore = new FakeRunSheet(
+    (partyId) => {
+      const party = this.partyStore.parties.find((p) => p.id === partyId);
+      return party
+        ? { date: party.date, startsAt: party.startsAt, endsAt: party.endsAt, status: party.status }
+        : null;
+    },
+    () =>
+      this.guestStore.guests
+        .filter((g) => g.allergies && g.rsvp !== 'cantCome')
+        .map((g) => ({ child: g.childName.split(' ')[0], allergy: g.allergies! }))
+        .sort((a, b) => a.child.localeCompare(b.child)),
+    () => this.guestStore.guests.filter((g) => g.rsvp === 'coming').length,
+  );
+
   constructor() {
     this.registerDefaults();
   }
@@ -123,6 +139,7 @@ export class FakeApi {
     this.themeStore.register((method, path, handler) => this.on(method, path, handler));
     this.budgetStore.register((method, path, handler) => this.on(method, path, handler));
     this.checklistStore.register((method, path, handler) => this.on(method, path, handler));
+    this.runSheetStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),

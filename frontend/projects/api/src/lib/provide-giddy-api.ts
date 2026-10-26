@@ -3,6 +3,8 @@ import { BUDGET_API } from './budget/budget-api.token';
 import { HttpBudgetApi } from './budget/http-budget-api';
 import { CHECKLIST_API } from './checklist/checklist-api.token';
 import { HttpChecklistApi } from './checklist/http-checklist-api';
+import { RUN_SHEET_API } from './run-sheets/run-sheet-api.token';
+import { HttpRunSheetApi } from './run-sheets/http-run-sheet-api';
 import { BOOKINGS_API } from './bookings/bookings-api.token';
 import { HttpBookingsApi } from './bookings/http-bookings-api';
 import { GUESTS_API } from './guests/guests-api.token';
@@ -48,6 +50,7 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: GUESTS_API, useClass: HttpGuestsApi },
     { provide: BUDGET_API, useClass: HttpBudgetApi },
     { provide: CHECKLIST_API, useClass: HttpChecklistApi },
+    { provide: RUN_SHEET_API, useClass: HttpRunSheetApi },
     { provide: INVITATIONS_API, useClass: HttpInvitationsApi },
     { provide: RSVP_API, useClass: HttpRsvpApi },
     { provide: LIVE_UPDATES_API, useClass: HttpLiveUpdatesApi },

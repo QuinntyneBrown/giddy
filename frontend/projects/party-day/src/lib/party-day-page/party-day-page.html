@@ -1,0 +1,125 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Party day</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (sheet.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load the run sheet"
+      [text]="
+        connection.online()
+          ? 'Nothing was changed. Try again in a moment.'
+          : 'It isn’t saved on this device yet. Open it once while you’re online.'
+      "
+      [referenceCode]="sheet.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="sheet.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="No run sheet yet"
+      text="Giddy drafts the day from your plan: set-up, the show, food, cake and pick-up, with allergy reminders where they matter."
+    >
+      @if (canPlan()) {
+        <button
+          giddy-button
+          variant="primary"
+          type="button"
+          [busy]="drafting()"
+          [disabled]="drafting()"
+          (click)="draft()"
+        >
+          <svg giddy-icon="sparkle"></svg>Draft my run sheet
+        </button>
+      }
+    </section>
+  }
+  @case ('ready') {
+    @let view = sheet.value()!;
+    @if (!connection.online()) {
+      <p class="text-caption section">
+        Saved on this device. Calls still work, and ticks sync when you’re back online.
+      </p>
+    }
+    <div class="split section">
+      <ol giddy-timeline aria-label="Run sheet">
+        @for (step of view.steps; track step.id; let i = $index) {
+          <li
+            giddy-timeline-item
+            [time]="time(step)"
+            [heading]="step.title"
+            [pop]="pop(i)"
+            [state]="states()[i]"
+          >
+            <p class="list__meta">{{ step.details }} · {{ step.who }}</p>
+            @if (step.reminder) {
+              <p class="text-sm"><strong>Remember:</strong> {{ step.reminder }}</p>
+            }
+          </li>
+        }
+      </ol>
+      <aside class="stack" aria-label="On the day">
+        @if (view.contacts.length) {
+          <section giddy-card heading="Quick calls">
+            <ul class="list">
+              @for (contact of view.contacts; track contact.phone) {
+                <li
+                  giddy-list-item
+                  [emoji]="emoji(contact.role)"
+                  [heading]="contact.name"
+                  [meta]="contact.role"
+                >
+                  <a
+                    giddy-button
+                    size="sm"
+                    [href]="'tel:' + contact.phone"
+                    [attr.aria-label]="'Call ' + contact.name"
+                    >Call</a
+                  >
+                </li>
+              }
+            </ul>
+          </section>
+        }
+        <section giddy-card heading="Allergy check" pop="sun">
+          @if (view.allergies.length) {
+            <ul class="party-day__allergies">
+              @for (entry of view.allergies; track entry.child) {
+                <li>{{ entry.child }} · {{ entry.allergy }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="text-sm">No allergies on the guest list.</p>
+          }
+        </section>
+      </aside>
+    </div>
+  }
+  @default {
+    @if (sheet.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading the run sheet…</span>
+        <giddy-skeleton shape="rect" height="20rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @if (problem(); as message) {
+    <giddy-toast heading="No run sheet yet" [text]="message" tone="danger" />
+  }
+</giddy-toast-region>

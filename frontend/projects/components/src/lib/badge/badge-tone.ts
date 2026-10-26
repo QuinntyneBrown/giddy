@@ -1,1 +1,1 @@
-export type BadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'count';
+export type BadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'count' | 'solid';

@@ -1,0 +1,13 @@
+<span class="timeline__time">{{ time() }}</span>
+<span class="timeline__dot" [class]="'pop--' + pop()" aria-hidden="true"></span>
+<div class="card timeline__card stack stack--sm">
+  <div class="cluster cluster--between">
+    <span class="list__title">{{ heading() }}</span>
+    @if (state() === 'now') {
+      <giddy-badge tone="solid">Now</giddy-badge>
+    } @else if (state() === 'done') {
+      <giddy-badge tone="success">Done</giddy-badge>
+    }
+  </div>
+  <ng-content />
+</div>

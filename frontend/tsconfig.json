@@ -10,6 +10,7 @@
       "@giddy/core": ["./projects/core/src/public-api.ts"],
       "@giddy/budget": ["./projects/budget/src/public-api.ts"],
       "@giddy/checklist": ["./projects/checklist/src/public-api.ts"],
+      "@giddy/party-day": ["./projects/party-day/src/public-api.ts"],
       "@giddy/guests": ["./projects/guests/src/public-api.ts"],
       "@giddy/home": ["./projects/home/src/public-api.ts"],
       "@giddy/invitations": ["./projects/invitations/src/public-api.ts"],
