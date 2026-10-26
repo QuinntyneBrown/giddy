@@ -8,6 +8,11 @@ export class LiveToasts {
     this.region = page.locator('giddy-live-rsvp-toasts');
   }
 
+  /** Resolves once the app has taken its starting cursor, so later updates are shown. */
+  async listening(): Promise<void> {
+    await this.page.waitForResponse((r) => new URL(r.url()).pathname === '/api/live-updates');
+  }
+
   toast(title: string): Locator {
     return this.region.locator('giddy-toast').filter({ hasText: title });
   }

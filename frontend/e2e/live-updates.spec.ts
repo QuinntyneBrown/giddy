@@ -9,8 +9,9 @@ test.describe('live RSVP updates for the host', () => {
   test('a reply shows a toast within five seconds on any page', async ({ page, fakeApi }) => {
     const home = new HomePage(page);
     const live = new LiveToasts(page);
+    const listening = live.listening();
     await home.open('/');
-    await expect(home.pageHeadings.first()).toBeVisible();
+    await listening;
 
     fakeApi.guestStore.push({
       guestId: 'e1000000-0000-4000-8000-000000000007',
@@ -36,8 +37,9 @@ test.describe('live RSVP updates for the host', () => {
   }) => {
     const home = new HomePage(page);
     const live = new LiveToasts(page);
+    const listening = live.listening();
     await home.open('/');
-    await expect(home.pageHeadings.first()).toBeVisible();
+    await listening;
 
     fakeApi.guestStore.push({
       guestId: 'e1000000-0000-4000-8000-000000000002',
@@ -60,8 +62,9 @@ test.describe('live RSVP updates for the host', () => {
   }) => {
     const home = new HomePage(page);
     const live = new LiveToasts(page);
+    const listening = live.listening();
     await home.open('/');
-    await expect(home.pageHeadings.first()).toBeVisible();
+    await listening;
 
     fakeApi.guestStore.push({
       guestId: 'e1000000-0000-4000-8000-000000000001',
@@ -83,7 +86,9 @@ test.describe('live RSVP updates for the host', () => {
 
   test('the guest list updates when a family replies', async ({ page, fakeApi }) => {
     const guests = new GuestsPage(page);
+    const listening = new LiveToasts(page).listening();
     await guests.openGuests(dinoParty);
+    await listening;
     await expect(guests.row('Aisha Mohamed')).toContainText('Waiting');
 
     const aisha = fakeApi.guestStore.guests.find((g) => g.childName === 'Aisha Mohamed')!;
