@@ -1,2 +1,12 @@
 docs/mocks/.cache/
 docs/design-system/.cache/
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Playwright output when tests are invoked from the repository root
+/test-results/
+
+# Video tooling scratch output
+.cache/

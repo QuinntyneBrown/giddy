@@ -1,0 +1,11 @@
+<giddy-error-page
+  heading="Giddy tripped over a balloon string"
+  message="Something went wrong on our side, not yours. Your plans are safe. Try again in a minute; we’ve already been told."
+  mood="worried"
+  [code]="code()"
+>
+  <button giddy-button variant="primary" type="button" (click)="tryAgain()">
+    <svg giddy-icon="refresh"></svg>Try again
+  </button>
+  <a giddy-button routerLink="/">Go to my home</a>
+</giddy-error-page>

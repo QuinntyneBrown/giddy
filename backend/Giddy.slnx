@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Giddy.Api/Giddy.Api.csproj" />
+    <Project Path="src/Giddy.Application/Giddy.Application.csproj" />
+    <Project Path="src/Giddy.Cli/Giddy.Cli.csproj" />
+    <Project Path="src/Giddy.Domain/Giddy.Domain.csproj" />
+    <Project Path="src/Giddy.Infrastructure/Giddy.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Giddy.Api.IntegrationTests/Giddy.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

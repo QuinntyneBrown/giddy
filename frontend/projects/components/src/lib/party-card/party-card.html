@@ -1,0 +1,21 @@
+<div class="countdown">
+  @switch (daysToGo()) {
+    @case (0) {
+      <span class="countdown__value">Today</span>
+    }
+    @case (1) {
+      <span class="countdown__value">Tomorrow</span>
+    }
+    @default {
+      <span class="countdown__value">{{ daysToGo() }}</span
+      >&ngsp;<span class="countdown__label">days to go</span>
+    }
+  }
+</div>
+<div class="stack stack--sm">
+  @if (eyebrow(); as text) {
+    <p class="hero__eyebrow">{{ text }}</p>
+  }
+  <h2 [id]="headingId()">{{ heading() }}</h2>
+  <div class="meta-row"><ng-content /></div>
+</div>

@@ -1,0 +1,31 @@
+using Microsoft.AspNetCore.Antiforgery;
+
+namespace Giddy.Api.Security;
+
+/// <summary>Rejects state-changing API requests that do not carry a valid anti-forgery token.</summary>
+public sealed class AntiforgeryValidationMiddleware(RequestDelegate next, IAntiforgery antiforgery)
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        if (IsStateChanging(context.Request))
+        {
+            try
+            {
+                await antiforgery.ValidateRequestAsync(context);
+            }
+            catch (AntiforgeryValidationException)
+            {
+                await Results.Problem(
+                    title: "Your session needs refreshing. Reload the page and try again.",
+                    statusCode: StatusCodes.Status400BadRequest).ExecuteAsync(context);
+                return;
+            }
+        }
+
+        await next(context);
+    }
+
+    private static bool IsStateChanging(HttpRequest request) =>
+        request.Path.StartsWithSegments("/api")
+        && !(HttpMethods.IsGet(request.Method) || HttpMethods.IsHead(request.Method) || HttpMethods.IsOptions(request.Method));
+}

@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.shell__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+main {
+  flex: 1;
+}

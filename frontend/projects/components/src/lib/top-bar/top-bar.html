@@ -1,0 +1,21 @@
+<a
+  class="topbar__brand"
+  [class.topbar__brand--mobile]="brandOnSmallScreensOnly()"
+  [routerLink]="brandLink()"
+  ><svg giddy-logo-mark></svg>Giddy</a
+>
+@if (searchLabel(); as label) {
+  <form class="search topbar__search" role="search" (submit)="search($event, query.value)">
+    <label class="visually-hidden" for="giddy-top-bar-search">{{ label }}</label>
+    <svg giddy-icon="search"></svg>
+    <input
+      #query
+      class="input"
+      id="giddy-top-bar-search"
+      type="search"
+      [placeholder]="searchPlaceholder()"
+    />
+  </form>
+}
+<span class="topbar__spacer"></span>
+<ng-content />

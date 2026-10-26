@@ -1,0 +1,27 @@
+<a class="topbar__brand" [routerLink]="brandLink()"><svg giddy-logo-mark></svg>Giddy</a>
+@if (ctaLabel(); as label) {
+  <a giddy-button variant="primary" block class="sidebar__cta" [routerLink]="ctaLink()"
+    ><svg giddy-icon="plus"></svg>{{ label }}</a
+  >
+}
+@for (group of groups(); track $index) {
+  @if (group.label) {
+    <div class="sidebar__group">{{ group.label }}</div>
+  }
+  @for (item of group.items; track item.link) {
+    <a
+      class="nav-link"
+      [routerLink]="item.link"
+      routerLinkActive
+      ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+      ><svg [giddy-icon]="item.icon"></svg>{{ item.label }}
+      @if (item.count) {
+        <giddy-badge tone="count" [attr.aria-label]="item.countLabel ?? null">{{
+          item.count
+        }}</giddy-badge>
+      }
+    </a>
+  }
+}
+<ng-content />

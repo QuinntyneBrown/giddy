@@ -1,0 +1,15 @@
+@for (item of items(); track item.link; let i = $index) {
+  <a
+    [routerLink]="item.link"
+    routerLinkActive
+    ariaCurrentWhenActive="page"
+    [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+    [class.bottom-nav__cta]="i === ctaIndex()"
+    ><svg [giddy-icon]="item.icon"></svg><span>{{ item.label }}</span>
+    @if (item.count) {
+      <giddy-badge tone="count" [attr.aria-label]="item.countLabel ?? null">{{
+        item.count
+      }}</giddy-badge>
+    }
+  </a>
+}

@@ -1,0 +1,10 @@
+<svg giddy-mascot size="lg" [mood]="mood()"></svg>
+<h2 class="empty__title" [id]="titleId">{{ heading() }}</h2>
+<p class="empty__text">{{ text() }}</p>
+<div class="empty__actions"><ng-content /></div>
+@if (referenceCode(); as code) {
+  <p class="text-caption">
+    Still stuck? Contact us at {{ helpEmail() }} and quote <code>{{ code }}</code
+    >.
+  </p>
+}

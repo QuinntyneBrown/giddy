@@ -1,0 +1,3 @@
+/* The design system is the single source of styling: tokens and component classes. */
+@import '../../../../../docs/design-system/tokens/tokens.css';
+@import '../../../../../docs/design-system/assets/components.css';
