@@ -15,6 +15,14 @@ test('provides accessible application landmarks and responsive navigation', asyn
   await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
 });
 
+test('moves keyboard focus to main content through the skip link', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Skip to content' }).focus();
+  await page.keyboard.press('Enter');
+
+  await expect(page.getByRole('main')).toBeFocused();
+});
+
 test('uses the system dark theme when no preference is saved', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/');
