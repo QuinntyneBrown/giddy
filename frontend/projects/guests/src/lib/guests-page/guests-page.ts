@@ -28,7 +28,7 @@ import {
   ToastComponent,
   ToastRegionComponent,
 } from '@giddy/components';
-import { ResourceLoader, joinNames, partySections } from '@giddy/core';
+import { LiveUpdates, ResourceLoader, joinNames, partySections } from '@giddy/core';
 import { firstValueFrom } from 'rxjs';
 import { PageToast } from './page-toast';
 
@@ -140,6 +140,10 @@ export class GuestsPage {
         this.list.reload();
         this.selected.set([]);
       });
+    });
+    const live = inject(LiveUpdates);
+    effect(() => {
+      if (live.version() > 0) untracked(() => this.list.reload());
     });
   }
 

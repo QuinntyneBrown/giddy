@@ -43,6 +43,7 @@ import {
   GiddyDatePipe,
   GiddyMoneyPipe,
   GiddyTimeRangePipe,
+  LiveUpdates,
   ResourceLoader,
   formatDate,
   formatMoney,
@@ -133,6 +134,10 @@ export class PartyOverviewPage {
         this.bookings.reload();
         this.notices.reload();
       });
+    });
+    const live = inject(LiveUpdates);
+    effect(() => {
+      if (live.version() > 0) untracked(() => this.overview.reload());
     });
   }
 
