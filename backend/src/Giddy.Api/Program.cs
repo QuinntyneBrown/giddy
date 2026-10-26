@@ -5,6 +5,7 @@ using Giddy.Api.Errors;
 using Giddy.Api.Logging;
 using Giddy.Api.Security;
 using Giddy.Infrastructure;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddGiddyAntiforgery();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GiddyExceptionHandler>();
 builder.Services.AddGiddyRateLimits();
+builder.Services.AddDataProtection();
+builder.Services.AddSingleton<Giddy.Application.Common.ISecretProtector, DataProtectionSecretProtector>();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase)));
 

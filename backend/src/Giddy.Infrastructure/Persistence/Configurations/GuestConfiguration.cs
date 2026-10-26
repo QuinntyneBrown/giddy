@@ -19,6 +19,7 @@ public sealed class GuestConfiguration : IEntityTypeConfiguration<Guest>
         builder.Property(g => g.Allergies).HasMaxLength(200);
         builder.Property(g => g.Note).HasMaxLength(500);
         builder.Property(g => g.TokenHash).HasMaxLength(64);
+        builder.Property(g => g.ProtectedToken).HasMaxLength(400);
         builder.Ignore(g => g.ChildFirstName);
         builder.Ignore(g => g.FamilyName);
         builder.Ignore(g => g.HasAllergies);

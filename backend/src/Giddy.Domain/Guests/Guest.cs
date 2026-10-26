@@ -48,6 +48,9 @@ public sealed class Guest
     /// <summary>SHA-256 of the private RSVP link's token; the token itself is never stored.</summary>
     public string? TokenHash { get; private set; }
 
+    /// <summary>The token encrypted with the app's data-protection keys, so reminders can repeat the link.</summary>
+    public string? ProtectedToken { get; private set; }
+
     public Instant? InvitedAt { get; private set; }
 
     public Instant? OpenedAt { get; private set; }
@@ -65,9 +68,10 @@ public sealed class Guest
 
     public bool HasAllergies => !string.IsNullOrWhiteSpace(Allergies);
 
-    public void Invite(string tokenHash, Instant now)
+    public void Invite(string tokenHash, string protectedToken, Instant now)
     {
         TokenHash = tokenHash;
+        ProtectedToken = protectedToken;
         InvitedAt = now;
         if (Rsvp == RsvpStatus.NotSent)
         {

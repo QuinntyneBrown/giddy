@@ -19,9 +19,9 @@ public sealed class GuestListTests : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         guests = TestData.GuestsFor(dinoParty);
-        guests[0].Invite("hash-maya", NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0));
+        guests[0].Invite("hash-maya", "protected", NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0));
         guests[0].Reply(true, "Dairy-free", true, null, "Lily Chen", null, null, NodaTime.Instant.FromUtc(2026, 10, 21, 12, 0));
-        guests[1].Invite("hash-arjun", NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0));
+        guests[1].Invite("hash-arjun", "protected", NodaTime.Instant.FromUtc(2026, 10, 20, 12, 0));
         await factory.SeedAsync(db =>
         {
             TestData.AddPeople(db);
