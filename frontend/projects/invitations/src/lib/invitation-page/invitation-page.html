@@ -1,0 +1,207 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Invitations</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  @if (allSent()) {
+    <a giddy-button [routerLink]="['/parties', partyId(), 'guests']">See RSVPs</a>
+  }
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (invitation.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load the invitation"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="invitation.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="invitation.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('ready') {
+    @let details = invitation.value()!.details;
+    @let draft = form()!;
+    <div class="split section invitation">
+      <div class="stack">
+        @if (allSent()) {
+          <div giddy-alert tone="success" [heading]="sentHeading()">
+            <div>{{ sentText() }}</div>
+          </div>
+          <giddy-tally [items]="tally()" />
+        } @else if (!canPlan()) {
+          <p class="card">Only the party’s planners can change and send the invitation.</p>
+        } @else {
+          <section class="card stack" aria-label="Edit the invitation">
+            @if (problem(); as failure) {
+              <div giddy-alert tone="danger" [heading]="failure.heading">
+                <div>{{ failure.text }}</div>
+                @if (failure.verify) {
+                  <div class="alert__actions">
+                    <a routerLink="/settings">Verify your email</a>
+                  </div>
+                }
+              </div>
+            }
+            <fieldset giddy-choice-group legend="Design">
+              @for (design of designs; track design.value) {
+                <label giddy-choice-card>
+                  <input
+                    type="radio"
+                    name="design"
+                    [checked]="draft.design === design.value"
+                    (change)="update('design', design.value)"
+                  />
+                  <span class="emoji" aria-hidden="true">{{ design.emoji }}</span>
+                  <span>{{ design.label }}</span>
+                </label>
+              }
+            </fieldset>
+            <giddy-form-field
+              label="Headline"
+              [counter]="draft.headline.length + ' / ' + headlineMax"
+              [error]="errors().headline ?? null"
+            >
+              <input
+                giddyInput
+                type="text"
+                [attr.maxlength]="headlineMax"
+                [value]="draft.headline"
+                (input)="update('headline', $any($event.target).value)"
+              />
+            </giddy-form-field>
+            <giddy-form-field
+              label="Message"
+              [counter]="draft.message.length + ' / ' + messageMax"
+              [error]="errors().message ?? null"
+            >
+              <textarea
+                giddyInput
+                rows="3"
+                [attr.maxlength]="messageMax"
+                [value]="draft.message"
+                (input)="update('message', $any($event.target).value)"
+              ></textarea>
+            </giddy-form-field>
+            <giddy-form-field label="RSVP by" [help]="rsvpHelp()" [error]="errors().rsvpBy ?? null">
+              <input
+                giddyInput
+                type="date"
+                [value]="draft.rsvpBy"
+                (input)="update('rsvpBy', $any($event.target).value)"
+              />
+            </giddy-form-field>
+            <fieldset>
+              <legend>Ask parents about</legend>
+              <label giddy-choice>
+                <input
+                  type="checkbox"
+                  [checked]="draft.askAllergies"
+                  (change)="update('askAllergies', $any($event.target).checked)"
+                />
+                Allergies and dietary needs
+              </label>
+              <label giddy-choice>
+                <input
+                  type="checkbox"
+                  [checked]="draft.askParentStaying"
+                  (change)="update('askParentStaying', $any($event.target).checked)"
+                />
+                Whether a parent will stay
+              </label>
+              <label giddy-choice>
+                <input
+                  type="checkbox"
+                  [checked]="draft.askSiblings"
+                  (change)="update('askSiblings', $any($event.target).checked)"
+                />
+                Siblings coming along
+              </label>
+            </fieldset>
+            <fieldset>
+              <legend>Send by</legend>
+              <label giddy-choice>
+                <input
+                  type="checkbox"
+                  [checked]="draft.byEmail"
+                  (change)="update('byEmail', $any($event.target).checked)"
+                />
+                Email ({{ invitation.value()!.emailReach }} parents)
+              </label>
+              <label
+                giddy-choice
+                [description]="
+                  noMobile()
+                    ? noMobile() +
+                      (noMobile() === 1 ? ' parent has' : ' parents have') +
+                      ' no mobile number'
+                    : null
+                "
+              >
+                <input
+                  type="checkbox"
+                  [checked]="draft.byText"
+                  (change)="update('byText', $any($event.target).checked)"
+                />
+                Text message ({{ invitation.value()!.textReach }} parents)
+              </label>
+            </fieldset>
+            <div class="cluster invitation__actions">
+              <button
+                giddy-button
+                type="button"
+                [busy]="state() === 'testing'"
+                [disabled]="state() !== 'editing'"
+                (click)="sendTest()"
+              >
+                Send me a test
+              </button>
+              <button
+                giddy-button
+                variant="primary"
+                type="button"
+                [busy]="state() === 'sending'"
+                [disabled]="state() !== 'editing'"
+                (click)="send()"
+              >
+                <svg giddy-icon="send"></svg>{{ sendLabel() }}
+              </button>
+            </div>
+          </section>
+        }
+      </div>
+      <section class="stack" aria-labelledby="invitation-preview-title">
+        <h2 id="invitation-preview-title" class="overline">Preview</h2>
+        <div
+          giddy-invite
+          [design]="draft.design"
+          [headline]="draft.headline"
+          [when]="when()"
+          [place]="details.place"
+          [message]="draft.message"
+          [replyBy]="'Please reply by ' + formatDate(draft.rsvpBy)"
+        ></div>
+      </section>
+    </div>
+  }
+  @default {
+    @if (invitation.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading the invitation…</span>
+        <giddy-skeleton shape="rect" height="20rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @if (toast(); as message) {
+    <giddy-toast [heading]="message" text="Only you got it. Families haven’t been sent anything." />
+  }
+</giddy-toast-region>

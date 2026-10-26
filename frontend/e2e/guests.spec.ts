@@ -14,6 +14,10 @@ test.describe('the guest list', () => {
       'aria-current',
       'page',
     );
+    await expect(guests.sections.getByRole('link', { name: 'Overview' })).not.toHaveAttribute(
+      'aria-current',
+      'page',
+    );
     await expect(guests.tally).toContainText('11Coming');
     await expect(guests.tally).toContainText('3Waiting');
     await expect(guests.tally).toContainText('2Can’t come');

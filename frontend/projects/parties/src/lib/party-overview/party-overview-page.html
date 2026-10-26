@@ -13,6 +13,8 @@
   }
 </div>
 
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
 @switch (overview.status()) {
   @case ('loading') {
     @if (overview.showSkeleton()) {
