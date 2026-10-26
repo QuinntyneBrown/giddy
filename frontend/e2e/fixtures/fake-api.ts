@@ -3,6 +3,7 @@ import { FakeBookings } from './fake-bookings';
 import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
+import { FakeVendors } from './fake-vendors';
 import { FakeVenues } from './fake-venues';
 import { amara, SeedSession, xsrfToken } from './seed-data';
 
@@ -36,6 +37,37 @@ export class FakeApi {
   readonly venueStore = new FakeVenues();
   readonly bookingStore = new FakeBookings(() => this.venueStore.venues);
   readonly guestStore = new FakeGuests(() => this.session);
+  readonly vendorStore = new FakeVendors(
+    () =>
+      this.guestStore.guests
+        .filter((g) => g.allergies && g.rsvp !== 'cantCome')
+        .map((g) => ({ child: g.childName.split(' ')[0], note: g.allergies! })),
+    (name) => {
+      const booking = this.partyStore.bookings.find((b) => b.name === name);
+      if (!booking) return null;
+      return (
+        {
+          toBook: 'inYourPlan',
+          quoteRequested: 'quoteRequested',
+          quoted: 'quoteReceived',
+          confirmed: 'booked',
+        } as Record<string, string>
+      )[booking.status];
+    },
+    (vendor) => {
+      const existing = this.partyStore.bookings.find((b) => b.name === vendor.name);
+      if (existing) existing.status = 'quoteRequested';
+      else
+        this.partyStore.bookings.push({
+          category: vendor.planCategory,
+          name: vendor.name,
+          price: vendor.price,
+          status: 'quoteRequested',
+          paid: 0,
+          quoteExpiresOn: null,
+        });
+    },
+  );
 
   constructor() {
     this.registerDefaults();
@@ -63,6 +95,7 @@ export class FakeApi {
       this.bookingStore.liveBooking(partyId, venueId);
     this.bookingStore.register((method, path, handler) => this.on(method, path, handler));
     this.guestStore.register((method, path, handler) => this.on(method, path, handler));
+    this.vendorStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),

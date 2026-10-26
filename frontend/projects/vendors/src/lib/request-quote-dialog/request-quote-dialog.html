@@ -1,0 +1,93 @@
+<giddy-dialog
+  [heading]="
+    sent() ? 'Request sent to ' + data.vendor.name : 'Ask ' + data.vendor.name + ' for a quote'
+  "
+  [description]="
+    sent()
+      ? 'No obligation: you decide once the quote arrives.'
+      : 'Free, no obligation. Giddy fills in the party details for you.'
+  "
+  [busy]="busy()"
+>
+  @if (sent(); as quote) {
+    <p>
+      {{ quote.replyTime }} You’ll see their quote in your plan and budget, with how long it’s
+      valid.
+    </p>
+  } @else {
+    @if (problem(); as message) {
+      <div giddy-alert tone="danger" heading="That didn’t go through">
+        <div>{{ message }}</div>
+      </div>
+    }
+    <div class="well cluster">
+      <span class="emoji" aria-hidden="true">{{ data.vendor.emoji }}</span>
+      <span class="text-sm"
+        ><strong>{{ data.vendor.name }}</strong> · {{ data.detail }} · from
+        {{ data.vendor.price | giddyMoney }}</span
+      >
+    </div>
+    <div class="grid-2">
+      <giddy-form-field label="Date" [error]="errors().date ?? null">
+        <input
+          giddyInput
+          type="date"
+          [value]="date()"
+          (input)="date.set($any($event.target).value)"
+        />
+      </giddy-form-field>
+      <giddy-form-field label="Start time" [error]="errors().start ?? null">
+        <input
+          giddyInput
+          type="time"
+          [value]="start()"
+          (input)="start.set($any($event.target).value)"
+        />
+      </giddy-form-field>
+      <giddy-form-field label="Kids" [error]="errors().kids ?? null">
+        <input
+          giddyInput
+          type="number"
+          min="1"
+          max="60"
+          [value]="kids()"
+          (input)="kids.set(+$any($event.target).value)"
+        />
+      </giddy-form-field>
+      <giddy-form-field label="Where" [error]="errors().location ?? null">
+        <input
+          giddyInput
+          type="text"
+          [value]="location()"
+          (input)="location.set($any($event.target).value)"
+        />
+      </giddy-form-field>
+    </div>
+    <giddy-form-field label="Message" [error]="errors().message ?? null">
+      <textarea
+        giddyInput
+        rows="3"
+        maxlength="500"
+        [value]="message()"
+        (input)="message.set($any($event.target).value)"
+      ></textarea>
+    </giddy-form-field>
+  }
+  <ng-container ngProjectAs="[giddyDialogFooter]">
+    @if (sent()) {
+      <button giddy-button variant="primary" type="button" (click)="close()">Done</button>
+    } @else {
+      <button giddy-button type="button" [disabled]="busy()" (click)="close()">Cancel</button>
+      <button
+        giddy-button
+        variant="primary"
+        type="button"
+        [busy]="busy()"
+        [disabled]="busy()"
+        (click)="send()"
+      >
+        <svg giddy-icon="send"></svg>Send request
+      </button>
+    }
+  </ng-container>
+</giddy-dialog>

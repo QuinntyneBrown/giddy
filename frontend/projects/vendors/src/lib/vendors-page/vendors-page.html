@@ -1,0 +1,137 @@
+<div class="page-header">
+  <div>
+    <h1>Fun &amp; food</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+</div>
+
+@if (parties() && !party()) {
+  <section
+    giddy-empty-state
+    class="card section"
+    heading="Plan a party first"
+    text="Fun &amp; food shows vendors free on your party’s date who travel to it."
+  ></section>
+} @else {
+  <div class="cluster section" role="group" aria-label="Filter vendors">
+    @for (category of categories; track category.value) {
+      <button
+        giddy-chip
+        type="button"
+        [pressed]="chosen() === category.value"
+        (click)="choose(category.value)"
+      >
+        {{ category.label }}
+      </button>
+    }
+    @if (search.value()?.theme ?? party()?.theme; as theme) {
+      <button giddy-chip type="button" [pressed]="themeOn()" (click)="toggleTheme()">
+        {{ theme }} theme
+      </button>
+    }
+    <button giddy-chip type="button" [pressed]="maxPrice() !== null" (click)="togglePrice()">
+      Under {{ priceCeiling | giddyMoney }}
+    </button>
+  </div>
+
+  @if (chosen() === 'food' && search.value()?.allergies?.length) {
+    <div
+      giddy-alert
+      tone="warning"
+      class="section"
+      [heading]="
+        allergyChildren() +
+        (allergyChildren() === 1 ? ' guest has an allergy' : ' guests have allergies')
+      "
+    >
+      <div>{{ allergyText() }}</div>
+    </div>
+  }
+
+  @switch (search.status()) {
+    @case ('error') {
+      <section
+        giddy-empty-state
+        class="card section"
+        tone="error"
+        heading="We couldn’t load vendors"
+        text="Your filters are kept. Try again in a moment."
+        [referenceCode]="search.problem()?.referenceCode ?? null"
+      >
+        <button giddy-button variant="primary" type="button" (click)="search.reload()">
+          <svg giddy-icon="refresh"></svg>Try again
+        </button>
+      </section>
+    }
+    @case ('empty') {
+      <section
+        giddy-empty-state
+        class="card section"
+        [heading]="emptyHeading()"
+        text="Change a filter to see more."
+      >
+        @if (search.value()?.noResults?.suggestion; as suggestion) {
+          <button
+            giddy-button
+            variant="primary"
+            type="button"
+            (click)="suggest(suggestion.filter, suggestion.value)"
+          >
+            {{ suggestion.label }}
+          </button>
+        }
+      </section>
+    }
+    @case ('ready') {
+      <ul class="grid-3 section vendors__grid" aria-label="Vendors">
+        @for (vendor of search.value()!.results; track vendor.id; let i = $index) {
+          <li
+            giddy-tile
+            [heading]="vendor.name"
+            [emoji]="vendor.emoji"
+            [pop]="pop(i)"
+            [badge]="planLabel(vendor)"
+          >
+            <giddy-rating giddyTileAside [value]="vendor.rating" [count]="vendor.reviewCount" />
+            <p class="text-sm text-muted">{{ vendor.description }}</p>
+            <p class="text-caption">{{ detail(vendor) }}</p>
+            @if (allergyFitText(vendor); as fit) {
+              <p
+                class="text-sm"
+                [class.vendors__fit--bad]="!fit.ok"
+                [class.vendors__fit--ok]="fit.ok"
+              >
+                <svg [giddy-icon]="fit.ok ? 'check-circle' : 'alert'" size="sm"></svg>{{ fit.text }}
+              </p>
+            }
+            <span giddyTileFooter class="price"
+              >{{ vendor.price | giddyMoney }}
+              @if (vendor.priceBasis === 'per kid') {
+                <span class="text-caption">per kid</span>
+              }
+            </span>
+            @if (canPlan()) {
+              <button
+                giddyTileFooter
+                giddy-button
+                size="sm"
+                type="button"
+                (click)="requestQuote(vendor)"
+              >
+                Request a quote
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    }
+    @default {
+      @if (search.showSkeleton()) {
+        <div class="stack section" aria-busy="true">
+          <span class="visually-hidden">Loading vendors…</span>
+          <giddy-skeleton shape="rect" height="16rem" />
+        </div>
+      }
+    }
+  }
+}

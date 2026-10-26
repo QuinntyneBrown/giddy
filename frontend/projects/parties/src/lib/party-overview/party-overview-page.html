@@ -65,7 +65,24 @@
               (dismissed)="dismiss(notice)"
             >
               <div>{{ notice.text }}</div>
-              @if (noticeAction(notice); as action) {
+              @if (notice.kind === 'quote-expiring') {
+                <div class="alert__actions">
+                  <button
+                    giddy-button
+                    size="sm"
+                    type="button"
+                    [busy]="confirming() === notice.quoteId"
+                    (click)="confirmQuote(notice)"
+                  >
+                    Confirm
+                  </button>
+                  <a
+                    routerLink="/vendors"
+                    [queryParams]="{ category: vendorCategory(notice), partyId: party.id }"
+                    >Find another</a
+                  >
+                </div>
+              } @else if (noticeAction(notice); as action) {
                 <div class="alert__actions">
                   <a
                     [routerLink]="['/venues', notice.venueId]"
@@ -153,11 +170,9 @@
                         [overline]="booking.category"
                         [heading]="booking.name"
                       >
-                        @if (booking.status === 'confirmed') {
-                          <giddy-badge tone="success">Booked</giddy-badge>
-                        } @else {
-                          <giddy-badge tone="info">To book</giddy-badge>
-                        }
+                        <giddy-badge [tone]="statusBadge(booking).tone">{{
+                          statusBadge(booking).label
+                        }}</giddy-badge>
                         <span class="price">{{ booking.price | giddyMoney }}</span>
                       </li>
                     }
