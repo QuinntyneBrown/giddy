@@ -24,6 +24,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`RsvpView`** — Projection exposing only the invitation and this guest's reply.
 
 
+**As built**
+
+- `GET/PUT /api/rsvp/{token}` and `GET /api/rsvp/{token}/calendar.ics` are anonymous, rate-limited to 60 requests a minute per address, and exempt from the anti-forgery check because the token in the path is the credential.
+- Unknown, replaced and deleted-party links answer `404` "This link no longer works" with no party details. Replies change until the RSVP-by date, then `409`.
+- A reply that is coming with an allergy adds it to the party's allergy list.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
