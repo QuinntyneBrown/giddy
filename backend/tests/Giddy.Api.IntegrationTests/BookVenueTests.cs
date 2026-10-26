@@ -212,6 +212,57 @@ public sealed class BookVenueTests : IAsyncLifetime
         Assert.Empty(await kemi.GetFromJsonAsync<JsonElement[]>("/api/payment-methods", Cancel) ?? []);
     }
 
+    [Fact]
+    public async Task When_the_bank_asks_for_3D_Secure_the_slot_is_held_and_booked_only_after_the_challenge_passes()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+
+        var response = await amara.PostAsJsonAsync(BookingsUrl, Booking(token: "tok_3ds"), Cancel);
+
+        Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        var held = await response.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal("holding", held.GetProperty("state").GetString());
+        Assert.StartsWith("https://issuer.example/3ds/", held.GetProperty("challengeUrl").GetString());
+        Assert.Empty(factory.Partner.Confirmed);
+        Assert.Empty(factory.Payments.Captured);
+
+        var completed = await amara.PostAsync($"{BookingsUrl}/{held.GetProperty("id").GetGuid()}/authentication", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, completed.StatusCode);
+        var booking = await completed.Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        Assert.Equal("confirmed", booking.GetProperty("state").GetString());
+        Assert.Equal("DD-48213", booking.GetProperty("confirmationNumber").GetString());
+        Assert.Single(factory.Payments.Captured);
+        Assert.Single(factory.Email.Sent);
+    }
+
+    [Fact]
+    public async Task A_failed_3D_Secure_challenge_releases_the_hold_and_charges_nothing()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        factory.Payments.ChallengePasses = false;
+        var held = await (await amara.PostAsJsonAsync(BookingsUrl, Booking(token: "tok_3ds"), Cancel)).Content.ReadFromJsonAsync<JsonElement>(Cancel);
+
+        var completed = await amara.PostAsync($"{BookingsUrl}/{held.GetProperty("id").GetGuid()}/authentication", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.PaymentRequired, completed.StatusCode);
+        Assert.Single(factory.Partner.Released);
+        Assert.Empty(factory.Payments.Captured);
+    }
+
+    [Fact]
+    public async Task A_booking_can_only_be_completed_through_its_own_party()
+    {
+        using var amara = await factory.CreateBrowserClientFor(TestParent.Amara);
+        var held = await (await amara.PostAsJsonAsync(BookingsUrl, Booking(token: "tok_3ds"), Cancel)).Content.ReadFromJsonAsync<JsonElement>(Cancel);
+        var otherParty = TestData.DinoParty(new NodaTime.LocalDate(2026, 11, 21));
+        await factory.SeedAsync(db => db.Parties.Add(otherParty));
+
+        var response = await amara.PostAsync($"/api/parties/{otherParty.Id}/bookings/{held.GetProperty("id").GetGuid()}/authentication", null, Cancel);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     public ValueTask DisposeAsync()
     {
         factory.Dispose();

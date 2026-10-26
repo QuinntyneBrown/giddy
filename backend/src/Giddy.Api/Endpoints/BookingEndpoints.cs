@@ -1,5 +1,6 @@
 using Giddy.Application.Bookings;
 using Giddy.Application.Bookings.BookVenue;
+using Giddy.Application.Bookings.CompleteAuthentication;
 using Giddy.Application.Payments;
 using Giddy.Domain.Bookings;
 using MediatR;
@@ -21,6 +22,9 @@ public static class BookingEndpoints
                 cancel);
             return Created(partyId, booking);
         });
+
+        bookings.MapPost("/{bookingId:guid}/authentication", (Guid partyId, Guid bookingId, ISender sender, CancellationToken cancel) =>
+            sender.Send(new CompleteAuthenticationCommand(partyId, bookingId), cancel));
 
         app.MapGet("/api/payment-methods", (ISender sender, CancellationToken cancel) => sender.Send(new GetPaymentMethodsQuery(), cancel));
 

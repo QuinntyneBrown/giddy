@@ -73,6 +73,13 @@ public sealed class BookVenueHandler(
                 $"{authorisation.Brand} ending {authorisation.Last4} was declined, so nothing was charged. Try another card.");
         }
 
+        if (authorisation.Outcome == PaymentOutcome.RequiresAuthentication)
+        {
+            booking.AwaitAuthentication(authorisation.ChallengeUrl!);
+            await db.SaveChangesAsync(cancellationToken);
+            return BookingViews.From(booking, venue.Venue.Contact, calendar.Today);
+        }
+
         await completion.CompleteAsync(booking, new BookingContact(booking.BookingName, booking.Mobile, booking.Child, booking.Notes), cancellationToken);
         if (request.Payment.SaveCard && request.Payment.SavedCardId is null)
         {
