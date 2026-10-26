@@ -19,6 +19,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 09 | [Choose a theme](09-choose-a-theme/README.md) | ~2 min | Themes for the child, filters, choosing with undo |
 | 10 | [Manage the budget](10-manage-the-budget/README.md) | ~3 min | Planned and paid, own costs, swaps when over |
 | 11 | [Follow the checklist](11-follow-the-checklist/README.md) | ~3.5 min | Dated tasks, sharing the work, reminders and quiet hours |
+| 12 | [Run the party day](12-run-the-party-day/README.md) | ~3.5 min | The run sheet, quick calls, and working offline |
 
 ## Making or updating a video
 
