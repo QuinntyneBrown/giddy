@@ -23,3 +23,8 @@
 .detail__alternative {
   padding-inline: 0;
 }
+
+.detail__alternative .list__title,
+.detail__alternative .list__meta {
+  display: block;
+}

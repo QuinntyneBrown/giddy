@@ -11,11 +11,13 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 01 | [Set up the foundation](01-set-up-the-foundation/README.md) | ~4 min | The shell, server-side authorisation, system states and GTA localisation |
 | 02 | [Chat with Giddy](02-chat-with-giddy/README.md) | ~4 min | Visible steps, grounded priced plans, confirmation, Stop, failures and memories |
 | 03 | [Start a party plan](03-start-a-party-plan/README.md) | ~4 min | New party basics, readiness, the overview, locking, deleting and Home |
+| 04 | [Find and compare venues](04-find-and-compare-venues/README.md) | ~3.5 min | Venue search, filters, relaxation, venue pages, slots and comparison |
 
 ## Making or updating a video
 
 Run from the repository root with the web app running on port 4200. Recordings and stills
-use the fake API in `tools/video-record/giddy-fake-api.mjs`, so no backend is needed.
+use a fake API, so no backend is needed: from video 04 the e2e suite's own `FakeApi`
+(loaded by `tools/video-record/e2e-fake-api.mjs`), earlier videos `tools/video-record/giddy-fake-api.mjs`.
 Generated timing and slide renders go to `.cache/` (ignored by git).
 
 ```sh
