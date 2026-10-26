@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 10 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="10" data-video-title="Manage the budget" data-parts="Introduction|Promises|Track|Empty|Amounts|Over budget|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 10</div>
+  <h1>Manage the budget</h1>
+  <p class="lead">Planned, paid and left, with a way back when it goes over</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="The budget is a view of the plan, so it stays up to date">
+  <h2>What the budget promises</h2>
+  <ul>
+    <li>Quotes and deposits update items by themselves</li>
+    <li>Canadian dollars, 13% HST included, said once</li>
+    <li>A preview of what's left before saving a cost</li>
+    <li>A concrete swap when the plan goes over</li>
+  </ul>
+</section>
+
+<section id="track" data-part="2" data-cue="Here is the budget for Zuri's Dino Dig on a laptop." data-clip="clips/track-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Track, add and change</h3><p>Budget, planned, paid, per kid; a legend with amounts; Deposit paid; Add a cost previews what's left.</p></div>
+</section>
+
+<section id="empty" data-part="3" data-cue="A party with nothing planned yet starts empty.">
+  <h2>When there are no costs</h2>
+  <img class="shot" alt="No costs yet, with Fill in from the plan and Add a cost myself" src="shots/desktop-empty.png">
+</section>
+
+<section id="amounts" data-part="4" data-cue="An amount has to be a positive number">
+  <h2>Amounts that don't add up</h2>
+  <img class="shot" alt="The Add a cost dialog saying Enter an amount like 35 or 35.50" src="shots/desktop-invalid-amount.png">
+</section>
+
+<section id="over" data-part="5" data-cue="On a phone, a forty-dollar balloon arch" data-clip="clips/over-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Swap to get back within budget</h3><p>$18 over; Rexy the Dino Visit saves $45; confirm, and the warning goes with $27 left.</p></div>
+</section>
+
+<section id="testing" data-part="6" data-cue="The API tests cover the totals and categories">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 228 tests</h3><p>Totals and categories, quote and deposit statuses, costs and the amount rule, estimates, swaps, viewers read-only.</p></div>
+    <div class="card"><h3>Browser · 215 tests</h3><p>Tracking, adding, changing, removing, the empty and error states, swapping, with axe at 360 and 1280 px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="7" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>The budget is a view of the plan</li><li>Preview what's left before saving</li><li>Change or remove your own costs</li><li>A swap that fits when over</li></ul>
+  <p class="muted">Next: the party checklist</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
