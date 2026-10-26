@@ -1,4 +1,5 @@
 using Giddy.Api.Authentication;
+using Giddy.Api.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 
@@ -14,6 +15,7 @@ builder.Services.AddAuthorizationBuilder().SetFallbackPolicy(
 
 var app = builder.Build();
 
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 app.MapGet("/api/parties", () => Results.Ok(Array.Empty<object>()));
 

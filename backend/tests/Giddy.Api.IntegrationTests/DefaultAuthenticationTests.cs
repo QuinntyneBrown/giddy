@@ -17,4 +17,15 @@ public sealed class DefaultAuthenticationTests(WebApplicationFactory<Program> fa
         Assert.Equal(System.Net.HttpStatusCode.OK, healthResponse.StatusCode);
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, protectedResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task Health_check_includes_security_headers()
+    {
+        using var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/health", TestContext.Current.CancellationToken);
+
+        Assert.True(response.Headers.Contains("X-Content-Type-Options"));
+        Assert.True(response.Headers.Contains("Referrer-Policy"));
+    }
 }
