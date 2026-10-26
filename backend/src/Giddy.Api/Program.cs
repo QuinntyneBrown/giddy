@@ -45,6 +45,7 @@ app.MapGuestEndpoints();
 app.MapInvitationEndpoints();
 app.MapRsvpEndpoints();
 app.MapLiveUpdateEndpoints();
+app.MapEmailEventEndpoints();
 
 app.Run();
 
