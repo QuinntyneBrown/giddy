@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Giddy.Application.Agent.Model;
 using Giddy.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Testing;
 
@@ -23,10 +25,17 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
     /// <summary>Starts at 4:00 pm in Toronto on Sun 25 Oct 2026.</summary>
     public FakeClock Clock { get; } = new(Instant.FromUtc(2026, 10, 25, 20, 0));
 
+    public ScriptedPlanningModel Model { get; } = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Giddy", "Server=unused;Database=unused");
+        if (Environment.GetEnvironmentVariable("GIDDY_TEST_LOG") is { } logFile)
+        {
+            builder.ConfigureLogging(logging => logging.AddProvider(new FileLoggerProvider(logFile)));
+        }
+
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<GiddyDbContext>>();
@@ -35,6 +44,9 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
             services.RemoveAll<IClock>();
             services.AddSingleton<IClock>(Clock);
+
+            services.RemoveAll<IPlanningModel>();
+            services.AddSingleton<IPlanningModel>(Model);
 
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null);

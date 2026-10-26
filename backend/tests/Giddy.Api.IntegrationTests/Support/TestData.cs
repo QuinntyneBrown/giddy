@@ -1,4 +1,5 @@
 using Giddy.Domain.Parties;
+using Giddy.Infrastructure.Persistence.Seeding;
 using NodaTime;
 
 namespace Giddy.Api.IntegrationTests.Support;
@@ -15,6 +16,13 @@ public static class TestData
             new LocalTime(13, 0),
             new LocalTime(15, 30),
             TestParent.Amara.Id);
+        party.Describe(
+            "Zuri",
+            7,
+            new PartyArea("Leslieville", DemoCatalogue.LeslievilleLatitude, DemoCatalogue.LeslievilleLongitude, 8),
+            15,
+            800);
+        party.NoteAllergy("peanut");
         party.Share(TestParent.Kemi.Id, PartyRole.CoPlanner);
         party.Share(TestParent.Dev.Id, PartyRole.Viewer);
         return party;

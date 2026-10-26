@@ -36,6 +36,30 @@ public sealed class Party
 
     public IReadOnlyCollection<PartyMember> Members => members;
 
+    /// <summary>The birthday child's first name, for example "Zuri".</summary>
+    public string? ChildName { get; private set; }
+
+    /// <summary>The age the child is turning.</summary>
+    public int? TurningAge { get; private set; }
+
+    /// <summary>Where the party should be, as a place parents recognise and a point to measure from.</summary>
+    public PartyArea? Area { get; private set; }
+
+    /// <summary>About how many children are coming.</summary>
+    public int? GuestCount { get; private set; }
+
+    /// <summary>The total budget in Canadian dollars, HST included.</summary>
+    public decimal? Budget { get; private set; }
+
+    /// <summary>Allergies and dietary needs among the guests, for example "peanut" or "gluten".</summary>
+    public string[] Allergies { get; private set; } = [];
+
+    public string? Theme { get; private set; }
+
+    public List<BookingToDo> BookingsToDo { get; private set; } = [];
+
+    public List<ChecklistTask> Checklist { get; private set; } = [];
+
     public static Party Plan(Guid id, string name, LocalDate date, LocalTime startsAt, LocalTime endsAt, Guid ownerId)
     {
         var party = new Party(id, name.Trim(), date, startsAt, endsAt);
@@ -56,4 +80,33 @@ public sealed class Party
     public PartyRole? RoleOf(Guid parentId) => members.SingleOrDefault(m => m.ParentId == parentId)?.Role;
 
     public void Rename(string name) => Name = name.Trim();
+
+    public void Describe(string childName, int turningAge, PartyArea area, int guestCount, decimal budget)
+    {
+        ChildName = childName.Trim();
+        TurningAge = turningAge;
+        Area = area;
+        GuestCount = guestCount;
+        Budget = budget;
+    }
+
+    public void NoteAllergy(string allergy)
+    {
+        var normalised = allergy.Trim().ToLowerInvariant();
+        if (!Allergies.Contains(normalised))
+        {
+            Allergies = [.. Allergies, normalised];
+        }
+    }
+
+    /// <summary>
+    /// Applies an accepted plan in one go: the theme, a booking to do per item with its estimate,
+    /// and the dated checklist. Nothing is booked or paid; the parent confirms each booking later.
+    /// </summary>
+    public void ApplyPlan(string theme, IEnumerable<BookingToDo> bookings, IEnumerable<ChecklistTask> tasks)
+    {
+        Theme = theme;
+        BookingsToDo = bookings.ToList();
+        Checklist = tasks.ToList();
+    }
 }
