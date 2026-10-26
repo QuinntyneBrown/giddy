@@ -36,6 +36,9 @@ public sealed class Party
 
     public IReadOnlyCollection<PartyMember> Members => members;
 
+    /// <summary>The family's child the party is for; null for someone else.</summary>
+    public Guid? ChildId { get; private set; }
+
     /// <summary>The birthday child's first name, for example "Zuri".</summary>
     public string? ChildName { get; private set; }
 
@@ -81,8 +84,17 @@ public sealed class Party
 
     public void Rename(string name) => Name = name.Trim();
 
-    public void Describe(string childName, int turningAge, PartyArea area, int guestCount, decimal budget)
+    /// <summary>A party is read-only once its date has passed in Toronto.</summary>
+    public bool IsLockedOn(LocalDate today) => Date < today;
+
+    /// <summary>A party is a draft until a plan gives it things to book.</summary>
+    public bool IsDraft => BookingsToDo.Count == 0;
+
+    public bool IsOwnedBy(Guid parentId) => RoleOf(parentId) == PartyRole.Owner;
+
+    public void Describe(string childName, int turningAge, PartyArea area, int guestCount, decimal budget, Guid? childId = null)
     {
+        ChildId = childId;
         ChildName = childName.Trim();
         TurningAge = turningAge;
         Area = area;

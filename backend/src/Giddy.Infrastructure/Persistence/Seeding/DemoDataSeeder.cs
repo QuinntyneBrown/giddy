@@ -1,3 +1,5 @@
+using Giddy.Domain.Families;
+using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
@@ -12,6 +14,18 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
         var existing = await db.CatalogueItems.Select(i => i.Id).ToListAsync(cancellationToken);
         db.CatalogueItems.AddRange(DemoCatalogue.Items().Where(i => !existing.Contains(i.Id)));
         await db.SaveChangesAsync(cancellationToken);
+
+        if (!await db.Parents.AnyAsync(p => p.Id == DemoParents.Amara, cancellationToken))
+        {
+            db.Parents.AddRange(
+                new Parent(DemoParents.Amara, "Amara Okafor", "amara.okafor@example.com"),
+                new Parent(DemoParents.Kemi, "Kemi Okafor", "kemi.okafor@example.com"));
+            var family = new Family(DemoParents.Amara, "M4M 1H1");
+            family.AddChild(new Child(DemoParents.Zuri, "Zuri", new LocalDate(2019, 11, 14)));
+            family.AddChild(new Child(DemoParents.Kofi, "Kofi", new LocalDate(2023, 2, 3)));
+            db.Families.Add(family);
+            await db.SaveChangesAsync(cancellationToken);
+        }
 
         if (await db.Parties.AnyAsync(p => p.Id == DemoParents.DinoParty, cancellationToken))
         {
@@ -30,7 +44,8 @@ public sealed class DemoDataSeeder(GiddyDbContext db)
             7,
             new PartyArea("Leslieville", DemoCatalogue.LeslievilleLatitude, DemoCatalogue.LeslievilleLongitude, 8),
             15,
-            800);
+            800,
+            DemoParents.Zuri);
         party.NoteAllergy("peanut");
         party.Share(DemoParents.Kemi, PartyRole.CoPlanner);
         db.Parties.Add(party);

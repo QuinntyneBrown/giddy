@@ -33,6 +33,7 @@ app.MapPartyEndpoints();
 app.MapServiceAreaEndpoints();
 app.MapConversationEndpoints();
 app.MapMemoryEndpoints();
+app.MapHomeEndpoints();
 
 app.Run();
 

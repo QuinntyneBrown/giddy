@@ -8,8 +8,11 @@ public static class SessionEndpoints
 {
     public static IEndpointRouteBuilder MapSessionEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/session", (ICurrentParent parent) =>
-            new SessionResponse(parent.Id, parent.Name, parent.Email));
+        app.MapGet("/api/session", async (ICurrentParent parent, MediatR.ISender sender, CancellationToken cancel) =>
+        {
+            await sender.Send(new Giddy.Application.Parents.RecordParentCommand(), cancel);
+            return new SessionResponse(parent.Id, parent.Name, parent.Email);
+        });
 
         app.MapGet("/api/antiforgery", (HttpContext context, IAntiforgery antiforgery) =>
         {

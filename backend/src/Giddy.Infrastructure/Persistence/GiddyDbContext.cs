@@ -1,7 +1,9 @@
 using Giddy.Application.Common;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
+using Giddy.Domain.Families;
 using Giddy.Domain.Memories;
+using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Giddy.Domain.Proposals;
 using Giddy.Infrastructure.Persistence.Conversions;
@@ -25,6 +27,10 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<Proposal> Proposals => Set<Proposal>();
 
     public DbSet<TurnLogEntry> TurnLogs => Set<TurnLogEntry>();
+
+    public DbSet<Parent> Parents => Set<Parent>();
+
+    public DbSet<Family> Families => Set<Family>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

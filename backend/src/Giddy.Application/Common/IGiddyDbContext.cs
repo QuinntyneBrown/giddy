@@ -1,6 +1,8 @@
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
+using Giddy.Domain.Families;
 using Giddy.Domain.Memories;
+using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Giddy.Domain.Proposals;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,10 @@ public interface IGiddyDbContext
     DbSet<Proposal> Proposals { get; }
 
     DbSet<TurnLogEntry> TurnLogs { get; }
+
+    DbSet<Parent> Parents { get; }
+
+    DbSet<Family> Families { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
