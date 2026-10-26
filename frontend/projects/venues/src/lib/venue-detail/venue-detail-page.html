@@ -1,0 +1,175 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+@switch (venue.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t load this venue"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="venue.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="venue.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/venues">Back to venues</a>
+    </section>
+  }
+  @case ('ready') {
+    @let v = venue.value()!;
+    <div class="page-header">
+      <div>
+        <h1>{{ v.name }}</h1>
+        <div class="meta-row detail__meta">
+          <giddy-rating [value]="v.rating" [count]="v.reviewCount" [long]="true" />
+          <span
+            ><svg giddy-icon="pin" size="sm"></svg>{{ v.address }}, {{ v.neighbourhood
+            }}{{ v.distanceKm !== null ? ' · ' + v.distanceKm.toFixed(1) + ' km' : '' }}</span
+          >
+          @if (v.fullyBooked) {
+            <giddy-badge tone="danger">Fully booked {{ formatDate(v.date) }}</giddy-badge>
+          } @else {
+            <giddy-badge tone="success">Free on {{ formatDate(v.date) }}</giddy-badge>
+          }
+        </div>
+      </div>
+      <div class="cluster">
+        <button
+          giddy-button
+          type="button"
+          iconOnly
+          aria-label="Save to favourites"
+          [pressed]="favourite()"
+          (click)="toggleFavourite()"
+        >
+          <svg giddy-icon="heart"></svg>
+        </button>
+      </div>
+    </div>
+    <giddy-gallery
+      [description]="v.photoDescription"
+      [items]="[
+        { emoji: v.emoji, pop: 'mint' },
+        { emoji: '🎈', pop: 'sun' },
+        { emoji: '🧁', pop: 'sky' },
+      ]"
+    />
+    <div class="split section">
+      <div class="stack stack--lg">
+        <section class="stack" aria-labelledby="about-title">
+          <h2 id="about-title" class="detail__section-title">About</h2>
+          <p>{{ v.description }}</p>
+          <ul giddy-feature-list [features]="v.features"></ul>
+        </section>
+        <section giddy-card [heading]="'What’s included for ' + formatMoney(v.price)">
+          <ul class="stack stack--sm detail__includes">
+            @for (item of v.includes; track item) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+          @if (v.addOns.length) {
+            <p class="text-caption">
+              Add-ons:
+              @for (addOn of v.addOns; track addOn.name; let last = $last) {
+                {{ addOn.name }} {{ addOn.price }}{{ last ? '' : ' · ' }}
+              }
+            </p>
+          }
+        </section>
+        <section class="stack" aria-labelledby="rev-title">
+          <h2 id="rev-title" class="detail__section-title">What parents say</h2>
+          @for (review of v.reviews; track review.author) {
+            <figure class="card stack detail__review">
+              <div class="cluster cluster--between">
+                <figcaption>
+                  <strong>{{ review.author }}</strong>
+                  <span class="text-caption"> · {{ review.occasion }} · {{ review.when }}</span>
+                </figcaption>
+                <giddy-rating [value]="review.rating" />
+              </div>
+              <blockquote>{{ review.text }}</blockquote>
+            </figure>
+          }
+        </section>
+      </div>
+      <aside class="card stack detail__booking" aria-labelledby="book-title">
+        @if (v.fullyBooked) {
+          <h2 id="book-title" class="card__title">{{ formatDate(v.date) }} is fully booked</h2>
+          <p class="text-muted">Every party slot is taken. Here’s what’s close:</p>
+          <ul class="list">
+            @if (v.nearestFreeDate; as nearest) {
+              <li class="list__item detail__alternative">
+                <span class="list__body">
+                  <span class="list__title"
+                    >{{ formatDate(nearest.date) }}, {{ formatTime(nearest.start) }}</span
+                  >
+                  <span class="list__meta">Same venue, the nearest free date</span>
+                </span>
+                <button giddy-button size="sm" type="button" (click)="pickDate(nearest.date)">
+                  Pick
+                </button>
+              </li>
+            }
+            @if (v.similarVenue; as similar) {
+              <li class="list__item detail__alternative">
+                <span class="list__body">
+                  <span class="list__title">{{ similar.name }}</span>
+                  <span class="list__meta"
+                    >Free {{ formatDate(v.date) }} {{ formatTime(similar.start) }} ·
+                    {{ similar.distanceKm.toFixed(1) }} km · {{ formatMoney(similar.price) }}</span
+                  >
+                </span>
+                <a
+                  giddy-button
+                  size="sm"
+                  [routerLink]="['/venues', similar.id]"
+                  [queryParams]="{ date: v.date }"
+                  >View</a
+                >
+              </li>
+            }
+          </ul>
+          @if (waitlisted()) {
+            <p class="inline-status inline-status--success" role="status">
+              <svg giddy-icon="check-circle"></svg>We’ll tell you if a slot opens on
+              {{ formatDate(v.date) }}.
+            </p>
+          } @else {
+            <button giddy-button variant="primary" type="button" (click)="tellMe()">
+              <svg giddy-icon="bell"></svg>Tell me if a slot opens
+            </button>
+          }
+        } @else {
+          <h2 id="book-title" class="card__title">
+            {{ party() ? 'For ' + party()!.name : 'Availability' }}
+          </h2>
+          <div class="cluster cluster--between">
+            <span class="price detail__price">{{ formatMoney(v.price) }}</span>
+            <span class="text-muted">{{ duration(v.durationMinutes) }} · tax included</span>
+          </div>
+          <dl giddy-description-list [items]="facts()"></dl>
+          <fieldset
+            giddy-slot-picker
+            [slots]="slotOptions()"
+            [selected]="selected()"
+            (picked)="selected.set($event)"
+          ></fieldset>
+          @if (selectedRange(); as range) {
+            <p class="text-sm">
+              <strong>{{ range }}</strong> is free. Booking and the deposit come next.
+            </p>
+          }
+        }
+      </aside>
+    </div>
+  }
+  @default {
+    @if (venue.showSkeleton()) {
+      <div class="stack" aria-busy="true">
+        <span class="visually-hidden">Loading the venue…</span>
+        <giddy-skeleton shape="title" />
+        <giddy-skeleton shape="rect" height="14rem" />
+      </div>
+    }
+  }
+}

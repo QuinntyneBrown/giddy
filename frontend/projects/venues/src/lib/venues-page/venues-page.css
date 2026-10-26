@@ -1,0 +1,35 @@
+.venues__sort {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.venues__filters {
+  padding: var(--space-4);
+  margin-block: var(--space-4);
+}
+
+.venues__filter {
+  flex: 1 1 10rem;
+}
+
+.venues__filter--narrow {
+  flex: 1 1 6rem;
+}
+
+.venues__filter--wide {
+  flex: 2 1 12rem;
+}
+
+.venues__chips {
+  flex-basis: 100%;
+}
+
+.venues__grid {
+  list-style: none;
+  padding: 0;
+}
+
+.venues__fit {
+  color: var(--color-warning-fg);
+}

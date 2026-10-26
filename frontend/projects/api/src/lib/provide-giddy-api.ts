@@ -5,6 +5,8 @@ import { FAMILY_API } from './family/family-api.token';
 import { HttpFamilyApi } from './family/http-family-api';
 import { HOME_API } from './home/home-api.token';
 import { HttpHomeApi } from './home/http-home-api';
+import { HttpVenuesApi } from './venues/http-venues-api';
+import { VENUES_API } from './venues/venues-api.token';
 import { HttpMemoriesApi } from './memories/http-memories-api';
 import { MEMORIES_API } from './memories/memories-api.token';
 import { HttpPartiesApi } from './parties/http-parties-api';
@@ -21,5 +23,6 @@ export function provideGiddyApi(): EnvironmentProviders {
     { provide: MEMORIES_API, useClass: HttpMemoriesApi },
     { provide: FAMILY_API, useClass: HttpFamilyApi },
     { provide: HOME_API, useClass: HttpHomeApi },
+    { provide: VENUES_API, useClass: HttpVenuesApi },
   ]);
 }

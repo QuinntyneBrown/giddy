@@ -12,7 +12,8 @@
       "@giddy/parties": ["./projects/parties/src/public-api.ts"],
       "@giddy/planner": ["./projects/planner/src/public-api.ts"],
       "@giddy/settings": ["./projects/settings/src/public-api.ts"],
-      "@giddy/system": ["./projects/system/src/public-api.ts"]
+      "@giddy/system": ["./projects/system/src/public-api.ts"],
+      "@giddy/venues": ["./projects/venues/src/public-api.ts"]
     },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

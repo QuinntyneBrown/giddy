@@ -1,0 +1,87 @@
+<nav giddy-breadcrumb [items]="breadcrumb"></nav>
+<div class="page-header">
+  <div>
+    <h1>Compare venues</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  <a giddy-button routerLink="/venues"><svg giddy-icon="plus"></svg>Add a venue</a>
+</div>
+@switch (comparison.status()) {
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      heading="Pick 2 or 3 venues to compare"
+      text="Tick Compare on any venue card and they’ll line up here side by side: price, size, distance and what’s included."
+    >
+      <a giddy-button variant="primary" routerLink="/venues">Browse venues</a>
+    </section>
+  }
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t compare these venues"
+      text="Nothing was lost. Try again in a moment."
+      [referenceCode]="comparison.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="comparison.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('ready') {
+    @let c = comparison.value()!;
+    <div giddy-alert [heading]="'Giddy’s pick: ' + c.recommendation.name">
+      <div>{{ c.recommendation.reason }}</div>
+    </div>
+    <giddy-table-wrap class="section">
+      <table class="table compare">
+        <caption class="visually-hidden">
+          Venue comparison
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Feature</span></th>
+            @for (venue of c.venues; track venue.id) {
+              <th scope="col">
+                <span class="emoji" aria-hidden="true">{{ venue.emoji }}</span> {{ venue.name }}
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of c.rows; track row.label) {
+            <tr>
+              <th scope="row">{{ row.label }}</th>
+              @for (cell of row.cells; track $index) {
+                <td>
+                  <giddy-best-value [best]="cell.best">{{ cell.text }}</giddy-best-value>
+                </td>
+              }
+            </tr>
+          }
+          <tr>
+            <th scope="row"><span class="visually-hidden">Actions</span></th>
+            @for (venue of c.venues; track venue.id) {
+              <td>
+                <a
+                  giddy-button
+                  size="sm"
+                  [routerLink]="['/venues', venue.id]"
+                  [queryParams]="{ date: c.date }"
+                  >Details</a
+                >
+              </td>
+            }
+          </tr>
+        </tbody>
+      </table>
+    </giddy-table-wrap>
+  }
+  @default {
+    @if (comparison.showSkeleton()) {
+      <div aria-busy="true"><giddy-skeleton shape="rect" height="20rem" /></div>
+    }
+  }
+}
