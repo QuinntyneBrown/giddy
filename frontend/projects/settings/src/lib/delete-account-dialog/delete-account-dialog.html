@@ -1,0 +1,53 @@
+<giddy-dialog
+  tone="danger"
+  heading="Delete your Giddy account?"
+  description="This deletes your family, the parties you own and Giddy’s chat. Co-planners lose access to those parties."
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="Nothing was deleted">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (error(); as message) {
+    <giddy-error-summary [errors]="[{ targetId: 'delete-account-email', message }]" />
+  }
+  @if (bookingWarning(); as warning) {
+    <div giddy-alert tone="warning" [heading]="warning">
+      <div>
+        Deleting your account doesn’t cancel bookings. Cancel with the venue or vendor first.
+      </div>
+    </div>
+  }
+  <p>Everything is gone within 30 days. Payment records are kept only as the law requires.</p>
+  <form novalidate (submit)="$event.preventDefault(); remove()">
+    <giddy-form-field
+      [label]="'Type your email, ' + email + ', to confirm'"
+      inputId="delete-account-email"
+      help="This can’t be undone."
+      [error]="error()"
+    >
+      <input
+        giddyInput
+        type="email"
+        autocomplete="off"
+        [value]="typed()"
+        (input)="typed.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+  </form>
+  <button giddyDialogFooter giddy-button type="button" data-initial-focus (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="danger"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="remove()"
+  >
+    Delete my account
+  </button>
+</giddy-dialog>

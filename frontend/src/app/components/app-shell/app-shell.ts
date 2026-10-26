@@ -13,14 +13,26 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AUTH_API, ApiProblem } from '@giddy/api';
 import { ConflictDialog } from '@giddy/checklist';
 import { filter, firstValueFrom, map } from 'rxjs';
-import { ConnectionStatus, OfflineStore, SessionStore, SyncConflict, TaskSync } from '@giddy/core';
+import {
+  ConnectionStatus,
+  CookieChoice,
+  CookieConsent,
+  OfflineStore,
+  PushPrompt,
+  SessionStore,
+  SyncConflict,
+  TaskSync,
+  UnreadNotifications,
+} from '@giddy/core';
 import { LiveRsvpToasts } from '@giddy/guests';
 import { ThemeService } from '../../theme/theme.service';
 import {
   AlertComponent,
   AvatarComponent,
+  BadgeComponent,
   BottomNavComponent,
   ButtonComponent,
+  ConsentBarComponent,
   ErrorPageComponent,
   FooterComponent,
   GiddyDialog,
@@ -29,6 +41,8 @@ import {
   NavItem,
   SidebarNavComponent,
   SkipLinkComponent,
+  ToastComponent,
+  ToastRegionComponent,
   TopBarComponent,
 } from '@giddy/components';
 
@@ -37,14 +51,18 @@ import {
   imports: [
     AlertComponent,
     AvatarComponent,
+    BadgeComponent,
     BottomNavComponent,
     ButtonComponent,
+    ConsentBarComponent,
     ErrorPageComponent,
     IconComponent,
     FooterComponent,
     LiveRsvpToasts,
     SidebarNavComponent,
     SkipLinkComponent,
+    ToastComponent,
+    ToastRegionComponent,
     TopBarComponent,
     RouterLink,
     NgTemplateOutlet,
@@ -84,7 +102,14 @@ export class AppShellComponent {
       : 'You’re connected again.';
   });
 
-  protected readonly sidebarGroups: NavGroup[] = [
+  protected readonly unread = inject(UnreadNotifications).count;
+  protected readonly push = inject(PushPrompt);
+  protected readonly cookies = inject(CookieConsent);
+  protected readonly cookieSaved = signal<string | null>(null);
+  protected readonly bellLabel = computed(() =>
+    this.unread() ? `Notifications, ${this.unread()} unread` : 'Notifications',
+  );
+  protected readonly sidebarGroups = computed<NavGroup[]>(() => [
     {
       items: [
         { label: 'Home', link: '/', icon: 'home', exact: true },
@@ -104,11 +129,17 @@ export class AppShellComponent {
       label: 'You',
       items: [
         { label: 'Family', link: '/family', icon: 'family' },
-        { label: 'Notifications', link: '/notifications', icon: 'bell' },
+        {
+          label: 'Notifications',
+          link: '/notifications',
+          icon: 'bell',
+          count: this.unread() || undefined,
+          countLabel: `${this.unread()} unread`,
+        },
         { label: 'Settings', link: '/settings', icon: 'settings' },
       ],
     },
-  ];
+  ]);
 
   protected readonly bottomItems: NavItem[] = [
     { label: 'Home', link: '/', icon: 'home', exact: true },
@@ -117,6 +148,11 @@ export class AppShellComponent {
     { label: 'Parties', link: '/parties', icon: 'parties' },
     { label: 'Family', link: '/family', icon: 'family' },
   ];
+
+  protected chooseCookies(choice: CookieChoice): void {
+    this.cookies.choose(choice);
+    this.cookieSaved.set(choice === 'all' ? 'Allow all.' : 'Essential only.');
+  }
 
   protected readonly footerLinks = [
     { label: 'Help', link: '/help' },

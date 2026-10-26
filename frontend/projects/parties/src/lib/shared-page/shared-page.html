@@ -1,0 +1,44 @@
+@switch (summary.status()) {
+  @case ('error') {
+    <giddy-error-page
+      code="View-only link"
+      heading="This link doesn’t work any more"
+      message="The parent may have made a new one. Ask them to share it again."
+    />
+  }
+  @case ('ready') {
+    @let view = summary.value()!;
+    <div class="page-header">
+      <div>
+        <h1>{{ view.name }}</h1>
+        <p class="subtitle">{{ when() }}</p>
+      </div>
+    </div>
+    <p class="text-caption">A view-only summary from Giddy. Guests’ details stay private.</p>
+    <div class="stack section">
+      <section giddy-card heading="The party">
+        <ul class="stack stack--sm">
+          @if (view.venue) {
+            <li>At {{ view.venue }}</li>
+          }
+          @if (view.theme) {
+            <li>Theme: {{ view.theme }}</li>
+          }
+          <li>{{ view.coming }} {{ view.coming === 1 ? 'kid' : 'kids' }} coming</li>
+        </ul>
+      </section>
+      @if (view.plan.length) {
+        <section giddy-card heading="The plan">
+          <ul class="stack stack--sm">
+            @for (line of view.plan; track line) {
+              <li>{{ line }}</li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  }
+  @default {
+    <giddy-skeleton shape="rect" height="12rem" />
+  }
+}

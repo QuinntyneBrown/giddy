@@ -1,0 +1,14 @@
+@if (expired()) {
+  <giddy-error-page
+    code="Invitation"
+    heading="This invitation has expired"
+    message="Invitations work for 14 days and only once. Ask the parent planning the party to send a new one."
+  >
+    <a giddy-button variant="primary" routerLink="/parties">See my parties</a>
+  </giddy-error-page>
+} @else {
+  <div class="stack section" aria-busy="true">
+    <giddy-spinner />
+    <span class="visually-hidden">Joining the party plan…</span>
+  </div>
+}

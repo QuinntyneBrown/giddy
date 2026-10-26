@@ -6,7 +6,7 @@
       aria-label="Primary"
       ctaLabel="Plan a party"
       ctaLink="/parties/new"
-      [groups]="sidebarGroups"
+      [groups]="sidebarGroups()"
     ></nav>
     <div class="shell__body">
       <header
@@ -16,6 +16,19 @@
         searchPlaceholder="Search venues, entertainers, cakes…"
         (searched)="search($event)"
       >
+        <a
+          giddy-button
+          variant="ghost"
+          iconOnly
+          class="shell__bell"
+          routerLink="/notifications"
+          [attr.aria-label]="bellLabel()"
+        >
+          <svg giddy-icon="bell"></svg>
+          @if (unread()) {
+            <giddy-badge tone="count" aria-hidden="true">{{ unread() }}</giddy-badge>
+          }
+        </a>
         <ng-container *ngTemplateOutlet="themeToggle" />
         <a
           giddy-avatar
@@ -71,6 +84,61 @@
               Resend link
             </button>
           </div>
+        </div>
+      </div>
+    }
+  }
+  @switch (push.state()) {
+    @case ('asking') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          heading="Get a buzz when friends RSVP?"
+          (dismissed)="push.notNow()"
+        >
+          <div>
+            Turn on notifications for RSVPs and party-day reminders. You can change this in
+            Settings.
+          </div>
+          <div class="alert__actions">
+            <button giddy-button size="sm" type="button" (click)="push.turnOn()">Turn on</button>
+            <button giddy-button size="sm" variant="ghost" type="button" (click)="push.notNow()">
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+    @case ('on') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          tone="success"
+          heading="Notifications on"
+          (dismissed)="push.dismiss()"
+        >
+          <div>We’ll buzz you for RSVPs and reminders. Quiet hours are 9 pm to 7 am.</div>
+        </div>
+      </div>
+    }
+    @case ('blocked') {
+      <div class="offline-banner">
+        <div
+          giddy-alert
+          banner
+          dismissible
+          tone="warning"
+          heading="Notifications are blocked in your browser"
+          (dismissed)="push.dismiss()"
+        >
+          <div>
+            To turn them on, open your browser’s site settings for Giddy and allow notifications.
+          </div>
+          <div class="alert__actions"><a routerLink="/help">Show me how</a></div>
         </div>
       </div>
     }
@@ -145,3 +213,28 @@
     [links]="footerLinks"
   ></footer>
 </ng-template>
+
+@if (cookies.choice() === null) {
+  <section
+    giddy-consent-bar
+    heading="A few cookies, no crumbs"
+    text="We use essential cookies to keep you signed in. With your OK we also measure which pages help parents most. No ads, ever."
+  >
+    <a giddy-button size="sm" routerLink="/legal" fragment="cookies">Choose</a>
+    <button giddy-button size="sm" type="button" (click)="chooseCookies('essential')">
+      Essential only
+    </button>
+    <button giddy-button size="sm" type="button" (click)="chooseCookies('all')">Allow all</button>
+  </section>
+}
+<giddy-toast-region>
+  @if (cookieSaved(); as choice) {
+    <giddy-toast
+      tone="success"
+      dismissible
+      heading="Cookie choice saved"
+      [text]="choice + ' Change it any time in Terms & privacy.'"
+      (dismissed)="cookieSaved.set(null)"
+    />
+  }
+</giddy-toast-region>

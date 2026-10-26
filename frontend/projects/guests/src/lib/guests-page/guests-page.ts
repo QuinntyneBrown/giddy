@@ -346,13 +346,13 @@ export class GuestsPage {
       if (!removed) return;
       this.selected.update((ids) => ids.filter((id) => id !== guest.id));
       this.list.reload();
-      const toast = this.show({
+      // Undo is offered for as long as the toast shows.
+      this.show({
         heading: `${guest.childName} removed`,
         text: `${guest.parentName} wasn’t messaged.`,
         tone: 'neutral',
         undo: guest.id,
       });
-      setTimeout(() => this.dismiss(toast), 8000);
     });
   }
 
@@ -383,7 +383,6 @@ export class GuestsPage {
       ...toasts,
       { action: null, persistent: false, ...toast, undo: toast.undo ?? null, id },
     ]);
-    if (!toast.persistent && !toast.undo) setTimeout(() => this.dismiss(id), 6000);
     return id;
   }
 }

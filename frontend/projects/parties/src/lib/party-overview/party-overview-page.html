@@ -6,6 +6,9 @@
   </div>
   @if (canPlan()) {
     <div class="cluster">
+      <button giddy-button type="button" (click)="share()">
+        <svg giddy-icon="share"></svg>Share
+      </button>
       <button giddy-button variant="primary" type="button" (click)="askGiddy()">
         <svg giddy-icon="sparkle"></svg>Ask Giddy
       </button>

@@ -14,6 +14,7 @@ export class PartyOverviewPage extends AppShellPage {
   readonly lockedAlert: Locator;
   readonly nothingBooked: Locator;
   readonly deleteButton: Locator;
+  readonly shareButton: Locator;
   readonly bookingUpdates: Locator;
   readonly sections: Locator;
 
@@ -30,6 +31,7 @@ export class PartyOverviewPage extends AppShellPage {
     this.lockedAlert = page.getByRole('status').filter({ hasText: 'This party has happened!' });
     this.nothingBooked = page.getByRole('region', { name: 'Nothing booked yet' });
     this.deleteButton = page.getByRole('button', { name: 'Delete this party' });
+    this.shareButton = page.locator('.page-header').getByRole('button', { name: 'Share' });
     this.bookingUpdates = page.getByRole('region', { name: 'Booking updates' });
     this.sections = page.getByRole('navigation', { name: 'Party sections' });
   }

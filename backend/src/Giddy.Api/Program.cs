@@ -54,6 +54,11 @@ app.MapChecklistEndpoints();
 app.MapRunSheetEndpoints();
 app.MapAuthEndpoints();
 app.MapFamilyEndpoints();
+app.MapNotificationEndpoints();
+app.MapSharingEndpoints();
+app.MapSettingsEndpoints();
+app.MapDeliveryEndpoints();
+app.MapPrivacyEndpoints();
 
 app.Run();
 

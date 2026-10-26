@@ -1,3 +1,4 @@
+using Giddy.Domain.Notifications;
 using NodaTime;
 
 namespace Giddy.Domain.Parents;
@@ -53,6 +54,23 @@ public sealed class Parent
 
     /// <summary>Devices the parent has signed in on, such as "Safari on iPhone".</summary>
     public List<string> KnownDevices { get; private set; } = [];
+
+    public string? LastName { get; private set; }
+
+    /// <summary>For RSVP texts and party-day reminders, as the parent typed it.</summary>
+    public string? Mobile { get; private set; }
+
+    /// <summary>No texts or push from 9 pm to 7 am; on unless the parent turns it off.</summary>
+    public bool QuietHours { get; private set; } = true;
+
+    /// <summary>A new address waiting to be confirmed before it replaces <see cref="Email"/>.</summary>
+    public string? PendingEmail { get; private set; }
+
+    /// <summary>Only the categories the parent has changed; the rest use <see cref="DefaultChannels"/>.</summary>
+    public List<ChannelSetting> ChannelSettings { get; private set; } = [];
+
+    /// <summary>The first name, and the last name when the parent gave one.</summary>
+    public string FullName => LastName is { Length: > 0 } last ? $"{Name} {last}" : Name;
 
     public static Parent SignUp(Guid id, string firstName, string email, bool marketingOptIn) =>
         new(id, firstName, email) { MarketingOptIn = marketingOptIn };
@@ -119,5 +137,42 @@ public sealed class Parent
         var isNew = KnownDevices.Count > 0;
         KnownDevices = [.. KnownDevices, device];
         return isNew;
+    }
+
+    public void UpdateProfile(string firstName, string? lastName, string? mobile)
+    {
+        Name = firstName;
+        LastName = string.IsNullOrWhiteSpace(lastName) ? null : lastName;
+        Mobile = string.IsNullOrWhiteSpace(mobile) ? null : mobile;
+    }
+
+    public void SetQuietHours(bool on) => QuietHours = on;
+
+    /// <summary>Email for everything but party ideas, which need consent; texts and push once chosen.</summary>
+    public ChannelSetting Channels(NotificationCategory category) =>
+        ChannelSettings.FirstOrDefault(c => c.Category == category)
+        ?? new ChannelSetting(category, Email: category != NotificationCategory.Ideas || MarketingOptIn, Text: false, Push: false);
+
+    public void SetChannels(NotificationCategory category, bool email, bool text, bool push)
+    {
+        ChannelSettings = [.. ChannelSettings.Where(c => c.Category != category), new ChannelSetting(category, email, text, push)];
+        if (category == NotificationCategory.Ideas)
+        {
+            MarketingOptIn = email;
+        }
+    }
+
+    public void RequestEmailChange(string email) => PendingEmail = email;
+
+    /// <summary>The new address is confirmed, so it replaces the old one.</summary>
+    public void ConfirmEmailChange(Instant now)
+    {
+        if (PendingEmail is { } pending)
+        {
+            Email = pending;
+            PendingEmail = null;
+            EmailVerifiedAt = now;
+            EmailBounced = false;
+        }
     }
 }

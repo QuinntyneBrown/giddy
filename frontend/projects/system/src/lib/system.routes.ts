@@ -19,6 +19,11 @@ export const systemRoutes: Routes = [
     title: 'Something went wrong · Giddy',
   },
   { path: 'offline', component: OfflinePage, title: 'Offline · Giddy' },
+  {
+    path: 'legal',
+    loadComponent: () => import('./legal/legal-page').then((m) => m.LegalPage),
+    title: 'Terms & privacy · Giddy',
+  },
 ];
 
 /** Must be the last route: every unknown path shows the not-found page. */

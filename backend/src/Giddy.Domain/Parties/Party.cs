@@ -89,6 +89,24 @@ public sealed class Party
         return party;
     }
 
+    /// <summary>A hash of the view-only link's token; null when there is no link.</summary>
+    public string? ShareLinkHash { get; private set; }
+
+    public void SetShareLink(string tokenHash) => ShareLinkHash = tokenHash;
+
+    /// <summary>Takes a planner off the party; the owner can't be removed.</summary>
+    public bool RemoveMember(Guid parentId)
+    {
+        var member = members.SingleOrDefault(m => m.ParentId == parentId);
+        if (member is null || member.Role == PartyRole.Owner)
+        {
+            return false;
+        }
+
+        members.Remove(member);
+        return true;
+    }
+
     public void Share(Guid parentId, PartyRole role)
     {
         if (members.Any(m => m.ParentId == parentId))

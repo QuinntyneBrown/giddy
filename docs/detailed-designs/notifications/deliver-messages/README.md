@@ -30,6 +30,24 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - Email and SMS provider selection and Canadian sender numbers `<TO SUPPLY>`
 
+**As built**
+
+**Choosing channels**
+- `NotificationOutbox.DispatchDueAsync` sends each message by the channels the parent chose for its category: email, text and push.
+
+**Quiet hours**
+- Quiet hours (9 pm to 7 am, Toronto) hold non-urgent messages until 7 am.
+- A message that is urgent on the party day goes straight away.
+
+**Texts and unsubscribing**
+- Every text reads "Giddy: … Reply STOP to opt out".
+- `POST /api/sms-events`, which needs the `X-Giddy-Webhook-Secret` header (`Giddy:SmsEventsSecret`), records replies. STOP and the other standard opt-out words stop texts to that number straight away.
+- Marketing emails carry a signed `/api/unsubscribe` link that works without signing in.
+- The unsubscribe mechanism is built; marketing campaigns themselves are not.
+
+**Push**
+- `IPushSender` is a logging sender until VAPID keys are configured.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

@@ -22,6 +22,21 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`PushSubscriptionsController`** — `POST /api/push-subscriptions`, `DELETE ...`.
 
 
+**As built**
+
+**When Giddy asks**
+- `PushPrompt` (in `@giddy/core`) starts asking once the parent has sent invitations from this device, while the browser's permission is still undecided.
+- The shell shows "Get a buzz when friends RSVP?" with Turn on and Not now. The browser's own prompt appears only after Turn on.
+
+**What happens next**
+- Granted shows "Notifications on" with the quiet hours.
+- Denied shows "Notifications are blocked in your browser", which links to `/help`.
+- Not now, or dismissing the prompt, keeps it away from this device for 30 days (local storage).
+
+**Not yet done**
+- The help centre page is not built yet.
+- `POST /api/push-subscriptions` and `DELETE /api/push-subscriptions` store and remove subscriptions. The web app does not subscribe until a VAPID public key is configured.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

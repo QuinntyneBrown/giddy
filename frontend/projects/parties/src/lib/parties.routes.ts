@@ -18,3 +18,21 @@ export const partiesRoutes: Routes = [
     title: 'Party overview · Giddy',
   },
 ];
+
+/** Accepting an invitation needs a signed-in parent; the guard brings them back here. */
+export const joinRoutes: Routes = [
+  {
+    path: 'join/:token',
+    loadComponent: () => import('./join-page/join-page').then((m) => m.JoinPage),
+    title: 'Join a party plan · Giddy',
+  },
+];
+
+/** The view-only link is open to anyone who has it. */
+export const sharedRoutes: Routes = [
+  {
+    path: 'shared/:token',
+    loadComponent: () => import('./shared-page/shared-page').then((m) => m.SharedPage),
+    title: 'Party plan · Giddy',
+  },
+];

@@ -1,0 +1,11 @@
+.settings__email {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings__meta {
+  display: block;
+}

@@ -23,7 +23,9 @@ public sealed class TaskReminderWorker(IServiceScopeFactory scopes, ILogger<Task
                 using var scope = scopes.CreateScope();
                 await scope.ServiceProvider.GetRequiredService<TaskReminders>().RunAsync(stoppingToken);
                 await scope.ServiceProvider.GetRequiredService<BirthdayReminders>().RunAsync(stoppingToken);
-                await scope.ServiceProvider.GetRequiredService<NotificationOutbox>().DispatchDueAsync(stoppingToken);
+                var outbox = scope.ServiceProvider.GetRequiredService<NotificationOutbox>();
+                await outbox.DispatchDueAsync(stoppingToken);
+                await outbox.PurgeAsync(stoppingToken);
             }
             catch (Exception exception) when (exception is not OperationCanceledException)
             {

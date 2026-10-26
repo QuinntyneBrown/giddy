@@ -120,6 +120,11 @@
 
 <giddy-toast-region>
   @if (problem(); as message) {
-    <giddy-toast heading="No run sheet yet" [text]="message" tone="danger" />
+    <giddy-toast
+      heading="No run sheet yet"
+      [text]="message"
+      tone="danger"
+      (dismissed)="problem.set(null)"
+    />
   }
 </giddy-toast-region>

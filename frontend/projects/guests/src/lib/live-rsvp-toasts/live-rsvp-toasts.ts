@@ -88,13 +88,13 @@ export class LiveRsvpToasts {
       text: update.text,
       tone: update.tone,
       update,
-      persistent: update.tone === 'danger' || update.tone === 'warning',
+      // Warnings go after 12 seconds like any other; only danger stays until dismissed.
+      persistent: update.tone === 'danger',
     });
   }
 
   private show(toast: Omit<ShownToast, 'key'>): void {
     const key = `live-${this.next++}`;
     this.toasts.update((toasts) => [...toasts.slice(-3), { ...toast, key }]);
-    if (!toast.persistent) setTimeout(() => this.dismiss(key), 8000);
   }
 }

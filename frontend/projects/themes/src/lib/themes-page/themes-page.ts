@@ -63,7 +63,6 @@ export class ThemesPage {
   protected readonly budget = signal(false);
   protected readonly choosing = signal<string | null>(null);
   protected readonly undoOffer = signal<{ heading: string; change: ThemeChange } | null>(null);
-  private undoTimer: ReturnType<typeof setTimeout> | undefined;
 
   protected readonly party = computed(() => {
     const parties = this.parties();
@@ -163,13 +162,11 @@ export class ThemesPage {
   }
 
   protected dismissUndo(): void {
-    clearTimeout(this.undoTimer);
     this.undoOffer.set(null);
   }
 
+  /** The toast offers Undo for as long as it shows: 8 seconds, longer while pointed at. */
   private offerUndo(heading: string, change: ThemeChange): void {
-    clearTimeout(this.undoTimer);
     this.undoOffer.set({ heading, change });
-    this.undoTimer = setTimeout(() => this.undoOffer.set(null), 8000);
   }
 }

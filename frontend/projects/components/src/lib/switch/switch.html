@@ -1,0 +1,7 @@
+<span class="choice__text">
+  <span><ng-content /></span>
+  @if (description(); as text) {
+    <small class="text-muted">{{ text }}</small>
+  }
+</span>
+<ng-content select="input" />

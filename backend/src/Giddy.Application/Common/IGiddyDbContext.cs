@@ -61,5 +61,15 @@ public interface IGiddyDbContext
 
     DbSet<ParentSession> ParentSessions { get; }
 
+    DbSet<InboxItem> InboxItems { get; }
+
+    DbSet<SmsOptOut> SmsOptOuts { get; }
+
+    DbSet<PushSubscription> PushSubscriptions { get; }
+
+    DbSet<PartyInvite> PartyInvites { get; }
+
+    DbSet<Giddy.Domain.Privacy.DataExport> DataExports { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

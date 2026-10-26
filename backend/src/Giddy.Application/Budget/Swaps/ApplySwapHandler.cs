@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Giddy.Application.Budget.Swaps;
 
 /// <summary>Replaces an item not yet booked with the cheaper one the parent confirmed.</summary>
-public sealed class ApplySwapHandler(IGiddyDbContext db, BudgetProjection projection) : IRequestHandler<ApplySwapCommand, BudgetView>
+public sealed class ApplySwapHandler(Notifications.PlannerNews news, IGiddyDbContext db, BudgetProjection projection) : IRequestHandler<ApplySwapCommand, BudgetView>
 {
     public async Task<BudgetView> Handle(ApplySwapCommand request, CancellationToken cancellationToken)
     {
@@ -23,6 +23,7 @@ public sealed class ApplySwapHandler(IGiddyDbContext db, BudgetProjection projec
         var replacement = await db.CatalogueItems.SingleOrDefaultAsync(i => i.Id == request.ReplacementId && i.Category != CatalogueCategory.Theme, cancellationToken)
             ?? throw new NotFoundException("Vendor not found.");
         party.SwapItem(request.Category, replacement.Id, replacement.Name, replacement.Price);
+        news.TellOthers(party, "💰", $"swapped {current.Name} for {replacement.Name}", $"Saves {Notifications.Money.Format(current.Estimate - replacement.Price)} on {party.Name}.", $"/parties/{party.Id}/budget");
         await db.SaveChangesAsync(cancellationToken);
         return await projection.ViewAsync(party, cancellationToken);
     }

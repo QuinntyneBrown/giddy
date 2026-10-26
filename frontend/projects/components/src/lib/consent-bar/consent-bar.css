@@ -1,0 +1,8 @@
+.consent-bar__intro {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.consent-bar__heading {
+  font: var(--text-h4);
+}

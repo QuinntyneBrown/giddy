@@ -6,7 +6,7 @@ using NodaTime;
 namespace Giddy.Application.Invitations;
 
 /// <summary>Gives one family its private link by each chosen channel they have details for.</summary>
-public sealed class InvitationDelivery(IEmailSender email, ISmsSender sms, IWebLinks links, ISecretProtector protector)
+public sealed class InvitationDelivery(IEmailSender email, Notifications.Texts texts, IWebLinks links, ISecretProtector protector)
 {
     public async Task DeliverAsync(Guest guest, Invitation invitation, InvitationDetails details, Instant now, CancellationToken cancellationToken)
     {
@@ -20,7 +20,8 @@ public sealed class InvitationDelivery(IEmailSender email, ISmsSender sms, IWebL
 
         if (invitation.ByText && guest.Mobile is { } mobile)
         {
-            await sms.SendAsync(InvitationMessages.Text(mobile, invitation, details, link), cancellationToken);
+            var text = InvitationMessages.Text(mobile, invitation, details, link);
+            await texts.SendAsync(text.To, text.Body, cancellationToken);
         }
     }
 }

@@ -85,7 +85,7 @@ public sealed class TaskReminderTests : IAsyncLifetime
         {
             At(2026, 11, 3, 22, 30);
             await scope.ServiceProvider.GetRequiredService<NotificationOutbox>().QueueAsync(
-                TestParent.Amara.Id, "Order the cake is due tomorrow", "Body", urgentOn: null, $"test:{Guid.NewGuid()}", Cancel);
+                TestParent.Amara.Id, Giddy.Domain.Notifications.NotificationCategory.Reminders, "Order the cake is due tomorrow", "Body", "/", urgentOn: null, $"test:{Guid.NewGuid()}", Cancel);
         }
 
         await DispatchAsync();
@@ -106,7 +106,7 @@ public sealed class TaskReminderTests : IAsyncLifetime
         using (var scope = factory.Services.CreateScope())
         {
             await scope.ServiceProvider.GetRequiredService<NotificationOutbox>().QueueAsync(
-                TestParent.Amara.Id, "Professor Fizz cancelled", "Body", urgentOn: dinoParty.Date, $"test:{Guid.NewGuid()}", Cancel);
+                TestParent.Amara.Id, Giddy.Domain.Notifications.NotificationCategory.Vendors, "Professor Fizz cancelled", "Body", "/", urgentOn: dinoParty.Date, $"test:{Guid.NewGuid()}", Cancel);
         }
 
         await DispatchAsync();
@@ -121,7 +121,7 @@ public sealed class TaskReminderTests : IAsyncLifetime
         using (var scope = factory.Services.CreateScope())
         {
             await scope.ServiceProvider.GetRequiredService<NotificationOutbox>().QueueAsync(
-                TestParent.Amara.Id, "Professor Fizz cancelled", "Body", urgentOn: dinoParty.Date, $"test:{Guid.NewGuid()}", Cancel);
+                TestParent.Amara.Id, Giddy.Domain.Notifications.NotificationCategory.Vendors, "Professor Fizz cancelled", "Body", "/", urgentOn: dinoParty.Date, $"test:{Guid.NewGuid()}", Cancel);
         }
 
         await DispatchAsync();

@@ -45,6 +45,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
     public const string VendorQuotesSecret = "test-vendor-quotes-secret";
 
+    public const string SmsEventsSecret = "test-sms-events-secret";
+
     public FakeVenuePartner Partner => partner ??= new FakeVenuePartner(Clock);
 
     private FakeVenuePartner? partner;
@@ -55,6 +57,7 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
         builder.UseSetting("ConnectionStrings:Giddy", "Server=unused;Database=unused");
         builder.UseSetting("Giddy:EmailEventsSecret", EmailEventsSecret);
         builder.UseSetting("Giddy:VendorQuotesSecret", VendorQuotesSecret);
+        builder.UseSetting("Giddy:SmsEventsSecret", SmsEventsSecret);
         if (Environment.GetEnvironmentVariable("GIDDY_TEST_LOG") is { } logFile)
         {
             builder.ConfigureLogging(logging => logging.AddProvider(new FileLoggerProvider(logFile)));

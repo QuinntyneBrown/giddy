@@ -7,6 +7,14 @@ import { RUN_SHEET_API } from './run-sheets/run-sheet-api.token';
 import { HttpRunSheetApi } from './run-sheets/http-run-sheet-api';
 import { AUTH_API } from './auth/auth-api.token';
 import { HttpAuthApi } from './auth/http-auth-api';
+import { NOTIFICATIONS_API } from './notifications/notifications-api.token';
+import { HttpNotificationsApi } from './notifications/http-notifications-api';
+import { SHARING_API } from './sharing/sharing-api.token';
+import { HttpSharingApi } from './sharing/http-sharing-api';
+import { SETTINGS_API } from './settings/settings-api.token';
+import { HttpSettingsApi } from './settings/http-settings-api';
+import { PRIVACY_API } from './privacy/privacy-api.token';
+import { HttpPrivacyApi } from './privacy/http-privacy-api';
 import { BOOKINGS_API } from './bookings/bookings-api.token';
 import { HttpBookingsApi } from './bookings/http-bookings-api';
 import { GUESTS_API } from './guests/guests-api.token';
@@ -41,6 +49,10 @@ export function provideGiddyApi(): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: SESSION_API, useClass: HttpSessionApi },
     { provide: AUTH_API, useClass: HttpAuthApi },
+    { provide: NOTIFICATIONS_API, useClass: HttpNotificationsApi },
+    { provide: SHARING_API, useClass: HttpSharingApi },
+    { provide: SETTINGS_API, useClass: HttpSettingsApi },
+    { provide: PRIVACY_API, useClass: HttpPrivacyApi },
     { provide: PARTIES_API, useClass: HttpPartiesApi },
     { provide: CONVERSATIONS_API, useClass: HttpConversationsApi },
     { provide: MEMORIES_API, useClass: HttpMemoriesApi },

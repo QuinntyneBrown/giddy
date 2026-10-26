@@ -24,6 +24,25 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`ChangeEmailHandler`** — Creates a pending change, emails both addresses.
 
 
+**As built**
+
+**Profile and notifications**
+- One "Save changes" saves the profile (first and last name, mobile, postal code) and the notification channels table (RSVPs, vendor quotes and bookings, Giddy's reminders, party ideas × email, text, push).
+- A success alert confirms the save. Party ideas by email follows the marketing opt-in.
+- An incomplete mobile or an invalid postal code shows inline errors and a focused summary, and nothing is saved.
+
+**Quiet hours and email**
+- The quiet-hours switch (`giddy-switch`) saves as soon as it changes.
+- "Change email" opens `ChangeEmailDialog`. The new address gets a confirmation link and the old address is told; until the link is opened, Settings shows "Waiting for you to confirm …".
+
+**Cookie consent**
+- On a first visit, the shell shows a consent bar with Choose, Essential only and Allow all at equal weight. A toast confirms the choice.
+- `CookieConsent` keeps the choice on the device for 12 months. It can be changed on Terms & privacy (`/legal#cookies`).
+- Giddy loads no analytics, so nothing waits on the choice yet.
+
+**Not yet done**
+- Profile photo upload is not built.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

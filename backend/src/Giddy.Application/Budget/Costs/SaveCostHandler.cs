@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Giddy.Application.Budget.Costs;
 
-public sealed class SaveCostHandler(IGiddyDbContext db) : IRequestHandler<SaveCostCommand, BudgetLine>
+public sealed class SaveCostHandler(Notifications.PlannerNews news, IGiddyDbContext db) : IRequestHandler<SaveCostCommand, BudgetLine>
 {
     public async Task<BudgetLine> Handle(SaveCostCommand request, CancellationToken cancellationToken)
     {
@@ -21,6 +21,7 @@ public sealed class SaveCostHandler(IGiddyDbContext db) : IRequestHandler<SaveCo
             throw new NotFoundException("Cost not found.");
         }
 
+        news.TellOthers(party, "💰", request.CostId is null ? $"added {cost.Description} ({Notifications.Money.Format(cost.Amount)}) to the budget" : $"changed {cost.Description} in the budget", $"The budget for {party.Name}.", $"/parties/{party.Id}/budget");
         await db.SaveChangesAsync(cancellationToken);
         return new BudgetLine(cost.CostId.ToString(), "expense", cost.Category, cost.Description, cost.Paid ? "paid" : "estimate", cost.Amount, cost.Paid ? cost.Amount : 0);
     }

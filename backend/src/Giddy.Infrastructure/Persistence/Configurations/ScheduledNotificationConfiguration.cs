@@ -14,6 +14,8 @@ public sealed class ScheduledNotificationConfiguration : IEntityTypeConfiguratio
         builder.Property(n => n.Key).HasMaxLength(200);
         builder.Property(n => n.Subject).HasMaxLength(200);
         builder.Property(n => n.Body).HasMaxLength(4000);
+        builder.Property(n => n.Link).HasMaxLength(300);
+        builder.Property(n => n.Category).HasConversion<string>().HasMaxLength(20);
         builder.HasIndex(n => n.Key).IsUnique();
         builder.HasIndex(n => new { n.SentAt, n.SendAt });
     }

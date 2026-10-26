@@ -1,0 +1,82 @@
+<div class="page-header">
+  <div>
+    <h1>Notifications</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  <div class="cluster">
+    <button giddy-button type="button" [disabled]="!fresh().length" (click)="markAll()">
+      <svg giddy-icon="check"></svg>Mark all as read
+    </button>
+  </div>
+</div>
+
+<ng-template #entry let-item>
+  <li>
+    <giddy-notification
+      [link]="item.link"
+      [icon]="item.icon"
+      [heading]="item.title"
+      [detail]="item.detail"
+      [when]="when(item)"
+      [unread]="!item.read"
+      (opened)="open($event, item)"
+    />
+  </li>
+</ng-template>
+
+@switch (inbox.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load your notifications"
+      text="Nothing was lost. Try again in a moment."
+      [referenceCode]="inbox.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="inbox.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="Nothing new, all quiet"
+      text="RSVPs, vendor quotes and Giddy’s reminders will pop up here as your party comes together."
+    >
+      <a giddy-button routerLink="/settings">Choose what to hear about</a>
+    </section>
+  }
+  @case ('ready') {
+    <div class="stack section">
+      @if (fresh().length) {
+        <section giddy-card heading="New">
+          <ul class="notifications__list">
+            @for (item of fresh(); track item.id) {
+              <ng-container *ngTemplateOutlet="entry; context: { $implicit: item }" />
+            }
+          </ul>
+        </section>
+      }
+      @if (earlier().length) {
+        <section giddy-card heading="Earlier">
+          <ul class="notifications__list">
+            @for (item of earlier(); track item.id) {
+              <ng-container *ngTemplateOutlet="entry; context: { $implicit: item }" />
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  }
+  @default {
+    @if (inbox.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading notifications…</span>
+        <giddy-skeleton shape="rect" height="16rem" />
+      </div>
+    }
+  }
+}

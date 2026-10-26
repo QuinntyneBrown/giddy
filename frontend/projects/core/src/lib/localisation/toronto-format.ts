@@ -149,3 +149,16 @@ export function addDays(isoDate: string, days: number): string {
 export function formatDateTime(instant: Date): string {
   return `${formatDate(torontoToday(instant))}, ${formatClockTime(instant)}`;
 }
+
+/** "Just now", "12 min ago", "2 h ago", "Yesterday", or "Sun 18 Oct", in Toronto. */
+export function formatRelativeTime(isoInstant: string, now = new Date()): string {
+  const then = new Date(isoInstant);
+  const minutes = Math.floor((now.getTime() - then.getTime()) / 60_000);
+  if (minutes < 1) return 'Just now';
+  if (minutes < 60) return `${minutes} min ago`;
+  const today = torontoToday(now);
+  const day = torontoToday(then);
+  if (day === today) return `${Math.floor(minutes / 60)} h ago`;
+  const yesterday = torontoToday(new Date(now.getTime() - 86_400_000));
+  return day === yesterday ? 'Yesterday' : formatDate(day);
+}

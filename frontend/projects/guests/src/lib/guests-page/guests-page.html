@@ -212,6 +212,7 @@
       [text]="toast.text"
       [tone]="toast.tone"
       [dismissible]="toast.persistent"
+      [sticky]="toast.persistent"
       (dismissed)="dismiss(toast.id)"
     >
       @if (toast.undo) {
@@ -235,6 +236,7 @@
         selected().length + (selected().length === 1 ? ' guest selected' : ' guests selected')
       "
       [text]="selectedNames()"
+      sticky
     >
       <button
         giddy-button
