@@ -106,6 +106,20 @@ test.describe('ratings and next year', () => {
     });
   });
 
+  test('rating on a phone keeps the page where it was', async ({ page }) => {
+    const wrapUp = new WrapUpPage(page);
+    await wrapUp.useWidth(360);
+    await wrapUp.openWrapUp(zurisSixth.id);
+
+    await wrapUp.stars('Coral the Singing Mermaid', 4).click();
+
+    await expect(wrapUp.stars('Coral the Singing Mermaid', 4)).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(wrapUp.stars('Coral the Singing Mermaid', 4)).toBeInViewport();
+  });
+
   test('final numbers show kids, spend and gifts', async ({ page }) => {
     const wrapUp = new WrapUpPage(page);
     await wrapUp.openWrapUp(zurisSixth.id);

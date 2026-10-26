@@ -155,6 +155,15 @@ export class WrapUpPage {
     });
   }
 
+  /** Fetches wrap-up again in place, so the page keeps its scroll position after an action. */
+  private async refresh(): Promise<void> {
+    try {
+      this.wrapUp.update(await firstValueFrom(this.api.get(this.partyId())));
+    } catch {
+      this.wrapUp.reload();
+    }
+  }
+
   protected pop(index: number): PopColour {
     return pops[index % pops.length];
   }
@@ -171,7 +180,7 @@ export class WrapUpPage {
         { autoFocus: '[data-initial-focus]' },
       )
       .closed.subscribe((saved) => {
-        if (saved) this.wrapUp.reload();
+        if (saved) void this.refresh();
       });
   }
 
@@ -181,7 +190,7 @@ export class WrapUpPage {
     try {
       const { sent } = await firstValueFrom(this.api.sendNotes(this.partyId()));
       this.sent.set(sent);
-      this.wrapUp.reload();
+      void this.refresh();
     } catch {
       this.problem.set('The notes didn’t send. Nothing was sent twice; try again in a moment.');
     } finally {
@@ -199,7 +208,7 @@ export class WrapUpPage {
         heading: `Thanks for rating ${provider.name}`,
         text: 'Your stars count in its rating for other parents.',
       });
-      this.wrapUp.reload();
+      void this.refresh();
     } catch {
       this.problem.set(`Your rating of ${provider.name} wasn’t saved. Try again in a moment.`);
     }
@@ -218,7 +227,7 @@ export class WrapUpPage {
           heading: `Thanks for rating ${rated.name}`,
           text: 'Your review helps other GTA parents choose.',
         });
-        this.wrapUp.reload();
+        void this.refresh();
       });
   }
 
@@ -227,7 +236,7 @@ export class WrapUpPage {
     this.problem.set(null);
     try {
       await firstValueFrom(this.api.saveTemplate(this.partyId()));
-      this.wrapUp.reload();
+      void this.refresh();
     } catch {
       this.problem.set('The plan wasn’t saved. Try again in a moment.');
     } finally {
