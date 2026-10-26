@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 01 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="01" data-video-title="Set up the foundation" data-parts="Introduction|Promises|Laptop|Phone|Server|Failures|GTA|Library|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 01</div>
+  <h1>Set up the foundation</h1>
+  <p class="lead">The shell, server-side authorisation, system states and the GTA</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="One shell on every screen, on a phone or a laptop.">
+  <h2>What the foundation promises</h2>
+  <ul>
+    <li>One shell on every screen, phone or laptop</li>
+    <li>Every party request checked on the server</li>
+    <li>Loading, empty and error states that keep the parent's place</li>
+    <li>Dates, money and places that make sense in the GTA</li>
+  </ul>
+</section>
+
+<section id="desktop" data-part="2" data-cue="Here is Amara on a laptop." data-clip="clips/shell-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop · 1024px and up</span><h3>Sidebar, next party, theme</h3><p>Dark theme is remembered on the device. Unknown links get a friendly 404 with a way home.</p></div>
+</section>
+
+<section id="phone" data-part="3" data-cue="On a phone, the sidebar becomes a bottom bar">
+  <h2>The shell on a phone</h2>
+  <div class="cols">
+    <img class="shot" alt="Home on a phone with the bottom bar" src="shots/phone-empty-home.png">
+    <ul>
+      <li>Home · Explore · <b>Ask Giddy</b> · Parties · Family</li>
+      <li>Search from 768px</li>
+      <li>No sideways scrolling at 360 to 1280px</li>
+      <li>Bar targets at least 44px tall</li>
+    </ul>
+  </div>
+</section>
+
+<section id="server" data-part="4" data-cue="Every endpoint needs a signed-in parent unless it opts out">
+  <h2>The server decides</h2>
+  <table class="facts">
+    <tr><th>Request</th><th>Answer</th></tr>
+    <tr><td>Not signed in</td><td>401; cookie is HttpOnly, Secure, SameSite=Lax</td></tr>
+    <tr><td>Not a member of the party</td><td>404, before validation runs</td></tr>
+    <tr><td>Viewer changes the party</td><td>403, nothing changes</td></tr>
+    <tr><td>Write without <code>X-XSRF-TOKEN</code></td><td>400</td></tr>
+    <tr><td>Invalid name</td><td>400 with field errors</td></tr>
+  </table>
+  <p class="small muted"><code>PartyAuthorizationBehavior</code> runs before <code>ValidationBehavior</code> for every <code>IPartyRequest</code></p>
+</section>
+
+<section id="failures" data-part="5" data-cue="When the home takes longer than three hundred milliseconds" data-clip="clips/states-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Skeletons, error, Try again</h3><p>The shell stays, the parties are safe, and <code>GDY-7Q2K</code> is there to quote. Offline and back online banners follow.</p></div>
+</section>
+
+<section id="system-pages" data-part="5" data-cue="Not found, private plan, server error and offline">
+  <h2>A page for every dead end</h2>
+  <div class="cols three">
+    <img class="shot" alt="This party plan is private" src="shots/phone-forbidden.png">
+    <img class="shot" alt="Giddy tripped over a balloon string" src="shots/desktop-server-error.png">
+    <img class="shot" alt="No internet right now" src="shots/phone-offline.png">
+  </div>
+</section>
+
+<section id="gta" data-part="6" data-cue="Countdowns count calendar days in Toronto">
+  <h2>Made for the GTA</h2>
+  <table class="facts">
+    <tr><th>Rule</th><th>Example</th></tr>
+    <tr><td>Calendar days in America/Toronto</td><td>20 days at 4:00 pm or 11:30 pm, across DST</td></tr>
+    <tr><td>Dates and times</td><td>Sat 14 Nov 2026 · 1:00–3:30 pm</td></tr>
+    <tr><td>Countdowns</td><td>Today · Tomorrow · 20 days to go</td></tr>
+    <tr><td>Postal codes</td><td>M4M 1H1 → Toronto · L6J 1H3 → Halton · K1A 0B1 → outside</td></tr>
+  </table>
+</section>
+
+<section id="library" data-part="7" data-cue="Every screen is composed from one components library">
+  <h2>One library, tested end to end</h2>
+  <div class="cols">
+    <div class="card"><h3>@giddy/components</h3><p>Built once from the design system. Stylelint rejects raw colours and z-index.</p></div>
+    <div class="card"><h3>API · 33 tests</h3><p>Fake database and clock; another family's token on every write.</p></div>
+    <div class="card"><h3>Browser · 48 tests</h3><p>Chromium, a fake API that fails unknown requests, axe at 360 and 1280px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Sidebar on wide screens, bottom bar on phones</li><li>Membership and role checked on every party request</li><li>Failures keep the parent's place and give a reference code</li><li>Every date is a Toronto calendar day</li></ul>
+  <p class="muted">Next: chat with Giddy</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

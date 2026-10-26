@@ -7,3 +7,6 @@ docs/design-system/.cache/
 
 # Playwright output when tests are invoked from the repository root
 /test-results/
+
+# Video tooling scratch output
+.cache/
