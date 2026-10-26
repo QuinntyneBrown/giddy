@@ -7,6 +7,7 @@ export type IconName =
   | 'chevron-right'
   | 'clock'
   | 'close'
+  | 'edit'
   | 'explore'
   | 'family'
   | 'guests'

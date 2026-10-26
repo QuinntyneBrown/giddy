@@ -1,0 +1,199 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Budget</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  @if (canPlan()) {
+    <div class="cluster">
+      <button giddy-button variant="primary" type="button" (click)="openAdd()">
+        <svg giddy-icon="plus"></svg>Add a cost
+      </button>
+    </div>
+  }
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (budget.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load the budget"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="budget.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="budget.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="No costs yet"
+      text="Add costs as you go, or let Giddy fill in estimates from the plan. You’ll always see how much is left."
+    >
+      @if (canPlan()) {
+        <button
+          giddy-button
+          variant="primary"
+          type="button"
+          [busy]="estimating()"
+          [disabled]="estimating()"
+          (click)="estimate()"
+        >
+          <svg giddy-icon="sparkle"></svg>Fill in from the plan
+        </button>
+        <button giddy-button type="button" (click)="openAdd()">Add a cost myself</button>
+      }
+    </section>
+  }
+  @case ('ready') {
+    @let view = budget.value()!;
+    <div class="stack section">
+      @if (view.over) {
+        <div
+          giddy-alert
+          tone="warning"
+          [heading]="'You’re ' + (view.overBy | giddyMoney) + ' over budget'"
+        >
+          @for (swap of view.swaps; track swap.category) {
+            <div>
+              Swap {{ swap.currentName }} ({{ swap.currentPrice | giddyMoney }}) for
+              {{ swap.replacementName }} ({{ swap.replacementPrice | giddyMoney }}) to save
+              {{ swap.saving | giddyMoney }}.
+            </div>
+          } @empty {
+            <div>
+              Giddy couldn’t find a cheaper vendor free on the date for anything not yet booked.
+            </div>
+          }
+          <div class="alert__actions">
+            @if (canPlan()) {
+              @for (swap of view.swaps; track swap.category) {
+                <button giddy-button size="sm" type="button" (click)="openSwap(swap)">
+                  Swap {{ swap.currentName }}
+                </button>
+              }
+            }
+            <a giddy-button size="sm" variant="ghost" routerLink="/ask-giddy">Talk it through</a>
+          </div>
+        </div>
+      }
+      <section giddy-card heading="Planned spend">
+        @if (status(); as s) {
+          <giddy-badge class="budget__status" [tone]="s.tone">{{ s.label }}</giddy-badge>
+        }
+        <div class="grid-4">
+          <giddy-stat
+            label="Budget"
+            [value]="view.budget !== null ? (view.budget | giddyMoney) : 'Not set'"
+          />
+          <giddy-stat label="Planned" [value]="view.planned | giddyMoney" />
+          <giddy-stat label="Paid so far" [value]="view.paid | giddyMoney" />
+          <giddy-stat
+            label="Per kid"
+            [value]="view.perKid !== null ? (view.perKid | giddyMoney) : '–'"
+          />
+        </div>
+        <giddy-meter [segments]="segments()" [over]="view.over" [label]="meterLabel()" />
+        <ul giddy-legend [items]="legend()"></ul>
+      </section>
+      <giddy-table-wrap>
+        <table class="table">
+          <caption class="visually-hidden">
+            Party costs
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="num">Planned</th>
+              <th scope="col" class="num">Paid</th>
+              @if (canPlan()) {
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of view.lines; track line.id) {
+              <tr>
+                <td>
+                  <giddy-table-item
+                    [emoji]="art(line.category).emoji"
+                    [pop]="art(line.category).pop"
+                    [heading]="line.category"
+                    [meta]="line.name"
+                  />
+                </td>
+                <td>
+                  <giddy-badge [tone]="badge(line).tone">{{ badge(line).label }}</giddy-badge>
+                </td>
+                <td class="num">{{ line.planned | giddyMoney }}</td>
+                <td class="num">{{ line.paid | giddyMoney }}</td>
+                @if (canPlan()) {
+                  <td class="row-actions">
+                    @if (line.kind === 'expense') {
+                      <button
+                        giddy-button
+                        size="sm"
+                        variant="ghost"
+                        iconOnly
+                        type="button"
+                        [attr.aria-label]="'Edit ' + line.name"
+                        (click)="openEdit(line)"
+                      >
+                        <svg giddy-icon="edit"></svg>
+                      </button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="2">Total</th>
+              <td class="num">
+                <strong>{{ view.planned | giddyMoney }}</strong>
+              </td>
+              <td class="num">
+                <strong>{{ view.paid | giddyMoney }}</strong>
+              </td>
+              @if (canPlan()) {
+                <td></td>
+              }
+            </tr>
+          </tfoot>
+        </table>
+      </giddy-table-wrap>
+      <p class="text-caption">
+        All prices include 13% HST. Giddy updates estimates when vendors send quotes.
+      </p>
+    </div>
+  }
+  @default {
+    @if (budget.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading the budget…</span>
+        <giddy-skeleton shape="rect" height="12rem" />
+        <giddy-skeleton shape="rect" height="16rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @for (toast of toasts(); track toast.id) {
+    <giddy-toast
+      [heading]="toast.heading"
+      [text]="toast.text"
+      [tone]="toast.tone"
+      [dismissible]="toast.persistent"
+      (dismissed)="dismiss(toast.id)"
+    />
+  }
+</giddy-toast-region>

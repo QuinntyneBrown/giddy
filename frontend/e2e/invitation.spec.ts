@@ -50,7 +50,9 @@ test.describe('designing the invitation', () => {
     await invite.rsvpBy.fill('2026-11-14');
     await invite.send.click();
 
-    expect(await invite.fieldError(invite.rsvpBy)).toBe('Choose an RSVP-by date before the party.');
+    await expect
+      .poll(() => invite.fieldError(invite.rsvpBy))
+      .toBe('Choose an RSVP-by date before the party.');
     await expect(invite.rsvpBy).toHaveAttribute('aria-invalid', 'true');
     expect(fakeApi.guestStore.saved).toEqual([]);
     expect(fakeApi.guestStore.invitation.sentAt).toBeNull();

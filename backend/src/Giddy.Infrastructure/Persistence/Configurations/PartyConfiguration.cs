@@ -35,5 +35,7 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
             bookings.Property(b => b.Status).HasConversion<string>();
         });
         builder.OwnsMany(p => p.Checklist, tasks => tasks.ToJson());
+        builder.OwnsMany(p => p.Expenses, expenses => expenses.ToJson());
+        builder.Ignore(p => p.Planned);
     }
 }

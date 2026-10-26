@@ -35,6 +35,8 @@ public static class DependencyInjection
         services.AddScoped<Invitations.InvitationReader>();
         services.AddScoped<Invitations.InvitationDelivery>();
         services.AddScoped<Guests.Import.GuestImporter>();
+        services.AddScoped<Budget.BudgetProjection>();
+        services.AddScoped<Budget.SwapAdvisor>();
         services.AddScoped<Rsvps.RsvpLinks>();
         services.AddSingleton<TurnCancellations>();
         services.AddScoped<IAgentTool, ListThemesTool>();

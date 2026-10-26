@@ -66,6 +66,11 @@ public sealed class Party
 
     public List<ChecklistTask> Checklist { get; private set; } = [];
 
+    public List<Expense> Expenses { get; private set; } = [];
+
+    /// <summary>Everything planned: Giddy's bookings and the parent's own costs.</summary>
+    public decimal Planned => BookingsToDo.Sum(b => b.Estimate) + Expenses.Sum(e => e.Amount);
+
     /// <summary>When the allergy list last went to the venue.</summary>
     public Instant? AllergyListSharedAt { get; private set; }
 
@@ -203,4 +208,41 @@ public sealed class Party
 
     /// <summary>Sets or clears the party's theme; invitations, cake ideas and activities follow it.</summary>
     public void ChooseTheme(string? theme) => Theme = string.IsNullOrWhiteSpace(theme) ? null : theme.Trim();
+
+    public void AddExpense(Expense expense) => Expenses = [.. Expenses, expense];
+
+    public bool UpdateExpense(Expense expense)
+    {
+        if (Expenses.All(e => e.CostId != expense.CostId))
+        {
+            return false;
+        }
+
+        Expenses = Expenses.Select(e => e.CostId == expense.CostId ? expense : e).ToList();
+        return true;
+    }
+
+    public bool RemoveExpense(Guid id)
+    {
+        var before = Expenses.Count;
+        Expenses = Expenses.Where(e => e.CostId != id).ToList();
+        return Expenses.Count != before;
+    }
+
+    /// <summary>Replaces the plan's item in a category with a cheaper one; it is to book again.</summary>
+    public void SwapItem(string category, Guid replacementId, string replacementName, decimal price) =>
+        BookingsToDo = BookingsToDo
+            .Select(b => b.Category == category ? new BookingToDo(category, replacementName, price, replacementId) : b)
+            .ToList();
+
+    /// <summary>Giddy's estimates for a party with nothing planned yet.</summary>
+    public void EstimateFromScratch(IEnumerable<BookingToDo> estimates)
+    {
+        if (BookingsToDo.Count > 0 || Expenses.Count > 0)
+        {
+            throw new InvalidOperationException("The party already has costs.");
+        }
+
+        BookingsToDo = estimates.ToList();
+    }
 }

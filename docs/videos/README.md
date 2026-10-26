@@ -17,6 +17,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 07 | [Build the guest list](07-build-the-guest-list/README.md) | ~3.5 min | Search, filters, adding, removing with undo and importing a class list |
 | 08 | [Find entertainers, food and cake](08-find-entertainers-food-and-cake/README.md) | ~3 min | Fun & food, allergy fit, quote requests and expiring quotes |
 | 09 | [Choose a theme](09-choose-a-theme/README.md) | ~2 min | Themes for the child, filters, choosing with undo |
+| 10 | [Manage the budget](10-manage-the-budget/README.md) | ~3 min | Planned and paid, own costs, swaps when over |
 
 ## Making or updating a video
 

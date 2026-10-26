@@ -124,9 +124,9 @@ test.describe('requesting a quote', () => {
     await dialog.start.fill('16:00');
     await dialog.send.click();
 
-    expect(await dialog.fieldError(dialog.start)).toBe(
-      'Choose a start time between 1:00 and 3:30 pm, while you have the venue.',
-    );
+    await expect
+      .poll(() => dialog.fieldError(dialog.start))
+      .toBe('Choose a start time between 1:00 and 3:30 pm, while you have the venue.');
     await expect(dialog.start).toHaveAttribute('aria-invalid', 'true');
   });
 

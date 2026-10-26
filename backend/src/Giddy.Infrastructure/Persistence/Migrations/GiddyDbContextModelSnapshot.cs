@@ -1198,6 +1198,38 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("PartyId");
                         });
 
+                    b.OwnsMany("Giddy.Domain.Parties.Expense", "Expenses", b1 =>
+                        {
+                            b1.Property<Guid>("PartyId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(10, 2);
+
+                            b1.Property<string>("Category")
+                                .IsRequired();
+
+                            b1.Property<Guid>("CostId");
+
+                            b1.Property<string>("Description")
+                                .IsRequired();
+
+                            b1.Property<bool>("Paid");
+
+                            b1.HasKey("PartyId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Parties");
+
+                            b1
+                                .ToJson("Expenses")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PartyId");
+                        });
+
                     b.OwnsOne("Giddy.Domain.Parties.PartyArea", "Area", b1 =>
                         {
                             b1.Property<Guid>("PartyId")
@@ -1257,6 +1289,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.Navigation("BookingsToDo");
 
                     b.Navigation("Checklist");
+
+                    b.Navigation("Expenses");
 
                     b.Navigation("Members");
                 });

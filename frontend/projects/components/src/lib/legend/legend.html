@@ -1,0 +1,5 @@
+@for (item of items(); track $index) {
+  <li [class]="'pop--' + item.pop">
+    <span class="swatch" aria-hidden="true"></span>{{ item.label }}
+  </li>
+}

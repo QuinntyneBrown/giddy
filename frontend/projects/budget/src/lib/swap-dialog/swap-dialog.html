@@ -1,0 +1,40 @@
+<giddy-dialog
+  size="sm"
+  [heading]="'Swap ' + data.swap.currentName + '?'"
+  [description]="
+    'Save ' + (data.swap.saving | giddyMoney) + ' on the ' + data.swap.category.toLowerCase() + '.'
+  "
+  [busy]="state() === 'busy'"
+>
+  @if (state() === 'failed') {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>Your plan hasn’t changed. Try again in a moment.</div>
+    </div>
+  }
+  <p>
+    {{ data.swap.replacementName }} ({{ data.swap.replacementPrice | giddyMoney }}) takes the place
+    of {{ data.swap.currentName }} ({{ data.swap.currentPrice | giddyMoney }}) in the plan. They’re
+    free on the party date; you’ll book them like any other vendor.
+  </p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="state() === 'busy'"
+    (click)="cancel()"
+  >
+    Keep the plan
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+    (click)="confirm()"
+  >
+    Swap to {{ data.swap.replacementName }}
+  </button>
+</giddy-dialog>
