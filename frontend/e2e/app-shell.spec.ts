@@ -36,3 +36,9 @@ test('shows a helpful not-found page for an unknown route', async ({ page }) => 
   await expect(page.getByRole('link', { name: 'Go home' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Get help' })).toBeVisible();
 });
+
+test('declares Canadian English for GTA parents', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en-CA');
+});
