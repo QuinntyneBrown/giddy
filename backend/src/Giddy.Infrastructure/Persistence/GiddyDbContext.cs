@@ -32,6 +32,10 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
 
     public DbSet<Family> Families => Set<Family>();
 
+    public DbSet<FavouriteVenue> FavouriteVenues => Set<FavouriteVenue>();
+
+    public DbSet<VenueWaitlistEntry> VenueWaitlist => Set<VenueWaitlistEntry>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Instant>().HaveConversion<InstantConverter>();

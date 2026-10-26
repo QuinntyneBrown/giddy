@@ -29,6 +29,8 @@ public static class DependencyInjection
         services.AddScoped<ProposalValidator>();
         services.AddScoped<TurnLogger>();
         services.AddScoped<AgentLoop>();
+        services.AddScoped<Venues.VenueOrigins>();
+        services.AddScoped<Venues.Search.VenueCandidates>();
         services.AddSingleton<TurnCancellations>();
         services.AddScoped<IAgentTool, ListThemesTool>();
         services.AddScoped<IAgentTool, SearchVenuesTool>();

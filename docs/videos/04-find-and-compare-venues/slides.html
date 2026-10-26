@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 04 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="04" data-video-title="Find and compare venues" data-parts="Introduction|Promises|Search|No results|Venue|Compare|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 04</div>
+  <h1>Find and compare venues</h1>
+  <p class="lead">Free, near, big enough, and side by side</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Search starts from the party: its date">
+  <h2>What venue search promises</h2>
+  <div class="cols">
+    <ul>
+      <li>Starts from the party's date, kids and area</li>
+      <li>Only venues free that day, near and big enough</li>
+      <li>Distances in km from the party's area</li>
+      <li>Empty results explain why and how to fix it</li>
+    </ul>
+    <img class="shot" alt="Venues on a phone" src="shots/phone-venues.png">
+  </div>
+</section>
+
+<section id="search" data-part="2" data-cue="Here is Amara on a laptop." data-clip="clips/search-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Search, narrow, sort, compare</h3><p>Filters pre-filled from Zuri's party; the count follows every filter; sort is kept for the session.</p></div>
+</section>
+
+<section id="no-results" data-part="3" data-cue="Here a maximum of two hundred and fifty dollars" data-clip="clips/no-results-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>A fix that works</h3><p>"No venues under $250 with a nut-free kitchen" → Raise to $340 shows 1 venue.</p></div>
+</section>
+
+<section id="failures" data-part="3" data-cue="If venue partners don't answer in time">
+  <h2>Timeouts and the service area</h2>
+  <div class="cols">
+    <img class="shot" alt="We couldn't check availability, filters kept" src="shots/desktop-timeout.png">
+    <img class="shot" alt="Giddy covers the GTA for now" src="shots/desktop-outside-gta.png">
+  </div>
+</section>
+
+<section id="venue" data-part="4" data-cue="On a phone, a venue's page shows photos" data-clip="clips/venue-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>A venue's page</h3><p>Favourite toggle with aria-pressed; booked slots disabled and named; fully booked dates offer the nearest free date, a similar venue and a waitlist.</p></div>
+</section>
+
+<section id="compare" data-part="5" data-cue="Back on the laptop, ticking Compare">
+  <h2>Comparing venues</h2>
+  <img class="shot" alt="Three venues side by side with the best values marked" src="shots/desktop-compare.png">
+</section>
+
+<section id="testing" data-part="6" data-cue="The API tests search the seeded GTA catalogue">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 107 tests</h3><p>Free slots, close fits, distance, every filter and sort, relaxation, a 503 on timeout, outside the GTA, alternatives, favourites, waitlist, comparison.</p></div>
+    <div class="card"><h3>Browser · 107 tests</h3><p>The same flows against the fake API at 360 and 1280px, with axe on every page. Recordings use the same fake.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="7" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Only venues free, near and big enough</li><li>Empty results come with a fix that works</li><li>Booked slots are disabled and named</li><li>"Best" is said in words, not just colour</li></ul>
+  <p class="muted">Next: book a venue</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

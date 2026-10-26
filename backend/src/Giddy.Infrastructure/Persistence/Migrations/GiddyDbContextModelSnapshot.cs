@@ -90,6 +90,46 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("CatalogueItems", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Catalogue.FavouriteVenue", b =>
+                {
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VenueId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("FamilyId", "VenueId");
+
+                    b.ToTable("FavouriteVenues", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Catalogue.VenueWaitlistEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("RequestedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("VenueId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VenueId", "Date");
+
+                    b.ToTable("VenueWaitlist", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Conversations.AgentTurn", b =>
                 {
                     b.Property<Guid>("Id")
@@ -321,6 +361,152 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Proposals", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Catalogue.CatalogueItem", b =>
+                {
+                    b.OwnsOne("Giddy.Domain.Catalogue.VenueProfile", "Venue", b1 =>
+                        {
+                            b1.Property<Guid>("CatalogueItemId");
+
+                            b1.Property<string>("Address")
+                                .IsRequired();
+
+                            b1.Property<int>("DurationMinutes");
+
+                            b1.Property<string>("Emoji")
+                                .IsRequired();
+
+                            b1.PrimitiveCollection<string>("Includes")
+                                .IsRequired();
+
+                            b1.Property<bool>("Indoor");
+
+                            b1.Property<int>("MaxAge");
+
+                            b1.Property<int>("MinAge");
+
+                            b1.Property<bool>("PartyHost");
+
+                            b1.Property<string>("PhotoDescription")
+                                .IsRequired();
+
+                            b1.Property<decimal>("Rating")
+                                .HasPrecision(10, 2);
+
+                            b1.Property<int>("ReviewCount");
+
+                            b1.Property<string>("ThemeFit");
+
+                            b1.HasKey("CatalogueItemId");
+
+                            b1.ToTable("CatalogueItems");
+
+                            b1
+                                .ToJson("Venue")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CatalogueItemId");
+
+                            b1.OwnsMany("Giddy.Domain.Catalogue.BookedSlot", "Booked", b2 =>
+                                {
+                                    b2.Property<Guid>("VenueProfileCatalogueItemId");
+
+                                    b2.Property<int>("__synthesizedOrdinal")
+                                        .ValueGeneratedOnAddOrUpdate();
+
+                                    b2.Property<DateOnly>("Date");
+
+                                    b2.Property<TimeOnly>("Start");
+
+                                    b2.HasKey("VenueProfileCatalogueItemId", "__synthesizedOrdinal");
+
+                                    b2.ToTable("CatalogueItems");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VenueProfileCatalogueItemId");
+                                });
+
+                            b1.OwnsMany("Giddy.Domain.Catalogue.VenueAddOn", "AddOns", b2 =>
+                                {
+                                    b2.Property<Guid>("VenueProfileCatalogueItemId");
+
+                                    b2.Property<int>("__synthesizedOrdinal")
+                                        .ValueGeneratedOnAddOrUpdate();
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired();
+
+                                    b2.Property<string>("Price")
+                                        .IsRequired();
+
+                                    b2.HasKey("VenueProfileCatalogueItemId", "__synthesizedOrdinal");
+
+                                    b2.ToTable("CatalogueItems");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VenueProfileCatalogueItemId");
+                                });
+
+                            b1.OwnsMany("Giddy.Domain.Catalogue.VenueReview", "Reviews", b2 =>
+                                {
+                                    b2.Property<Guid>("VenueProfileCatalogueItemId");
+
+                                    b2.Property<int>("__synthesizedOrdinal")
+                                        .ValueGeneratedOnAddOrUpdate();
+
+                                    b2.Property<string>("Author")
+                                        .IsRequired();
+
+                                    b2.Property<string>("Occasion")
+                                        .IsRequired();
+
+                                    b2.Property<int>("Rating");
+
+                                    b2.Property<string>("Text")
+                                        .IsRequired();
+
+                                    b2.Property<string>("When")
+                                        .IsRequired();
+
+                                    b2.HasKey("VenueProfileCatalogueItemId", "__synthesizedOrdinal");
+
+                                    b2.ToTable("CatalogueItems");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VenueProfileCatalogueItemId");
+                                });
+
+                            b1.OwnsMany("Giddy.Domain.Catalogue.VenueSlot", "Slots", b2 =>
+                                {
+                                    b2.Property<Guid>("VenueProfileCatalogueItemId");
+
+                                    b2.Property<int>("__synthesizedOrdinal")
+                                        .ValueGeneratedOnAddOrUpdate();
+
+                                    b2.Property<TimeOnly>("End");
+
+                                    b2.Property<TimeOnly>("Start");
+
+                                    b2.HasKey("VenueProfileCatalogueItemId", "__synthesizedOrdinal");
+
+                                    b2.ToTable("CatalogueItems");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VenueProfileCatalogueItemId");
+                                });
+
+                            b1.Navigation("AddOns");
+
+                            b1.Navigation("Booked");
+
+                            b1.Navigation("Reviews");
+
+                            b1.Navigation("Slots");
+                        });
+
+                    b.Navigation("Venue");
+                });
+
             modelBuilder.Entity("Giddy.Domain.Conversations.AgentTurn", b =>
                 {
                     b.OwnsMany("Giddy.Domain.Conversations.TurnEvent", "Events", b1 =>
@@ -515,6 +701,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         {
                             b1.Property<Guid>("PartyId")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<bool>("InServiceArea")
+                                .HasColumnType("bit");
 
                             b1.Property<double>("Latitude")
                                 .HasColumnType("float");

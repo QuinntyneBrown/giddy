@@ -1,0 +1,22 @@
+<a
+  class="tile__art"
+  tabindex="-1"
+  aria-hidden="true"
+  [routerLink]="link()"
+  [queryParams]="queryParams()"
+>
+  @if (badge(); as text) {
+    <giddy-badge class="tile__badge" [tone]="badgeTone()">{{ text }}</giddy-badge>
+  }
+  <span class="emoji">{{ emoji() }}</span>
+</a>
+<div class="tile__body">
+  <div class="cluster cluster--between tile__head">
+    <h2 class="tile__title" [id]="headingId">
+      <a class="tile__link" [routerLink]="link()" [queryParams]="queryParams()">{{ heading() }}</a>
+    </h2>
+    <ng-content select="[giddyTileAside]" />
+  </div>
+  <ng-content />
+  <div class="tile__footer"><ng-content select="[giddyTileFooter]" /></div>
+</div>

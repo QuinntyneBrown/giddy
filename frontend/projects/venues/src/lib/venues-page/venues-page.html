@@ -1,0 +1,209 @@
+<div class="page-header">
+  <div>
+    <h1>Venues</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  @if (filters(); as f) {
+    <giddy-form-field label="Sort" class="venues__sort">
+      <select
+        giddyInput
+        size="sm"
+        [value]="f.sort"
+        (change)="update({ sort: $any(textValue($event)) })"
+      >
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value" [selected]="option.value === f.sort">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+    </giddy-form-field>
+  }
+</div>
+<nav giddy-tab-nav aria-label="Explore" [tabs]="tabs"></nav>
+
+@if (filters(); as f) {
+  <form
+    class="card cluster venues__filters"
+    aria-label="Venue filters"
+    (submit)="$event.preventDefault()"
+  >
+    <giddy-form-field label="Date" class="venues__filter">
+      <input
+        giddyInput
+        size="sm"
+        type="date"
+        [value]="f.date"
+        (change)="update({ date: textValue($event) })"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Kids" class="venues__filter venues__filter--narrow">
+      <input
+        giddyInput
+        size="sm"
+        type="number"
+        min="1"
+        max="60"
+        [value]="f.guests"
+        (change)="update({ guests: numberValue($event) })"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Near" class="venues__filter venues__filter--wide">
+      <select giddyInput size="sm" (change)="update({ radiusKm: numberValue($event) })">
+        @for (radius of [5, 10, 25]; track radius) {
+          <option [value]="radius" [selected]="radius === f.radiusKm">
+            {{ area() }} · within {{ radius }} km
+          </option>
+        }
+      </select>
+    </giddy-form-field>
+    <giddy-form-field label="Max price" class="venues__filter">
+      <select
+        giddyInput
+        size="sm"
+        (change)="update({ maxPrice: textValue($event) ? numberValue($event) : null })"
+      >
+        <option value="" [selected]="f.maxPrice === null">Any price</option>
+        @for (price of priceOptions(); track price) {
+          <option [value]="price" [selected]="price === f.maxPrice">${{ price }}</option>
+        }
+      </select>
+    </giddy-form-field>
+    <div class="cluster venues__chips">
+      <button giddy-chip type="button" [pressed]="f.indoor" (click)="update({ indoor: !f.indoor })">
+        Indoor
+      </button>
+      <button
+        giddy-chip
+        type="button"
+        [pressed]="f.nutFree"
+        (click)="update({ nutFree: !f.nutFree })"
+      >
+        Nut-free kitchen
+      </button>
+      <button
+        giddy-chip
+        type="button"
+        [pressed]="f.parking"
+        (click)="update({ parking: !f.parking })"
+      >
+        Parking
+      </button>
+      <button
+        giddy-chip
+        type="button"
+        [pressed]="f.stepFree"
+        (click)="update({ stepFree: !f.stepFree })"
+      >
+        Step-free
+      </button>
+    </div>
+  </form>
+}
+
+@switch (search.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t check availability"
+      text="Venue partners didn’t answer in time. Your filters are kept; try again in a moment."
+      [referenceCode]="search.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="search.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('ready') {
+    @if (search.value()?.outsideServiceArea) {
+      <section
+        giddy-empty-state
+        heading="Giddy covers the GTA for now"
+        text="Venue search covers Toronto, Durham, York, Peel and Halton. Your account works anywhere, and the search area will grow."
+      >
+        <a giddy-button routerLink="/settings">Check my postal code</a>
+      </section>
+    } @else if (results().length) {
+      <ul class="grid-3 venues__grid" aria-label="Venues">
+        @for (venue of results(); track venue.id; let i = $index) {
+          <li
+            giddy-tile
+            [heading]="venue.name"
+            [link]="['/venues', venue.id]"
+            [queryParams]="
+              party() ? { date: filters()!.date, partyId: party()!.id } : { date: filters()!.date }
+            "
+            [emoji]="venue.emoji"
+            [pop]="popAt(i)"
+            [badge]="freeBadge(venue).text"
+            [badgeTone]="freeBadge(venue).tone"
+          >
+            <giddy-rating giddyTileAside [value]="venue.rating" [count]="venue.reviewCount" />
+            <p class="tile__meta">{{ meta(venue) }}</p>
+            <p class="text-caption">{{ venue.features.slice(0, 3).join(' · ') }}</p>
+            @if (venue.fitWarning; as warning) {
+              <p class="text-sm inline-icon venues__fit">
+                <svg giddy-icon="alert" size="sm"></svg>{{ warning }}
+              </p>
+            }
+            <span giddyTileFooter class="price"
+              >{{ price(venue) }} <small>for {{ duration(venue.durationMinutes) }}</small></span
+            >
+            <label giddyTileFooter class="choice text-sm">
+              <input
+                type="checkbox"
+                [checked]="selection.has(venue.id)"
+                (change)="toggleCompare(venue, $event)"
+              />
+              <span
+                >Compare<span class="visually-hidden"> {{ venue.name }}</span></span
+              >
+            </label>
+          </li>
+        }
+      </ul>
+    } @else {
+      <section giddy-empty-state [heading]="noResultsHeading()" [text]="noResultsText()">
+        @if (search.value()?.noResults?.suggestion; as suggestion) {
+          <button giddy-button variant="primary" type="button" (click)="relax()">
+            {{ suggestion.label }}
+          </button>
+        }
+        <button giddy-button type="button" (click)="clearFilters()">Clear filters</button>
+      </section>
+    }
+  }
+  @default {
+    @if (search.showSkeleton()) {
+      <div class="grid-3" aria-busy="true">
+        <span class="visually-hidden">Checking which venues are free…</span>
+        @for (n of [1, 2, 3]; track n) {
+          <giddy-skeleton shape="rect" height="16rem" />
+        }
+      </div>
+    }
+  }
+}
+
+@if (selection.venues().length || selection.refused()) {
+  <giddy-toast-region>
+    <giddy-toast
+      [heading]="selectionHeading()"
+      [text]="selectionText()"
+      [icon]="selection.refused() ? 'alert' : 'check-circle'"
+    >
+      @if (selection.venues().length >= 2) {
+        <a
+          giddy-button
+          size="sm"
+          variant="primary"
+          routerLink="/venues/compare"
+          [queryParams]="compareQuery()"
+          >Compare</a
+        >
+      }
+    </giddy-toast>
+  </giddy-toast-region>
+}

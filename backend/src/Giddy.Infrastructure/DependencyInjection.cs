@@ -22,6 +22,7 @@ public static class DependencyInjection
                 ?? throw new InvalidOperationException("Set the ConnectionStrings__Giddy configuration value.")));
         services.AddScoped<IGiddyDbContext>(provider => provider.GetRequiredService<GiddyDbContext>());
         services.AddSingleton<IClock>(SystemClock.Instance);
+        services.AddSingleton<Giddy.Application.Venues.IVenueAvailability, CatalogueVenueAvailability>();
         return services;
     }
 

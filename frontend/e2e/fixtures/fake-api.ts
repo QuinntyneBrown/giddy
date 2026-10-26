@@ -1,6 +1,7 @@
 import { Page, Request, Route } from '@playwright/test';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
+import { FakeVenues } from './fake-venues';
 import { amara, SeedSession, xsrfToken } from './seed-data';
 
 export interface FakeResponse {
@@ -30,6 +31,7 @@ export class FakeApi {
   session: SeedSession | null = { ...amara };
   readonly planner = new FakePlanner();
   readonly partyStore = new FakeParties();
+  readonly venueStore = new FakeVenues();
 
   constructor() {
     this.registerDefaults();
@@ -52,6 +54,7 @@ export class FakeApi {
         : { status: 401, body: problem(401, 'Sign in to continue.') },
     );
     this.planner.register((method, path, handler) => this.on(method, path, handler));
+    this.venueStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),

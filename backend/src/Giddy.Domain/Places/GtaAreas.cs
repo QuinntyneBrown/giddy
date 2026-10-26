@@ -48,7 +48,13 @@ public static class GtaAreas
             return new PartyArea(known.Name, known.Lat, known.Lng, DefaultRadiusKm);
         }
 
-        var region = GtaServiceArea.RegionOf(postalCode) ?? "Toronto";
+        var region = GtaServiceArea.RegionOf(postalCode);
+        if (region is null)
+        {
+            var toronto = RegionCentres["Toronto"];
+            return new PartyArea($"Outside the GTA ({postalCode.Fsa})", toronto.Lat, toronto.Lng, DefaultRadiusKm, InServiceArea: false);
+        }
+
         var centre = RegionCentres[region];
         return new PartyArea($"{region} ({postalCode.Fsa})", centre.Lat, centre.Lng, DefaultRadiusKm);
     }

@@ -1,0 +1,15 @@
+<legend class="field__label">{{ legend() }}</legend>
+<div class="slots">
+  @for (slot of slots(); track slot.value) {
+    <button
+      class="slot"
+      type="button"
+      [disabled]="slot.booked"
+      [attr.aria-pressed]="slot.booked ? null : selected() === slot.value"
+      [attr.aria-label]="slot.booked ? slot.description + ', booked' : null"
+      (click)="picked.emit(slot.value)"
+    >
+      {{ slot.label }}
+    </button>
+  }
+</div>

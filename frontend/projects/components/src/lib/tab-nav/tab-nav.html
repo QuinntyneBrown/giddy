@@ -1,0 +1,5 @@
+@for (tab of tabs(); track tab.link) {
+  <a class="tab" [routerLink]="tab.link" routerLinkActive ariaCurrentWhenActive="page">{{
+    tab.label
+  }}</a>
+}

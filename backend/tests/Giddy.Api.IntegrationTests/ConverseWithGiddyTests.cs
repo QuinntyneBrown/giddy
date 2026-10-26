@@ -57,11 +57,11 @@ public sealed class ConverseWithGiddyTests : IAsyncLifetime
         Assert.Equal("completed", turn.GetProperty("status").GetString());
         Assert.Equal(["step.started", "step.done", "reply.done"], events.Select(e => e.GetProperty("type").GetString()!));
         Assert.Equal("Checking venues within 8 km for Sat 14 Nov afternoon…", events[0].GetProperty("text").GetString());
-        Assert.Equal("Checked 4 venues within 8 km for Sat 14 Nov afternoon", events[1].GetProperty("text").GetString());
+        Assert.Equal("Checked 7 venues within 8 km for Sat 14 Nov afternoon", events[1].GetProperty("text").GetString());
 
         var reply = await amara.LastGiddyMessageAsync();
         Assert.Equal("Dino Den is free that Saturday.", reply.GetProperty("text").GetString());
-        Assert.Equal("Checked 4 venues within 8 km for Sat 14 Nov afternoon", reply.GetProperty("steps")[0].GetProperty("text").GetString());
+        Assert.Equal("Checked 7 venues within 8 km for Sat 14 Nov afternoon", reply.GetProperty("steps")[0].GetProperty("text").GetString());
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public sealed class ConverseWithGiddyTests : IAsyncLifetime
         Assert.Equal("cancelled", turn.GetProperty("status").GetString());
         Assert.True(DateTime.UtcNow - stopped < TimeSpan.FromSeconds(1));
         var reply = await amara.LastGiddyMessageAsync();
-        Assert.Equal("Checked 4 venues within 8 km for Sat 14 Nov afternoon", reply.GetProperty("steps")[0].GetProperty("text").GetString());
+        Assert.Equal("Checked 7 venues within 8 km for Sat 14 Nov afternoon", reply.GetProperty("steps")[0].GetProperty("text").GetString());
     }
 
     [Fact]

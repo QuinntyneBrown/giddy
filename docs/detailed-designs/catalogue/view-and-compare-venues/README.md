@@ -22,7 +22,7 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - **`VenuesController`** — `GET /api/venues/{id}?date`, `GET /api/venues/compare?ids`, `PUT /api/venues/{id}/favourite`, `POST /api/venues/{id}/waitlist`.
 - **`CompareVenuesQuery`** — Builds rows and marks the best value per row.
-- **`VenueRecommender`** — Short rationale for the recommended venue.
+- **`VenueRecommender`** — The venue best in the most rows (ties go to the cheaper one), with the rows it wins as the reason, for example "Cheapest and closest."
 - **`NearestAlternatives`** — Nearest free date at the venue and a similar free venue.
 
 

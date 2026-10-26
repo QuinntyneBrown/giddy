@@ -21,6 +21,14 @@ public sealed class CatalogueItemConfiguration : IEntityTypeConfiguration<Catalo
         builder.PrimitiveCollection(i => i.Themes);
         builder.Property(i => i.UnavailableDates)
             .HasConversion(new LocalDateArrayConverter(), LocalDateArrayConverter.Comparer);
+        builder.OwnsOne(i => i.Venue, venue =>
+        {
+            venue.ToJson();
+            venue.OwnsMany(v => v.Slots);
+            venue.OwnsMany(v => v.Booked);
+            venue.OwnsMany(v => v.AddOns);
+            venue.OwnsMany(v => v.Reviews);
+        });
         builder.HasIndex(i => i.Category);
     }
 }
