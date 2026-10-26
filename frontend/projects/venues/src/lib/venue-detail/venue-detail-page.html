@@ -139,9 +139,67 @@
               <svg giddy-icon="bell"></svg>Tell me if a slot opens
             </button>
           }
+        } @else if (v.booking; as booking) {
+          <h2 id="book-title" class="card__title">Your booking</h2>
+          @if (booking.state === 'confirmed') {
+            <div
+              giddy-alert
+              tone="success"
+              [heading]="
+                'Booked for ' +
+                formatDate(booking.date) +
+                ', ' +
+                formatTimeRange(booking.start, booking.end)
+              "
+            >
+              <div>
+                Confirmation {{ booking.confirmationNumber }}. Deposit of
+                {{ formatMoney(booking.deposit) }} paid; {{ formatMoney(booking.balance) }} due on
+                the day.
+              </div>
+            </div>
+            <dl giddy-description-list [items]="bookingFacts()"></dl>
+          } @else {
+            <div
+              giddy-alert
+              [heading]="
+                booking.venueName + ' is holding ' + formatTime(booking.start) + ' for you'
+              "
+            >
+              <div>
+                Finish your bank’s check to pay the {{ formatMoney(booking.deposit) }} deposit.
+              </div>
+            </div>
+            @if (canPlan()) {
+              <button
+                giddy-button
+                variant="primary"
+                type="button"
+                [busy]="opening()"
+                (click)="book(booking)"
+              >
+                Finish booking
+              </button>
+            }
+          }
+          @if (party(); as p) {
+            <a giddy-button [routerLink]="['/parties', p.id]">Back to the plan</a>
+          }
+          @if (booking.state === 'confirmed' && canPlan()) {
+            <button
+              giddy-button
+              variant="ghost"
+              size="sm"
+              type="button"
+              class="detail__cancel"
+              (click)="cancelBooking(booking)"
+            >
+              Cancel booking
+            </button>
+          }
         } @else {
           <h2 id="book-title" class="card__title">
-            {{ party() ? 'For ' + party()!.name : 'Availability' }}
+            {{ party() ? 'Book for ' + party()!.name : 'Availability' }}
           </h2>
           <div class="cluster cluster--between">
             <span class="price detail__price">{{ formatMoney(v.price) }}</span>
@@ -155,9 +213,30 @@
             (picked)="selected.set($event)"
           ></fieldset>
           @if (selectedRange(); as range) {
-            <p class="text-sm">
-              <strong>{{ range }}</strong> is free. Booking and the deposit come next.
-            </p>
+            @if (canBook()) {
+              <button
+                giddy-button
+                variant="primary"
+                size="lg"
+                block
+                type="button"
+                [busy]="opening()"
+                (click)="book()"
+              >
+                Book {{ range }}
+              </button>
+              <p class="text-caption">
+                {{ formatMoney(v.deposit) }} deposit today, free cancellation until
+                {{ formatDate(v.freeCancellationUntil) }}.
+              </p>
+            } @else {
+              <p class="text-sm">
+                <strong>{{ range }}</strong> is free.
+                {{
+                  party() ? 'Only the party’s planners can book it.' : 'Plan a party to book it.'
+                }}
+              </p>
+            }
           }
         }
       </aside>
@@ -173,3 +252,9 @@
     }
   }
 }
+
+<giddy-toast-region>
+  @if (toast(); as message) {
+    <giddy-toast [heading]="message.heading" [text]="message.text" [icon]="message.icon" />
+  }
+</giddy-toast-region>

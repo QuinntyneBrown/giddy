@@ -1,4 +1,5 @@
 import { Page, Request, Route } from '@playwright/test';
+import { FakeBookings } from './fake-bookings';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
 import { FakeVenues } from './fake-venues';
@@ -32,6 +33,7 @@ export class FakeApi {
   readonly planner = new FakePlanner();
   readonly partyStore = new FakeParties();
   readonly venueStore = new FakeVenues();
+  readonly bookingStore = new FakeBookings(() => this.venueStore.venues);
 
   constructor() {
     this.registerDefaults();
@@ -55,6 +57,9 @@ export class FakeApi {
     );
     this.planner.register((method, path, handler) => this.on(method, path, handler));
     this.venueStore.register((method, path, handler) => this.on(method, path, handler));
+    this.venueStore.liveBooking = (partyId, venueId) =>
+      this.bookingStore.liveBooking(partyId, venueId);
+    this.bookingStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),

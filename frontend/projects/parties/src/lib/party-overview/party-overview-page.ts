@@ -5,10 +5,18 @@ import {
   effect,
   inject,
   input,
+  signal,
   untracked,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { PARTIES_API, PartyBooking, PartyMember, PartyTask } from '@giddy/api';
+import {
+  BOOKINGS_API,
+  BookingNotice,
+  PARTIES_API,
+  PartyBooking,
+  PartyMember,
+  PartyTask,
+} from '@giddy/api';
 import {
   AlertComponent,
   AllergyTagComponent,
@@ -41,9 +49,10 @@ import {
   formatTimeRange,
   torontoToday,
 } from '@giddy/core';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, of } from 'rxjs';
 import { DeletePartyData } from '../delete-party-dialog/delete-party-data';
 import { DeletePartyDialog } from '../delete-party-dialog/delete-party-dialog';
+import { dismissedNotices, rememberDismissed } from './dismissed-notices';
 
 const categoryArt: Record<string, { emoji: string; pop: PopColour }> = {
   Venue: { emoji: '📍', pop: 'sky' },
@@ -85,6 +94,7 @@ export class PartyOverviewPage {
   private readonly api = inject(PARTIES_API);
   private readonly dialogs = inject(GiddyDialog);
   private readonly router = inject(Router);
+  private readonly bookingsApi = inject(BOOKINGS_API);
 
   /** From the route. */
   readonly partyId = input.required<string>();
@@ -99,6 +109,18 @@ export class PartyOverviewPage {
     (bookings) => bookings.length === 0,
     false,
   );
+  /** Booking banners; if they fail to load, the overview simply shows none. */
+  protected readonly notices = new ResourceLoader(
+    () => this.bookingsApi.notices(this.partyId()).pipe(catchError(() => of([]))),
+    () => false,
+    false,
+  );
+  private readonly dismissed = signal(dismissedNotices());
+  protected readonly visibleNotices = computed(() =>
+    (this.notices.value() ?? []).filter(
+      (n) => !n.dismissible || !this.dismissed().includes(noticeKey(n)),
+    ),
+  );
 
   constructor() {
     effect(() => {
@@ -106,6 +128,7 @@ export class PartyOverviewPage {
       untracked(() => {
         this.overview.reload();
         this.bookings.reload();
+        this.notices.reload();
       });
     });
   }
@@ -190,6 +213,25 @@ export class PartyOverviewPage {
     return allergy.charAt(0).toUpperCase() + allergy.slice(1);
   }
 
+  protected dismiss(notice: BookingNotice): void {
+    rememberDismissed(noticeKey(notice));
+    this.dismissed.update((keys) => [...keys, noticeKey(notice)]);
+  }
+
+  /** The banner's link: book or retry on the venue's page, or see the booking there. */
+  protected noticeAction(notice: BookingNotice): string | null {
+    switch (notice.kind) {
+      case 'hold':
+        return 'Book now';
+      case 'declined':
+        return 'Try another card';
+      case 'confirmed':
+        return 'See booking';
+      default:
+        return null;
+    }
+  }
+
   protected async askGiddy(): Promise<void> {
     await firstValueFrom(this.api.startConversation(this.partyId()));
     await this.router.navigateByUrl('/ask-giddy');
@@ -211,4 +253,8 @@ export class PartyOverviewPage {
         if (deleted) void this.router.navigateByUrl('/parties');
       });
   }
+}
+
+function noticeKey(notice: BookingNotice): string {
+  return `${notice.kind}:${notice.bookingId}`;
 }

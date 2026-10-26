@@ -23,6 +23,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`DisruptionFeed`** — Worker job matching transit and city notices to venue locations.
 
 
+**As built**
+
+- `GET /api/parties/{id}/booking-notices` describes the latest booking for anyone who can read the party: `hold` (info, until the hold expires), `confirmed` (success, with the confirmation number), `declined` (danger, not dismissible, offering another card) and `disruption` (warning, not dismissible, for notices within their radius of a booked venue on the party day, until the party date). Dismissing a dismissible banner is remembered in the browser.
+- `POST /api/parties/{id}/bookings/{bookingId}/cancel` cancels at the venue and releases the slot. On or before the free-cancellation date it refunds the deposit; after it, the venue keeps the deposit, which stays recorded as paid. The venue page's `booking.refundable` tells the cancel dialog which message to show before the parent confirms.
+- Partner and payment webhooks (`BookingEventsHandler`) and the `DisruptionFeed` worker wait for the partner, provider and notice feeds. Until then, bookings change state synchronously and disruption notices are seeded.
+
 **Open points**
 
 - Public transit and city notice feeds for disruptions `<TO SUPPLY>`

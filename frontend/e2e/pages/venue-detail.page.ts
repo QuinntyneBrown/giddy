@@ -28,6 +28,32 @@ export class VenueDetailPage extends AppShellPage {
     return this.bookingCard.getByRole('button', { name: new RegExp(`^${label}`) });
   }
 
+  bookButton(): Locator {
+    return this.bookingCard.getByRole('button', { name: /^Book / });
+  }
+
+  async book(): Promise<void> {
+    await this.bookButton().click();
+  }
+
+  yourBooking(): Locator {
+    return this.bookingCard.filter({
+      has: this.page.getByRole('heading', { name: 'Your booking' }),
+    });
+  }
+
+  async cancelBooking(): Promise<void> {
+    await this.bookingCard.getByRole('button', { name: 'Cancel booking' }).click();
+  }
+
+  toast(): Locator {
+    return this.page.locator('giddy-toast');
+  }
+
+  async finishBooking(): Promise<void> {
+    await this.bookingCard.getByRole('button', { name: 'Finish booking' }).click();
+  }
+
   async tellMeIfASlotOpens(): Promise<void> {
     await this.bookingCard.getByRole('button', { name: 'Tell me if a slot opens' }).click();
   }

@@ -15,6 +15,8 @@ export class FakeVenues {
   venues: SeedVenue[] = structuredClone(venues);
   favourites = new Set<string>();
   waitlist: { venueId: string; date: string }[] = [];
+  /** The party's live booking at a venue; the booking store answers this. */
+  liveBooking: (partyId: string | null, venueId: string) => unknown = () => null;
   /** Requests to GET /api/venues/search, newest last. */
   searches: URLSearchParams[] = [];
 
@@ -38,8 +40,9 @@ export class FakeVenues {
     });
     on('GET', '/api/venues/:venueId', (request, params) => {
       const venue = this.venues.find((v) => v.id === params['venueId']);
+      const query = new URL(request.url()).searchParams;
       return venue
-        ? { body: this.detail(venue, new URL(request.url()).searchParams.get('date') ?? '') }
+        ? { body: this.detail(venue, query.get('date') ?? '', query.get('partyId')) }
         : { status: 404 };
     });
     on('PUT', '/api/venues/:venueId/favourite', (request, params) => {
@@ -135,7 +138,7 @@ export class FakeVenues {
     };
   }
 
-  private detail(venue: SeedVenue, date: string) {
+  private detail(venue: SeedVenue, date: string, partyId: string | null) {
     const free = venue.slots.filter((s) => !s.booked);
     const fullyBooked = free.length === 0;
     return {
@@ -179,6 +182,12 @@ export class FakeVenues {
           }
         : null,
       favourite: this.favourites.has(venue.id),
+      room: venue.room ?? 'Party room',
+      deposit: 100,
+      freeCancellationUntil: new Date(Date.parse(`${date}T12:00:00Z`) - 14 * 86_400_000)
+        .toISOString()
+        .slice(0, 10),
+      booking: this.liveBooking(partyId, venue.id),
     };
   }
 

@@ -52,6 +52,30 @@
           </div>
         </div>
       }
+      @if (visibleNotices().length) {
+        <section class="section stack" aria-label="Booking updates">
+          @for (notice of visibleNotices(); track notice.kind + notice.title) {
+            <div
+              giddy-alert
+              [tone]="notice.tone"
+              [heading]="notice.title"
+              [dismissible]="notice.dismissible"
+              (dismissed)="dismiss(notice)"
+            >
+              <div>{{ notice.text }}</div>
+              @if (noticeAction(notice); as action) {
+                <div class="alert__actions">
+                  <a
+                    [routerLink]="['/venues', notice.venueId]"
+                    [queryParams]="{ date: party.date, partyId: party.id }"
+                    >{{ action }}</a
+                  >
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
       <div class="section">
         <section
           giddy-party-hero

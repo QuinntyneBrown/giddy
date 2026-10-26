@@ -1,8 +1,11 @@
+using Giddy.Application.Bookings;
 using Giddy.Domain.Catalogue;
 
 namespace Giddy.Application.Venues.Detail;
 
 /// <param name="SelectedSlot">The earliest free slot, selected by default.</param>
+/// <param name="FreeCancellationUntil">The last day the deposit is refunded for a booking on <paramref name="Date"/>.</param>
+/// <param name="Booking">The party's live booking at this venue, if any.</param>
 public sealed record VenueDetail(
     Guid Id,
     string Name,
@@ -27,4 +30,8 @@ public sealed record VenueDetail(
     bool FullyBooked,
     FreeDate? NearestFreeDate,
     SimilarVenue? SimilarVenue,
-    bool Favourite);
+    bool Favourite,
+    string Room,
+    decimal Deposit,
+    string FreeCancellationUntil,
+    BookingView? Booking);

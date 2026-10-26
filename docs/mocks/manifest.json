@@ -327,7 +327,8 @@
         "L2-010"
       ],
       "states": [
-        "default", "someone-else",
+        "default",
+        "someone-else",
         "invalid",
         "submitting",
         "error"
@@ -745,16 +746,39 @@
       "title": "Book a venue",
       "requirements": [
         "L2-028",
-        "L2-029"
+        "L2-029",
+        "L2-030"
       ],
       "opens_from": "venue-detail",
       "states": [
         "default",
+        "new-card",
         "busy",
         "invalid",
         "failed",
+        "taken",
+        "authenticate",
         "success"
       ],
+      "journey": "J6 Book a venue"
+    },
+    {
+      "id": "cancel-booking",
+      "kind": "dialog",
+      "title": "Cancel a booking",
+      "requirements": [
+        "L2-030"
+      ],
+      "opens_from": "venue-detail",
+      "states": [
+        "default",
+        "non-refundable",
+        "busy"
+      ],
+      "not_applicable": {
+        "invalid": "A confirmation with no inputs; there is nothing to validate.",
+        "failed": "Shown as a toast on the venue page; the booking stays as it was."
+      },
       "journey": "J6 Book a venue"
     },
     {

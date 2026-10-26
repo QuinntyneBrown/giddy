@@ -29,6 +29,14 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`BookingConfirmedHandler`** — Updates budget, adds the allergy-list task, sends the confirmation email.
 
 
+**As built**
+
+- Endpoints: `POST /api/parties/{id}/bookings` answers `201` with the confirmed booking, or `202` with a `holding` booking and the issuer's `challengeUrl` when 3-D Secure is required; `POST /api/parties/{id}/bookings/{bookingId}/authentication` finishes it after the challenge; `GET /api/payment-methods` lists the parent's saved cards (brand and last four only).
+- Failures answer as problems: `400` for invalid details (nothing is attempted), `409` with `alternatives` (other free slots that day) when the slot is no longer free, `402` when the card is declined and `502` when the venue does not confirm in time. In every failure the hold is released and the authorisation voided, so nothing is charged.
+- `IVenuePartner` and `IPaymentGateway` are the adapters. Until the partner APIs and the provider are chosen, `CatalogueVenuePartner` books against the catalogue's slots and `SandboxPaymentGateway` accepts only test tokens (`tok_visa`, `tok_mastercard`, `tok_declined`, `tok_3ds`). The web app's `PaymentFields` offers the matching test cards; no card number is ever typed into or sent to Giddy.
+- `BookingCompletion` confirms at the venue, then captures; `BookingConfirmedHandler` marks the plan's venue booked with its deposit paid, adds "Share the allergy list" a week before the party and emails the confirmation through `IEmailSender` (a logging sender until an email provider is connected).
+- Deposits default to $100 and free cancellation to 14 days before the party, per venue in the catalogue's venue profile.
+
 **Open points**
 
 - Payment provider selection (PCI DSS Level 1, CAD, 3-D Secure) `<TO SUPPLY>`

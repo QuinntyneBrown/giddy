@@ -1,0 +1,8 @@
+.booked {
+  align-items: center;
+  text-align: center;
+}
+
+.booked__headline {
+  font: var(--text-body-lg);
+}

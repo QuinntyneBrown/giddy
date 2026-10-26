@@ -7,6 +7,8 @@ public sealed class Party
 {
     public const int NameMaxLength = 60;
 
+    public const string AllergyListTask = "Share the allergy list";
+
     private readonly List<PartyMember> members = [];
 
     private Party()
@@ -121,4 +123,28 @@ public sealed class Party
         BookingsToDo = bookings.ToList();
         Checklist = tasks.ToList();
     }
+
+    /// <summary>
+    /// Records a confirmed venue booking: the venue shows as booked with its deposit paid, the party
+    /// takes the slot's times, and the venue needs the allergy list.
+    /// </summary>
+    public void RecordVenueBooked(Guid venueId, string venueName, decimal price, decimal deposit, LocalTime startsAt, LocalTime endsAt)
+    {
+        var venue = new BookingToDo("Venue", venueName, price, venueId, BookingStatus.Confirmed, deposit);
+        BookingsToDo = BookingsToDo.Any(b => b.Category == venue.Category)
+            ? BookingsToDo.Select(b => b.Category == venue.Category ? venue : b).ToList()
+            : [venue, .. BookingsToDo];
+        StartsAt = startsAt;
+        EndsAt = endsAt;
+        if (!Checklist.Any(t => t.Title == AllergyListTask))
+        {
+            Checklist = [.. Checklist, new ChecklistTask(AllergyListTask, Date.PlusDays(-7))];
+        }
+    }
+
+    /// <summary>The venue booking was cancelled: the venue is to book again, and a kept deposit stays paid.</summary>
+    public void RecordVenueCancelled(bool refunded) =>
+        BookingsToDo = BookingsToDo
+            .Select(b => b.Category == "Venue" ? b with { Status = BookingStatus.ToBook, Paid = refunded ? 0 : b.Paid } : b)
+            .ToList();
 }

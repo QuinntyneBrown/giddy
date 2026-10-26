@@ -1,3 +1,5 @@
+import { Booking } from '../bookings/booking';
+
 /** GET /api/venues/{id}?date: a venue and its slots on that date. */
 export interface VenueDetail {
   id: string;
@@ -31,4 +33,12 @@ export interface VenueDetail {
     start: string;
   } | null;
   favourite: boolean;
+  /** The room the party has, for example "Fossil Room". */
+  room: string;
+  /** Taken when booking, in dollars. */
+  deposit: number;
+  /** The last day a booking on this date can be cancelled with a refund. */
+  freeCancellationUntil: string;
+  /** The party's live booking at this venue, if any. */
+  booking: Booking | null;
 }

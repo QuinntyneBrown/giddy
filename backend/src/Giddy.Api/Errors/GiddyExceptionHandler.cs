@@ -27,6 +27,14 @@ public sealed class GiddyExceptionHandler(IProblemDetailsService problemDetails,
             NotFoundException => new ProblemDetails { Title = "We couldn’t find that.", Status = StatusCodes.Status404NotFound },
             ForbiddenException => new ProblemDetails { Title = "You don’t have permission to do that.", Status = StatusCodes.Status403Forbidden },
             Giddy.Application.Venues.AvailabilityUnavailableException => new ProblemDetails { Title = "We couldn’t check venue availability right now. Your filters are kept; try again in a moment.", Status = StatusCodes.Status503ServiceUnavailable },
+            Giddy.Application.Bookings.PaymentDeclinedException declined => new ProblemDetails { Title = declined.Message, Status = StatusCodes.Status402PaymentRequired },
+            Giddy.Application.Bookings.BookingNotCompletedException notCompleted => new ProblemDetails { Title = notCompleted.Message, Status = StatusCodes.Status502BadGateway },
+            Giddy.Application.Bookings.SlotUnavailableException unavailable => new ProblemDetails
+            {
+                Title = unavailable.Message,
+                Status = StatusCodes.Status409Conflict,
+                Extensions = { ["alternatives"] = unavailable.Alternatives },
+            },
             ConflictException conflict => new ProblemDetails { Title = conflict.Message, Status = StatusCodes.Status409Conflict },
             _ => Unexpected(exception),
         };

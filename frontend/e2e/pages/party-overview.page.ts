@@ -14,6 +14,7 @@ export class PartyOverviewPage extends AppShellPage {
   readonly lockedAlert: Locator;
   readonly nothingBooked: Locator;
   readonly deleteButton: Locator;
+  readonly bookingUpdates: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -28,10 +29,19 @@ export class PartyOverviewPage extends AppShellPage {
     this.lockedAlert = page.getByRole('status').filter({ hasText: 'This party has happened!' });
     this.nothingBooked = page.getByRole('region', { name: 'Nothing booked yet' });
     this.deleteButton = page.getByRole('button', { name: 'Delete this party' });
+    this.bookingUpdates = page.getByRole('region', { name: 'Booking updates' });
   }
 
   async openParty(id: string): Promise<void> {
     await this.open(`/parties/${id}`);
+  }
+
+  notice(title: string): Locator {
+    return this.bookingUpdates.locator('.alert').filter({ hasText: title });
+  }
+
+  async dismissNotice(title: string): Promise<void> {
+    await this.notice(title).getByRole('button', { name: 'Dismiss' }).click();
   }
 
   bookingRow(category: string): Locator {

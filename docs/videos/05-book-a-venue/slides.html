@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 05 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="05" data-video-title="Book a venue" data-parts="Introduction|Promises|Booking|Failures|Bank check|Updates|Cancelling|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 05</div>
+  <h1>Book a venue</h1>
+  <p class="lead">Hold the slot, pay the deposit, know where it stands</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Booking is all or nothing.">
+  <h2>What booking promises</h2>
+  <div class="cols">
+    <ul>
+      <li>Hold and deposit together, or neither</li>
+      <li>Every failure says nothing was charged</li>
+      <li>Card details stay with the payment provider</li>
+      <li>Giddy keeps only the token, brand and last four</li>
+    </ul>
+    <div class="card"><h3>Hold → authorise → confirm → capture</h3><p>Each step undoes the earlier ones if it fails: void the payment, release the hold.</p></div>
+  </div>
+</section>
+
+<section id="booking" data-part="2" data-cue="Here is Amara on Dino Den's page" data-clip="clips/book-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Book a slot</h3><p>Pre-filled from the party; the mobile number is checked first; Pay is busy while Cancel and Esc are disabled; the confirmation number follows.</p></div>
+</section>
+
+<section id="taken" data-part="3" data-cue="If another family books one o'clock" data-clip="clips/taken-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Slot just taken</h3><p>A 409 with the other free slots; picking one keeps every detail.</p></div>
+</section>
+
+<section id="timeout" data-part="3" data-cue="If the venue doesn't confirm in time">
+  <h2>The venue didn't confirm</h2>
+  <img class="shot" alt="That didn't go through: nothing was charged, try again" src="shots/desktop-venue-timeout.png">
+</section>
+
+<section id="bank" data-part="4" data-cue="On a phone, Amara adds a new card." data-clip="clips/bank-check-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>3-D Secure</h3><p>A 202 with the booking holding; the bank's check, then confirmation. Test cards stand in for the provider's hosted fields.</p></div>
+</section>
+
+<section id="hold" data-part="5" data-cue="The party overview keeps Amara posted.">
+  <h2>A hold and a confirmation</h2>
+  <div class="cols">
+    <img class="shot" alt="Dino Den is holding 1:00 pm, with Book now" src="shots/desktop-hold.png">
+    <img class="shot" alt="Confirmed with DD-48213, and a TTC closure warning" src="shots/desktop-confirmed.png">
+  </div>
+</section>
+
+<section id="declined" data-part="5" data-cue="A declined deposit stays on screen">
+  <h2>Banners that stay until fixed</h2>
+  <img class="shot" alt="Your deposit payment didn't go through, with Try another card" src="shots/desktop-declined.png">
+</section>
+
+<section id="cancel" data-part="6" data-cue="Cancelling starts from the venue page." data-clip="clips/cancel-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Cancel and refund</h3><p>Keep booking has focus; the refund is confirmed in a toast and the slot is free again.</p></div>
+</section>
+
+<section id="non-refundable" data-part="6" data-cue="After the window, the dialog says first">
+  <h2>Non-refundable, said first</h2>
+  <img class="shot" alt="The $100 deposit is non-refundable" src="shots/desktop-non-refundable.png">
+</section>
+
+<section id="testing" data-part="7" data-cue="The API tests drive booking against a fake venue partner">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 133 tests</h3><p>Fakes for the venue partner, payments and email: confirmation and the plan, validation, access, slot taken, timeout, declined, saved cards, 3-D Secure, banners, cancellation.</p></div>
+    <div class="card"><h3>Browser · 130 tests</h3><p>The same flows against the fake API, with axe on every dialog and banner. Recordings use the same fake.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>No hold without a payment, no payment without a booking</li><li>Every failure says nothing was charged</li><li>Only a card's brand and last four are kept</li><li>Banners that matter stay until fixed</li></ul>
+  <p class="muted">Next: invitations and RSVPs</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

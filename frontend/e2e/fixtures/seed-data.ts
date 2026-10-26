@@ -248,6 +248,8 @@ export function overviewOf(party: SeedSummary) {
     endsAt: party.endsAt,
     timeOfDay: 'afternoon',
     daysToGo: party.daysToGo,
+    childName: party.id === kofisDraft.id ? 'Kofi' : 'Zuri',
+    turningAge: party.id === kofisDraft.id ? 4 : 7,
     area: 'Leslieville',
     venueName: party.venueName,
     theme: party.theme,
@@ -283,11 +285,17 @@ export function overviewOf(party: SeedSummary) {
 }
 
 export const dinoBookings = [
-  { category: 'Venue', name: 'Dino Den Play Café', price: 340, status: 'confirmed' },
-  { category: 'Entertainer', name: 'Professor Fizz’s Volcano Lab', price: 195, status: 'toBook' },
-  { category: 'Cake', name: 'Sweet Rex Bakery', price: 85, status: 'toBook' },
-  { category: 'Food', name: 'Pizza Nonna', price: 110, status: 'toBook' },
-  { category: 'Loot bags', name: 'Mini fossil dig kits', price: 48, status: 'toBook' },
+  { category: 'Venue', name: 'Dino Den Play Café', price: 340, status: 'confirmed', paid: 100 },
+  {
+    category: 'Entertainer',
+    name: 'Professor Fizz’s Volcano Lab',
+    price: 195,
+    status: 'toBook',
+    paid: 0,
+  },
+  { category: 'Cake', name: 'Sweet Rex Bakery', price: 85, status: 'toBook', paid: 0 },
+  { category: 'Food', name: 'Pizza Nonna', price: 110, status: 'toBook', paid: 0 },
+  { category: 'Loot bags', name: 'Mini fossil dig kits', price: 48, status: 'toBook', paid: 0 },
 ];
 
 export const homeNudges = [

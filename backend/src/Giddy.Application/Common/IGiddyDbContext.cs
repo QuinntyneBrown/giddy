@@ -1,9 +1,12 @@
+using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
+using Giddy.Domain.Disruptions;
 using Giddy.Domain.Families;
 using Giddy.Domain.Memories;
 using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
+using Giddy.Domain.Payments;
 using Giddy.Domain.Proposals;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +35,12 @@ public interface IGiddyDbContext
     DbSet<FavouriteVenue> FavouriteVenues { get; }
 
     DbSet<VenueWaitlistEntry> VenueWaitlist { get; }
+
+    DbSet<Booking> Bookings { get; }
+
+    DbSet<SavedCard> SavedCards { get; }
+
+    DbSet<DisruptionNotice> Disruptions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -26,6 +26,8 @@ public sealed class GetPartyOverviewHandler(IGiddyDbContext db, ICurrentParent p
             PartySummaryMapper.TimePattern.Format(party.EndsAt),
             TimeOfDay.Of(party.StartsAt),
             calendar.DaysUntil(party.Date),
+            party.ChildName,
+            party.TurningAge,
             party.Area?.Name,
             PartySummaryMapper.VenueOf(party),
             party.Theme,

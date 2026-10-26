@@ -22,6 +22,124 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Giddy.Domain.Bookings.Booking", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BookingName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CardBrand")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CardLast4")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("ChallengeUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Child")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("ConfirmationNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("Deposit")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<TimeOnly>("End")
+                        .HasColumnType("time");
+
+                    b.Property<DateOnly>("FreeCancellationUntil")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset>("HoldExpiresAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("HoldReference")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentId")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<bool>("Refunded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Room")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<TimeOnly>("Start")
+                        .HasColumnType("time");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("VenueId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("VenueName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId");
+
+                    b.ToTable("Bookings", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Catalogue.CatalogueItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -212,6 +330,43 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("TurnLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Disruptions.DisruptionNotice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateOnly>("From")
+                        .HasColumnType("date");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RadiusKm")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<DateOnly>("To")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("To");
+
+                    b.ToTable("DisruptionNotices", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Families.Family", b =>
                 {
                     b.Property<Guid>("Id")
@@ -319,6 +474,39 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Parties", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Payments.SavedCard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Last4")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProviderToken")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("SavedCards", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Proposals.Proposal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -370,10 +558,17 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                             b1.Property<string>("Address")
                                 .IsRequired();
 
+                            b1.Property<string>("Contact");
+
+                            b1.Property<decimal>("Deposit")
+                                .HasPrecision(10, 2);
+
                             b1.Property<int>("DurationMinutes");
 
                             b1.Property<string>("Emoji")
                                 .IsRequired();
+
+                            b1.Property<int>("FreeCancellationDays");
 
                             b1.PrimitiveCollection<string>("Includes")
                                 .IsRequired();
@@ -393,6 +588,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                                 .HasPrecision(10, 2);
 
                             b1.Property<int>("ReviewCount");
+
+                            b1.Property<string>("Room")
+                                .IsRequired();
 
                             b1.Property<string>("ThemeFit");
 
@@ -655,6 +853,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
                             b1.Property<string>("Name")
                                 .IsRequired();
+
+                            b1.Property<decimal>("Paid")
+                                .HasPrecision(10, 2);
 
                             b1.Property<string>("Status")
                                 .IsRequired();

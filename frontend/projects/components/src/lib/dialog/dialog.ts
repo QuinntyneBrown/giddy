@@ -28,6 +28,8 @@ export class DialogComponent {
   readonly heading = input.required<string>();
   readonly description = input<string | null>(null);
   readonly tone = input<DialogTone>('info');
+  /** lg for dialogs with a form and a summary, such as booking. */
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly busy = input(false, { transform: booleanAttribute });
   protected readonly titleId = `${this.dialogRef.id}-title`;
   protected readonly descriptionId = `${this.dialogRef.id}-description`;

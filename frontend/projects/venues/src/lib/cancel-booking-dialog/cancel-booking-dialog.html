@@ -1,0 +1,41 @@
+<giddy-dialog
+  tone="danger"
+  [heading]="'Cancel the ' + booking.venueName + ' booking?'"
+  [description]="description"
+  [busy]="busy()"
+>
+  @if (booking.refundable) {
+    <p>
+      You’re inside the free-cancellation window, so the {{ deposit }} deposit goes back to
+      {{ card }}. The {{ startTime }} slot is released for other families.
+    </p>
+  } @else {
+    <div giddy-alert tone="warning" [heading]="'The ' + deposit + ' deposit is non-refundable'">
+      <div>
+        Free cancellation ended {{ freeUntil }}, so {{ booking.venueName }} keeps the deposit if you
+        cancel now.
+      </div>
+    </div>
+  }
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="busy()"
+    (click)="keep()"
+  >
+    Keep booking
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="danger"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="cancel()"
+  >
+    {{ booking.refundable ? 'Cancel and refund ' + deposit : 'Cancel without a refund' }}
+  </button>
+</giddy-dialog>
