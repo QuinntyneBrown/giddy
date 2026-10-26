@@ -1,9 +1,13 @@
 using Giddy.Application.Common;
 using Giddy.Application.Parties;
 using Giddy.Application.Venues.Search;
+using Giddy.Application.Bookings;
+using Giddy.Domain.Bookings;
+using Giddy.Domain.Calendar;
 using Giddy.Domain.Catalogue;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using NodaTime.Text;
 
 namespace Giddy.Application.Venues.Detail;
@@ -12,7 +16,8 @@ namespace Giddy.Application.Venues.Detail;
 /// A venue with its slots on a date. When the date is fully booked, it offers the nearest free date
 /// here and the closest similar venue that is free.
 /// </summary>
-public sealed class GetVenueHandler(IGiddyDbContext db, ICurrentParent parent, VenueOrigins origins, VenueCandidates candidates)
+public sealed class GetVenueHandler(
+    IGiddyDbContext db, ICurrentParent parent, VenueOrigins origins, VenueCandidates candidates, TorontoCalendar calendar, IClock clock)
     : IRequestHandler<GetVenueQuery, VenueDetail>
 {
     private const int LookAheadDays = 60;
@@ -60,6 +65,18 @@ public sealed class GetVenueHandler(IGiddyDbContext db, ICurrentParent parent, V
         }
 
         var favourite = await db.FavouriteVenues.AnyAsync(f => f.FamilyId == parent.Id && f.VenueId == venue.Id, cancellationToken);
+        BookingView? booking = null;
+        if (origin?.Party is { } party)
+        {
+            var now = clock.GetCurrentInstant();
+            var live = await db.Bookings
+                .Where(b => b.PartyId == party.Id && b.VenueId == venue.Id
+                    && (b.State == BookingState.Confirmed || (b.State == BookingState.Holding && b.HoldExpiresAt > now)))
+                .OrderByDescending(b => b.CreatedAt)
+                .FirstOrDefaultAsync(cancellationToken);
+            booking = live is null ? null : BookingViews.From(live, profile.Contact, calendar.Today);
+        }
+
         return new VenueDetail(
             venue.Id,
             venue.Name,
@@ -84,6 +101,9 @@ public sealed class GetVenueHandler(IGiddyDbContext db, ICurrentParent parent, V
             free.Count == 0,
             nearest,
             similar,
-            favourite);
+            favourite,
+            profile.Deposit,
+            PartySummaryMapper.DatePattern.Format(date.PlusDays(-profile.FreeCancellationDays)),
+            booking);
     }
 }

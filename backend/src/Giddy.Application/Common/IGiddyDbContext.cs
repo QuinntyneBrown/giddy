@@ -1,6 +1,7 @@
 using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
+using Giddy.Domain.Disruptions;
 using Giddy.Domain.Families;
 using Giddy.Domain.Memories;
 using Giddy.Domain.Parents;
@@ -38,6 +39,8 @@ public interface IGiddyDbContext
     DbSet<Booking> Bookings { get; }
 
     DbSet<SavedCard> SavedCards { get; }
+
+    DbSet<DisruptionNotice> Disruptions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
