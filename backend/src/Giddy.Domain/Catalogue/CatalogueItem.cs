@@ -80,6 +80,14 @@ public sealed class CatalogueItem
     /// <summary>Venue-only details; null for themes and vendors.</summary>
     public VenueProfile? Venue { get; private set; }
 
+    public VendorProfile? Vendor { get; private set; }
+
+    public CatalogueItem WithVendorProfile(VendorProfile profile)
+    {
+        Vendor = profile;
+        return this;
+    }
+
     public CatalogueItem WithVenueProfile(VenueProfile profile)
     {
         Venue = profile;
@@ -120,7 +128,8 @@ public sealed class CatalogueItem
 
     public bool IsAvailableOn(LocalDate date) => !UnavailableDates.Contains(date);
 
-    public bool IsFreeOf(string allergen) => AllergyFree.Contains(allergen, StringComparer.OrdinalIgnoreCase);
+    /// <summary>Whether the vendor declares it is free of the allergen a parent's note names.</summary>
+    public bool IsFreeOf(string allergen) => AllergyFree.Contains(Allergens.Canonical(allergen), StringComparer.OrdinalIgnoreCase);
 
     public bool Fits(int guests) => Capacity is null || Capacity >= guests;
 

@@ -47,6 +47,7 @@ app.MapRsvpEndpoints();
 app.MapLiveUpdateEndpoints();
 app.MapEmailEventEndpoints();
 app.MapImportEndpoints();
+app.MapVendorEndpoints();
 
 app.Run();
 

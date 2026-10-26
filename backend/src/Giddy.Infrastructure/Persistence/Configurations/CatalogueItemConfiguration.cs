@@ -29,6 +29,7 @@ public sealed class CatalogueItemConfiguration : IEntityTypeConfiguration<Catalo
             venue.OwnsMany(v => v.AddOns);
             venue.OwnsMany(v => v.Reviews);
         });
+        builder.OwnsOne(i => i.Vendor, vendor => vendor.ToJson());
         builder.HasIndex(i => i.Category);
     }
 }
