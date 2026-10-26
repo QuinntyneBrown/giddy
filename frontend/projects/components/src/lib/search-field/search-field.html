@@ -1,0 +1,11 @@
+<svg giddy-icon="search"></svg>
+<label class="visually-hidden" [for]="id">{{ label() }}</label>
+<input
+  class="input"
+  type="search"
+  autocomplete="off"
+  [id]="id"
+  [placeholder]="placeholder() ?? label()"
+  [value]="value()"
+  (input)="valueChange.emit($any($event.target).value)"
+/>

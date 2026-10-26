@@ -80,3 +80,6 @@ export * from './lib/toast/toast-region';
 export * from './lib/toast/toast-tone';
 export * from './lib/invite/invite';
 export * from './lib/invite/invite-design';
+export * from './lib/file-drop/file-drop';
+export * from './lib/progress/progress';
+export * from './lib/search-field/search-field';
