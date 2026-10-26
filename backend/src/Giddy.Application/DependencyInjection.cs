@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<Bookings.BookingCompletion>();
         services.AddScoped<Invitations.InvitationReader>();
         services.AddScoped<Invitations.InvitationDelivery>();
+        services.AddScoped<Guests.Import.GuestImporter>();
         services.AddScoped<Rsvps.RsvpLinks>();
         services.AddSingleton<TurnCancellations>();
         services.AddScoped<IAgentTool, ListThemesTool>();
