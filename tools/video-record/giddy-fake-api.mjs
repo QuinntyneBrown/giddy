@@ -48,6 +48,58 @@ export function planTurn(stepMs = 1100) {
   };
 }
 
+export const family = {
+  postalCode: 'M4M 1H1', areaName: 'Leslieville',
+  children: [
+    { id: 'zuri', firstName: 'Zuri', birthday: '2019-11-14', nextBirthday: '2026-11-14', turningAge: 7 },
+    { id: 'kofi', firstName: 'Kofi', birthday: '2023-02-03', nextBirthday: '2027-02-03', turningAge: 4 },
+  ],
+};
+
+const summary = (o) => ({ role: 'owner', status: 'upcoming', readiness: 0, venueName: null, theme: null, locked: false, guests: null, budget: null, ...o });
+
+export const seededParties = () => [
+  summary({ ...dinoParty, status: 'upcoming', readiness: 27, venueName: 'Dino Den Play Café', theme: 'Dino Dig', guests: 16, budget: 800 }),
+  summary({ id: 'kofi-draft', name: 'Kofi’s 4th: Choo-Choo Express', date: '2027-02-03', startsAt: '10:00', endsAt: '12:00', daysToGo: 101, status: 'draft', theme: 'Choo-Choo Express', guests: 12, budget: 500 }),
+  summary({ id: 'zuri-sixth', name: 'Zuri’s 6th: Mermaid Splash', date: '2025-11-15', startsAt: '13:00', endsAt: '15:00', daysToGo: -344, status: 'past', readiness: 100, venueName: 'Splash & Giggle Pool', theme: 'Mermaid Splash', locked: true, guests: 14, budget: 720 }),
+];
+
+const bookingsFor = (party) => party.status === 'draft' ? [] : [
+  { category: 'Venue', name: 'Dino Den Play Café', price: 340, status: 'confirmed' },
+  { category: 'Entertainer', name: 'Professor Fizz’s Volcano Lab', price: 195, status: 'toBook' },
+  { category: 'Cake', name: 'Sweet Rex Bakery', price: 85, status: 'toBook' },
+  { category: 'Food', name: 'Pizza Nonna', price: 110, status: 'toBook' },
+  { category: 'Loot bags', name: 'Mini fossil dig kits', price: 48, status: 'toBook' },
+];
+
+const overviewOf = (party) => {
+  const planned = party.status !== 'draft';
+  return {
+    id: party.id, name: party.name, date: party.date, startsAt: party.startsAt, endsAt: party.endsAt, timeOfDay: 'afternoon',
+    daysToGo: party.daysToGo, area: 'Leslieville', venueName: party.venueName, theme: party.theme, guests: party.guests,
+    readiness: party.readiness, doneTasks: planned ? 3 : 0, totalTasks: planned ? 10 : 0,
+    nextTasks: planned ? [
+      { title: 'Book the entertainer', due: '2026-10-20', overdue: true },
+      { title: 'Order the cake', due: '2026-10-31', overdue: false },
+      { title: 'Share the allergy list with the venue', due: '2026-11-04', overdue: false },
+    ] : [],
+    nextStep: planned ? 'Book Professor Fizz’s Volcano Lab' : null, allergies: ['peanut'], budget: party.budget, planned: planned ? 778 : 0,
+    rsvps: { coming: 0, waiting: 0, cantCome: 0 },
+    members: [
+      { parentId: amara.parentId, name: 'Amara Okafor', role: 'owner', isYou: true },
+      { parentId: 'kemi', name: 'Kemi Okafor', role: 'coPlanner', isYou: false },
+    ],
+    role: party.role, canDelete: party.role === 'owner', locked: party.locked,
+  };
+};
+
+const nudges = [
+  { partyId: dinoParty.id, partyName: dinoParty.name, title: 'Book the entertainer', kind: 'overdue', context: 'It was due Tue 20 Oct.', actionLabel: 'Open the plan' },
+  { partyId: dinoParty.id, partyName: dinoParty.name, title: 'Order the cake', kind: 'needsYou', context: 'Due Sat 31 Oct.', actionLabel: 'Open the plan' },
+];
+
+const ordinal = (n) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' })[n % 10] ?? 'th'}`;
+
 let counter = 0;
 const newId = () => `00000000-0000-4000-8000-${String(++counter).padStart(12, '0')}`;
 const giddy = (text, extra = {}) => ({ id: newId(), author: 'giddy', text, sentAt: new Date().toISOString(), steps: [], suggestions: [], proposal: null, ...extra });
@@ -91,6 +143,18 @@ export async function installFakeApi(page) {
     session: { ...amara }, parties: [{ ...dinoParty }], partiesDelayMs: 0, partiesFailure: null,
     conversationId: 'c1', glance: { ...dinoGlance }, messages: [], memories: remembered.map((m) => ({ ...m })),
     turns: new Map(), script: [], sendFailures: 0, applyFailures: 0,
+    allParties: seededParties(), createFailures: 0, homeDelayMs: 0,
+  };
+  const find = (id) => state.allParties.find((p) => p.id === id);
+  const home = () => {
+    const upcoming = state.allParties.filter((p) => !p.locked).sort((a, b) => a.date.localeCompare(b.date));
+    const next = upcoming[0];
+    return {
+      partiesInProgress: upcoming.length, needsYou: nudges.length,
+      nextParty: next ? { id: next.id, name: next.name, date: next.date, startsAt: next.startsAt, endsAt: next.endsAt, daysToGo: next.daysToGo, venueName: next.venueName, guests: next.guests, readiness: next.readiness, doneSteps: 4, totalSteps: 15, nextStep: next.venueName ? 'Book Professor Fizz’s Volcano Lab' : null } : null,
+      rsvps: { coming: 0, waiting: 0, cantCome: 0 }, allergies: next ? 1 : 0,
+      nextBirthday: { childId: 'kofi', firstName: 'Kofi', turningAge: 4, date: '2027-02-03', daysAway: 101 },
+    };
   };
   const view = () => ({ id: state.conversationId, party: state.glance, messages: state.messages, memories: state.memories, runningTurnId: null });
   await page.route('**/api/**', async (route) => {
@@ -107,14 +171,37 @@ export async function installFakeApi(page) {
         headers: { 'set-cookie': 'XSRF-TOKEN=fake-xsrf-token; Path=/; SameSite=Strict' },
       });
     }
-    if (path === '/api/parties' && request.method() === 'GET') {
+    if (path === '/api/parties' && request.method() === 'GET') return route.fulfill({ json: state.allParties });
+    if (path === '/api/home') {
       if (state.partiesDelayMs) await new Promise((resolve) => setTimeout(resolve, state.partiesDelayMs));
       return state.partiesFailure
-        ? route.fulfill({
-            status: 500,
-            json: { status: 500, title: 'Something went wrong on our side.', referenceCode: state.partiesFailure },
-          })
-        : route.fulfill({ json: state.parties });
+        ? route.fulfill({ status: 500, json: { status: 500, title: 'Something went wrong on our side.', referenceCode: state.partiesFailure } })
+        : route.fulfill({ json: home() });
+    }
+    if (path === '/api/home/nudges') return route.fulfill({ json: nudges });
+    if (path === '/api/family') return route.fulfill({ json: family });
+    if (path === '/api/budget-guide') {
+      const guests = Number(new URL(request.url()).searchParams.get('guests'));
+      return route.fulfill({ json: { guests, low: Math.floor((300 + 20 * guests) / 50) * 50, high: Math.round((500 + 38 * guests) / 100) * 100 } });
+    }
+    if (path === '/api/parties' && request.method() === 'POST') {
+      if (state.createFailures > 0) { state.createFailures--; return route.fulfill({ status: 503, json: { status: 503, title: 'Unavailable' } }); }
+      const body = request.postDataJSON();
+      const child = family.children.find((c) => c.id === body.childId);
+      const party = summary({ id: newId(), name: child ? `${child.firstName}’s ${ordinal(child.turningAge)} birthday` : `${body.childName}’s ${ordinal(body.turningAge)} birthday`, date: body.date, startsAt: '13:00', endsAt: '15:30', daysToGo: 20, status: 'draft', guests: body.guests, budget: body.budget });
+      state.allParties.push(party);
+      state.glance = { ...dinoGlance, partyId: party.id, name: party.name, guests: body.guests, budget: body.budget };
+      return route.fulfill({ status: 201, json: party });
+    }
+    let partyMatch = path.match(/^\/api\/parties\/([^/]+)(\/(overview|bookings|conversations))?$/);
+    if (partyMatch) {
+      const party = find(partyMatch[1]);
+      if (!party) return route.fulfill({ status: 404, json: { status: 404, title: 'Not found' } });
+      if (request.method() === 'DELETE') { state.allParties = state.allParties.filter((p) => p !== party); return route.fulfill({ status: 204, body: '' }); }
+      if (partyMatch[3] === 'overview') return route.fulfill({ json: overviewOf(party) });
+      if (partyMatch[3] === 'bookings') return route.fulfill({ json: bookingsFor(party) });
+      if (partyMatch[3] === 'conversations') { state.conversationId = newId(); state.messages = []; return route.fulfill({ json: view() }); }
+      return route.fulfill({ json: party });
     }
     if (path === '/api/conversations/current') return route.fulfill({ json: view() });
     if (path === '/api/conversations' && request.method() === 'POST') {
