@@ -1,0 +1,8 @@
+:host { display: grid; min-height: 100dvh; grid-template-columns: 14rem 1fr; grid-template-rows: auto 1fr auto; }
+.skip-link { left: 1rem; position: fixed; top: -4rem; z-index: var(--z-index-toast, 100); }
+.skip-link:focus { top: 1rem; }
+.app-header { grid-column: 1 / -1; padding: 1rem; }
+.primary-navigation { display: grid; gap: .5rem; padding: 1rem; }
+main { padding: 2rem; }
+footer { grid-column: 1 / -1; padding: 1rem; }
+@media (max-width: 1023px) { :host { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto; } .primary-navigation { display: flex; grid-row: 4; justify-content: space-around; } }

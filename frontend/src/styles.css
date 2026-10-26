@@ -1,0 +1,6 @@
+@import '../../docs/design-system/tokens/tokens.css';
+@import '../../docs/design-system/assets/components.css';
+
+* { box-sizing: border-box; }
+body { background: var(--color-surface-page); color: var(--color-text-primary); font-family: var(--font-body); margin: 0; }
+:focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 3px; }
