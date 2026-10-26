@@ -13,3 +13,10 @@ test('provides accessible application landmarks and responsive navigation', asyn
   await page.setViewportSize({ width: 360, height: 800 });
   await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
 });
+
+test('uses the system dark theme when no preference is saved', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
