@@ -29,11 +29,11 @@ public static class DependencyInjection
     public static IServiceCollection AddPlanningAgent(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<ClaudeOptions>().Bind(configuration.GetSection("Claude"));
-        // A 10 s connect timeout means an unreachable provider is reported within 10 seconds (L2-020).
+        // Two 4 s connection attempts mean an unreachable provider is reported within 10 seconds (L2-020).
         services.AddSingleton(_ => new AnthropicClient
         {
             MaxRetries = 1,
-            HttpClient = new HttpClient(new SocketsHttpHandler { ConnectTimeout = TimeSpan.FromSeconds(10) })
+            HttpClient = new HttpClient(new SocketsHttpHandler { ConnectTimeout = TimeSpan.FromSeconds(4) })
             {
                 Timeout = Timeout.InfiniteTimeSpan,
             },

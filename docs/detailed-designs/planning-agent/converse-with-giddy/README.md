@@ -32,7 +32,7 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`AgentTurnWorker`** — Hosted service reading an in-process channel; runs each turn in its own scope with a cancellation token tied to the cancel endpoint (`TurnCancellations`). Moving to a separate worker behind a message bus, with SignalR push, is a later scaling step.
 - **`AgentLoop`** — Calls the Claude Messages API with the system prompt, conversation and tool definitions; executes requested tools; repeats until a final reply or 8 tool rounds.
 - **Tools** — `list_themes`, `search_venues`, `find_entertainers`, `find_cakes`, `find_food`, `find_loot_bags`, `remember`, `suggest_replies`, `propose_plan`. Each records its plain-words step on the turn.
-- **`ClaudePlanningModel`** — `IPlanningModel` on the official Anthropic C# SDK, model `claude-opus-5-5`, a 60 s request timeout and one SDK retry; overload, 5xx and timeouts surface as "Giddy can't answer right now". Each turn sends one fresh user message (party facts, family memories, conversation so far, new message), so history is append-only within the turn.
+- **`ClaudePlanningModel`** — `IPlanningModel` on the official Anthropic C# SDK, model `claude-opus-5-5`, a 4 s connect timeout (two attempts stay under 10 s), a 60 s request timeout and one SDK retry; overload, 5xx and timeouts surface as "Giddy can't answer right now". Each turn sends one fresh user message (party facts, family memories, conversation so far, new message), so history is append-only within the turn.
 
 
 **Open points**
