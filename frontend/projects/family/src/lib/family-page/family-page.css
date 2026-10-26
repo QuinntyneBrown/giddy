@@ -1,0 +1,15 @@
+.family__children {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+.family__who {
+  flex-wrap: nowrap;
+}
+
+.family__interests {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

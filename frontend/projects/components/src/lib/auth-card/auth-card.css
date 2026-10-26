@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  margin: var(--space-8) auto;
+}
+
+.auth-card__intro {
+  align-items: center;
+  text-align: center;
+}
+
+.auth-card__heading {
+  font: var(--text-h2);
+}
+
+.auth-card__emoji {
+  font-size: var(--font-size-3xl);
+}
+
+.auth-card__links {
+  margin: var(--space-4) auto 0;
+  text-align: center;
+}

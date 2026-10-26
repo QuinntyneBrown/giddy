@@ -1,0 +1,37 @@
+<div class="page-header">
+  <div>
+    <h1>Who are we celebrating?</h1>
+    <p class="subtitle">
+      Add each child. Giddy uses their age and interests to suggest parties they’ll love, and
+      reminds you 6 weeks before every birthday.
+    </p>
+  </div>
+</div>
+<section giddy-card heading="Your kids" class="section">
+  @let children = family.value()?.children ?? [];
+  @if (children.length) {
+    <ul class="list" aria-label="Your kids">
+      @for (child of children; track child.id) {
+        <li class="list__item">
+          <giddy-avatar size="sm" aria-hidden="true" [name]="child.firstName" />
+          <span class="list__body">
+            <span class="list__title">{{ child.firstName }}</span>
+            <span class="list__meta">{{ turns(child.nextBirthday, child.turningAge) }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="text-sm text-muted">No kids added yet.</p>
+  }
+  <div class="cluster">
+    <button giddy-button variant="primary" type="button" (click)="add()">
+      <svg giddy-icon="plus"></svg>{{ children.length ? 'Add another child' : 'Add a child' }}
+    </button>
+    @if (children.length) {
+      <a giddy-button routerLink="/">Go to my home</a>
+    } @else {
+      <a giddy-button variant="ghost" routerLink="/">Skip for now</a>
+    }
+  </div>
+</section>

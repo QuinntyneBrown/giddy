@@ -10,12 +10,22 @@ export class SessionStore {
   readonly session = this.current.asReadonly();
   readonly signedIn = computed(() => this.current() !== null);
 
+  /** Loads who is signed in, then the anti-forgery token, which visitors need too to sign in. */
   async load(): Promise<void> {
     try {
       this.current.set(await firstValueFrom(this.api.current()));
-      await firstValueFrom(this.api.refreshAntiforgeryToken());
     } catch {
       this.current.set(null);
     }
+    try {
+      await firstValueFrom(this.api.refreshAntiforgeryToken());
+    } catch {
+      // Without a token, state-changing requests fail and say so; reading still works.
+    }
+  }
+
+  /** Forgets the parent after signing out. */
+  clear(): void {
+    this.current.set(null);
   }
 }

@@ -3,10 +3,12 @@ import { AppShellPage } from './app-shell.page';
 
 export class SettingsPage extends AppShellPage {
   readonly memories: Locator;
+  readonly signOut: Locator;
 
   constructor(page: Page) {
     super(page);
     this.memories = page.getByRole('region', { name: 'What Giddy remembers' });
+    this.signOut = page.locator('main').getByRole('button', { name: 'Sign out' });
   }
 
   async openSettings(): Promise<void> {

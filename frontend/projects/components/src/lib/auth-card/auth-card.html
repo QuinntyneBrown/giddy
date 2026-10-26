@@ -1,0 +1,15 @@
+<div class="card stack">
+  <div class="stack stack--sm auth-card__intro">
+    @if (emoji(); as icon) {
+      <span class="emoji auth-card__emoji" aria-hidden="true">{{ icon }}</span>
+    }
+    <h1 class="auth-card__heading">{{ heading() }}</h1>
+    @if (lead(); as text) {
+      <p class="text-muted">{{ text }}</p>
+    }
+  </div>
+  <ng-content />
+</div>
+<p class="text-caption auth-card__links">
+  <a routerLink="/help">Need help?</a> · <a routerLink="/legal">Terms &amp; privacy</a>
+</p>

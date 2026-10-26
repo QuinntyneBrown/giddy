@@ -54,6 +54,27 @@
 </ng-template>
 
 <ng-template #content>
+  @if (session(); as parent) {
+    @if (parent.emailBounced) {
+      <div class="email-banner">
+        <div giddy-alert banner tone="danger" [heading]="'We couldn’t deliver to ' + parent.email">
+          <div>Check the address for typos. Invites can’t go out until your email works.</div>
+          <div class="alert__actions"><a routerLink="/settings">Change email</a></div>
+        </div>
+      </div>
+    } @else if (!parent.emailVerified) {
+      <div class="email-banner">
+        <div giddy-alert banner heading="Confirm your email to send invitations">
+          <div>{{ verifyText() }}</div>
+          <div class="alert__actions">
+            <button giddy-button size="sm" type="button" (click)="resendLink(parent.email)">
+              Resend link
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
   @if (!connection.online()) {
     <div class="offline-banner">
       <div giddy-alert banner tone="warning" heading="You’re offline">

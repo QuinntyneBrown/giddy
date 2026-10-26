@@ -1,0 +1,69 @@
+<giddy-auth-card heading="Welcome back!" lead="Sign in to keep planning the fun.">
+  @if (providerProblem() && !problem()) {
+    <div giddy-alert tone="danger" heading="We couldn’t sign you in with that account">
+      <div>Nothing was created. Try again, or sign in with your email and password.</div>
+    </div>
+  }
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" [heading]="message.heading">
+      <div>{{ message.text }}</div>
+      <div class="alert__actions"><a routerLink="/forgot-password">Reset password</a></div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <form class="stack" novalidate (submit)="$event.preventDefault(); submit()">
+    <giddy-form-field label="Email" inputId="signin-email" [error]="errors().email ?? null">
+      <input
+        giddyInput
+        type="email"
+        autocomplete="email"
+        #emailInput
+        [readOnly]="busy()"
+        [value]="email()"
+        (input)="email.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field
+      label="Password"
+      inputId="signin-password"
+      [error]="errors().password ?? null"
+    >
+      <input
+        giddyInput
+        type="password"
+        autocomplete="current-password"
+        [readOnly]="busy()"
+        [value]="password()"
+        (input)="password.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <div class="cluster cluster--between">
+      <label giddy-choice>
+        <input
+          type="checkbox"
+          [disabled]="busy()"
+          [checked]="keepSignedIn()"
+          (change)="keepSignedIn.set($any($event.target).checked)"
+        />
+        Keep me signed in
+      </label>
+      <a class="text-sm" routerLink="/forgot-password">Forgot password?</a>
+    </div>
+    <button
+      giddy-button
+      variant="primary"
+      size="lg"
+      type="submit"
+      [busy]="busy()"
+      [disabled]="busy()"
+    >
+      Sign in
+    </button>
+  </form>
+  <p class="text-caption sign-in__or">or</p>
+  <a giddy-button [href]="providerLink('google')">Continue with Google</a>
+  <a giddy-button [href]="providerLink('apple')">Continue with Apple</a>
+  <p class="text-sm">New to Giddy? <a routerLink="/sign-up">Create a free account</a></p>
+</giddy-auth-card>

@@ -1,4 +1,4 @@
-import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import {
   ApplicationConfig,
   LOCALE_ID,
@@ -16,6 +16,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideGiddyApi } from '@giddy/api';
 import { navigationErrorRedirect } from '@giddy/system';
 import { routes } from './app.routes';
+import { sessionExpiryInterceptor } from './session/session-expiry.interceptor';
 import { SessionStore } from '@giddy/core';
 
 export const appConfig: ApplicationConfig = {
@@ -28,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
+      withInterceptors([sessionExpiryInterceptor]),
     ),
     provideGiddyApi(),
     provideAppInitializer(() => inject(SessionStore).load()),

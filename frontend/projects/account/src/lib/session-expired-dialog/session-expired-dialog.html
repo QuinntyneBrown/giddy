@@ -1,0 +1,41 @@
+<giddy-dialog
+  [heading]="'Still there, ' + data.name.split(' ')[0] + '?'"
+  description="For your family’s privacy you were signed out. Sign back in to keep going; what you were doing is kept."
+  [busy]="busy()"
+>
+  <form class="stack" novalidate (submit)="$event.preventDefault(); signBackIn()">
+    <giddy-form-field label="Email" inputId="expired-email">
+      <input giddyInput type="email" autocomplete="email" readonly [value]="data.email" />
+    </giddy-form-field>
+    <giddy-form-field label="Password" inputId="expired-password" [error]="error()">
+      <input
+        giddyInput
+        type="password"
+        autocomplete="current-password"
+        data-initial-focus
+        [readOnly]="busy()"
+        [value]="password()"
+        (input)="password.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <div class="cluster">
+      <button giddy-button variant="link" type="button" (click)="leave('/forgot-password')">
+        Forgot password?
+      </button>
+      <button giddy-button variant="link" type="button" (click)="leave('/sign-in')">
+        Use another account
+      </button>
+    </div>
+  </form>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="signBackIn()"
+  >
+    Sign back in
+  </button>
+</giddy-dialog>

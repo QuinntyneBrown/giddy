@@ -5,4 +5,6 @@ export interface Session {
   email: string;
   /** Sending invitations needs a verified email. */
   emailVerified: boolean;
+  /** The confirmation email couldn't be delivered. */
+  emailBounced: boolean;
 }

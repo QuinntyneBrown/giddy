@@ -1,0 +1,37 @@
+<giddy-dialog
+  size="sm"
+  heading="Sign out of Giddy?"
+  [description]="'Signed in as ' + (session.session()?.email ?? '')"
+  [busy]="busy()"
+>
+  @if (failed()) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>You’re still signed in. Try again in a moment.</div>
+    </div>
+  }
+  <p>
+    You’ll need your email and password to get back in. Party-day run sheets saved on this device
+    will be removed.
+  </p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="busy()"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="signOut()"
+  >
+    Sign out
+  </button>
+</giddy-dialog>

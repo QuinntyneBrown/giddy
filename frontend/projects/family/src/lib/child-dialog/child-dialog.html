@@ -1,0 +1,105 @@
+<giddy-dialog
+  [heading]="editing ? 'Change ' + data.child!.firstName + '’s details' : 'Add a child'"
+  description="Giddy will remind you 6 weeks before their birthday and suggest parties they’ll love."
+  size="lg"
+  [busy]="busy()"
+>
+  @if (failed()) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>
+        Your connection dropped before we got an answer. Everything you entered is still here.
+      </div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <div class="grid-2">
+    <giddy-form-field
+      label="First name"
+      inputId="child-firstName"
+      [error]="errors().firstName ?? null"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="off"
+        data-initial-focus
+        [value]="firstName()"
+        (input)="firstName.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field
+      label="Birthday"
+      inputId="child-birthday"
+      [help]="turns()"
+      [error]="errors().birthday ?? null"
+    >
+      <input
+        giddyInput
+        type="date"
+        [value]="birthday()"
+        (input)="birthday.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+  </div>
+  <fieldset class="stack stack--sm child-dialog__interests" aria-describedby="child-interests-hint">
+    <legend>Favourite things</legend>
+    <p id="child-interests-hint" class="text-sm" aria-live="polite">
+      {{ limitReached() ? 'Pick up to 5' : 'Pick up to 5. Giddy uses them to suggest themes.' }}
+    </p>
+    <div class="choice-cards">
+      @for (interest of data.interests; track interest.name) {
+        <label giddy-choice-card>
+          <input
+            type="checkbox"
+            [checked]="isChosen(interest.name)"
+            (change)="toggle(interest.name, $any($event.target))"
+          />
+          <span class="emoji" aria-hidden="true">{{ interest.emoji }}</span>
+          <span>{{ interest.name }}</span>
+        </label>
+      }
+    </div>
+  </fieldset>
+  <giddy-form-field
+    label="Allergies or needs"
+    optional
+    inputId="child-allergies"
+    help="We’ll flag venues and food that don’t fit."
+  >
+    <input
+      giddyInput
+      type="text"
+      autocomplete="off"
+      [value]="allergies()"
+      (input)="allergies.set($any($event.target).value)"
+    />
+  </giddy-form-field>
+  @if (editing) {
+    <button
+      giddyDialogFooter
+      giddy-button
+      variant="ghost"
+      type="button"
+      [disabled]="busy()"
+      (click)="remove()"
+    >
+      Remove {{ data.child!.firstName }}
+    </button>
+  }
+  <button giddyDialogFooter giddy-button type="button" [disabled]="busy()" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    {{ saveLabel() }}
+  </button>
+</giddy-dialog>

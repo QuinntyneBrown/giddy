@@ -1,3 +1,4 @@
+export * from './lib/auth-card/auth-card';
 export * from './lib/avatar/avatar';
 export * from './lib/badge/badge';
 export * from './lib/badge/badge-tone';
