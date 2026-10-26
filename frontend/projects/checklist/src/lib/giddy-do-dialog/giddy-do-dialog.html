@@ -1,0 +1,29 @@
+<giddy-dialog size="sm" [heading]="copy().heading" [busy]="busy()">
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>{{ message }}</div>
+    </div>
+  }
+  <p>{{ copy().text }}</p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="busy()"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="confirm()"
+  >
+    Send it
+  </button>
+</giddy-dialog>

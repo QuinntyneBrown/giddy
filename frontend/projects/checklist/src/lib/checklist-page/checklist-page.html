@@ -1,0 +1,115 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Checklist</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  @if (canPlan()) {
+    <div class="cluster">
+      <button giddy-button variant="primary" type="button" (click)="openTask()">
+        <svg giddy-icon="plus"></svg>Add task
+      </button>
+    </div>
+  }
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (checklist.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load the checklist"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="checklist.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="checklist.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section giddy-empty-state class="card section" heading="No tasks yet" [text]="emptyText()">
+      @if (canPlan()) {
+        <button
+          giddy-button
+          variant="primary"
+          type="button"
+          [busy]="making()"
+          [disabled]="making()"
+          (click)="make()"
+        >
+          <svg giddy-icon="sparkle"></svg>Make my checklist
+        </button>
+        <button giddy-button type="button" (click)="openTask()">Add a task myself</button>
+      }
+    </section>
+  }
+  @case ('ready') {
+    @let view = checklist.value()!;
+    <div class="section">
+      <giddy-progress [value]="view.percent" [label]="'Checklist ' + view.percent + '% done'" />
+    </div>
+    <div class="stack">
+      @if (allDone()) {
+        <section giddy-card class="checklist__celebration" [heading]="celebration()">
+          <p>All {{ view.total }} tasks done. On the day, just follow the party-day run sheet.</p>
+          <a giddy-button variant="primary" [routerLink]="'/parties/' + partyId() + '/party-day'"
+            >Open the run sheet</a
+          >
+        </section>
+      }
+      @for (group of groups(); track group.name) {
+        <section giddy-card [heading]="group.heading">
+          <ul class="list">
+            @for (task of group.tasks; track task.id) {
+              <li
+                giddy-task
+                checkable
+                [heading]="task.title"
+                [due]="due(task)"
+                [late]="task.overdue"
+                [done]="task.done"
+                [disabled]="!canPlan()"
+                [agent]="!!task.giddyCanDo"
+                (doneChange)="setDone(task, $event)"
+              >
+                @if (canPlan()) {
+                  <giddy-menu-button
+                    menuLabel="Task actions"
+                    [label]="'More actions for ' + task.title"
+                    [items]="menu(task)"
+                    (selected)="act(task, $event)"
+                  />
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  }
+  @default {
+    @if (checklist.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading the checklist…</span>
+        <giddy-skeleton shape="rect" height="1rem" />
+        <giddy-skeleton shape="rect" height="12rem" />
+        <giddy-skeleton shape="rect" height="12rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @for (toast of toasts(); track toast.id) {
+    <giddy-toast
+      [heading]="toast.heading"
+      [text]="toast.text"
+      [tone]="toast.tone"
+      [dismissible]="toast.persistent"
+      (dismissed)="dismiss(toast.id)"
+    />
+  }
+</giddy-toast-region>

@@ -1,0 +1,4 @@
+/* The CDK overlay places the menu, so it sits in the flow of its overlay pane. */
+.menu-button__menu {
+  position: static;
+}

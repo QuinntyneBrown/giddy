@@ -18,6 +18,7 @@ export type IconName =
   | 'home'
   | 'info'
   | 'mail'
+  | 'more'
   | 'moon'
   | 'parties'
   | 'pin'

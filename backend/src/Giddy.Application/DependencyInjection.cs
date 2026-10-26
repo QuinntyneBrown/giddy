@@ -37,6 +37,9 @@ public static class DependencyInjection
         services.AddScoped<Guests.Import.GuestImporter>();
         services.AddScoped<Budget.BudgetProjection>();
         services.AddScoped<Budget.SwapAdvisor>();
+        services.AddScoped<Checklist.View.ChecklistProjection>();
+        services.AddScoped<Checklist.Reminders.TaskReminders>();
+        services.AddScoped<Notifications.NotificationOutbox>();
         services.AddScoped<Rsvps.RsvpLinks>();
         services.AddSingleton<TurnCancellations>();
         services.AddScoped<IAgentTool, ListThemesTool>();

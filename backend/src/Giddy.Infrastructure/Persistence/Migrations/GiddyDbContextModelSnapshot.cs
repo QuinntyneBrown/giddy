@@ -526,6 +526,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
+                    b.Property<Guid?>("ActorParentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -583,6 +586,48 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.HasIndex("FamilyId");
 
                     b.ToTable("Memories", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Notifications.ScheduledNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTimeOffset>("DueAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("SendAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("SentAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.HasIndex("SentAt", "SendAt");
+
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Giddy.Domain.Parents.Parent", b =>
@@ -1181,7 +1226,17 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
                             b1.Property<bool>("Done");
 
+                            b1.Property<DateOnly?>("DoneOn");
+
                             b1.Property<DateOnly>("Due");
+
+                            b1.Property<string>("GiddyAction");
+
+                            b1.Property<Guid?>("OwnerId");
+
+                            b1.Property<bool>("RemindMe");
+
+                            b1.Property<Guid>("TaskId");
 
                             b1.Property<string>("Title")
                                 .IsRequired();

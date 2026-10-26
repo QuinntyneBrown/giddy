@@ -62,6 +62,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.RemoveAll(typeof(IDbContextOptionsConfiguration<GiddyDbContext>));
             services.AddDbContext<GiddyDbContext>(options => options.UseInMemoryDatabase(databaseName));
 
+            // Tests run reminders themselves, at the times they set on the clock.
+            services.Remove(services.Single(d => d.ImplementationType == typeof(Giddy.Infrastructure.Notifications.TaskReminderWorker)));
             services.RemoveAll<IClock>();
             services.AddSingleton<IClock>(Clock);
 

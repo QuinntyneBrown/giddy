@@ -1,3 +1,4 @@
+using Giddy.Domain.Notifications;
 using Giddy.Application.Common;
 using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
@@ -56,6 +57,8 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<PartyEvent> PartyEvents => Set<PartyEvent>();
 
     public DbSet<QuoteRequest> QuoteRequests => Set<QuoteRequest>();
+
+    public DbSet<ScheduledNotification> Notifications => Set<ScheduledNotification>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

@@ -1,4 +1,23 @@
-<span class="choice__text task__text">
-  <span>{{ heading() }}</span>
-  <small class="task__due" [class.task__due--late]="late()">{{ due() }}</small>
-</span>
+@if (checkable()) {
+  <label class="choice">
+    <input
+      type="checkbox"
+      [checked]="done()"
+      [disabled]="disabled()"
+      (change)="doneChange.emit($any($event.target).checked)"
+    />
+    <ng-container [ngTemplateOutlet]="text" />
+  </label>
+} @else {
+  <ng-container [ngTemplateOutlet]="text" />
+}
+<ng-template #text>
+  <span class="choice__text task__text">
+    <span>{{ heading() }}</span>
+    <small class="task__due" [class.task__due--late]="late()">{{ due() }}</small>
+    @if (agent()) {
+      <span class="task__agent"><svg giddy-icon="sparkle"></svg>Giddy can do this</span>
+    }
+  </span>
+</ng-template>
+<ng-content />
