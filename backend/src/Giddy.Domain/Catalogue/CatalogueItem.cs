@@ -82,6 +82,14 @@ public sealed class CatalogueItem
 
     public VendorProfile? Vendor { get; private set; }
 
+    public ThemeProfile? ThemeInfo { get; private set; }
+
+    public CatalogueItem WithThemeProfile(ThemeProfile profile)
+    {
+        ThemeInfo = profile;
+        return this;
+    }
+
     public CatalogueItem WithVendorProfile(VendorProfile profile)
     {
         Vendor = profile;

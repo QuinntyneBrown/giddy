@@ -48,6 +48,7 @@ app.MapLiveUpdateEndpoints();
 app.MapEmailEventEndpoints();
 app.MapImportEndpoints();
 app.MapVendorEndpoints();
+app.MapThemeEndpoints();
 
 app.Run();
 

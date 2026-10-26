@@ -11,6 +11,20 @@ public static class DemoCatalogue
 {
     public static readonly Guid DinoDigTheme = Guid.Parse("a1000000-0000-4000-8000-000000000001");
     public static readonly Guid SpaceTheme = Guid.Parse("a1000000-0000-4000-8000-000000000002");
+    private static readonly (string Name, string Description, string Emoji, int MinAge, int MaxAge, bool Outdoor, bool Budget, string[] Tags)[] MoreThemes =
+    [
+        ("Under the Sea", "Bubble stations, mermaid tails and treasure.", "🐠", 3, 8, false, false, ["ocean", "mermaids", "fish", "sea"]),
+        ("Unicorn Rainbow", "Glitter horns, rainbow cake and a magic hunt.", "🦄", 3, 6, false, false, ["unicorns", "rainbows", "magic"]),
+        ("Superhero City", "Capes, obstacle courses and hero training.", "🦸", 4, 10, false, true, ["superheroes", "heroes", "capes"]),
+        ("Mad Science Lab", "Slime, fizzing potions and a lab coat each.", "🧪", 6, 12, false, false, ["science", "experiments", "slime"]),
+        ("Pirate Adventure", "A treasure map, eye patches and a ship to sail.", "🏴‍☠️", 4, 9, true, true, ["pirates", "treasure", "ships"]),
+        ("Jungle Safari", "Animal masks, binoculars and a safari trail.", "🦁", 3, 8, true, true, ["animals", "jungle", "safari"]),
+        ("Art Studio", "Paint, clay and a gallery of their own work.", "🎨", 5, 12, false, true, ["art", "painting", "crafts"]),
+        ("Sports Day", "Relay races, sack races and medals for all.", "⚽", 6, 12, true, true, ["sports", "soccer", "running"]),
+        ("Detective Mystery", "Clues, codes and a case to crack together.", "🔍", 8, 12, false, true, ["mystery", "detectives", "puzzles"]),
+        ("Camping Under the Stars", "A tent, flashlights and s'mores without the fire.", "⛺", 6, 12, true, false, ["camping", "stars", "outdoors"]),
+        ("Princess Tea Party", "Crowns, tea cups and a royal ball.", "👑", 3, 7, false, false, ["princesses", "royalty", "tea"]),
+    ];
     public static readonly Guid DinoDen = Guid.Parse("b1000000-0000-4000-8000-000000000001");
     public static readonly Guid BeachesPlayLoft = Guid.Parse("b1000000-0000-4000-8000-000000000002");
     public static readonly Guid DanforthPartyRoom = Guid.Parse("b1000000-0000-4000-8000-000000000003");
@@ -67,9 +81,19 @@ public static class DemoCatalogue
     {
         var zurisParty = new LocalDate(2026, 11, 14);
         yield return new CatalogueItem(DinoDigTheme, CatalogueCategory.Theme, "Dino Dig", "Fossil hunt, volcano science and dino eggs.", "Anywhere", LeslievilleLatitude, LeslievilleLongitude, 100, null, 0, "Fossil hunt, volcano science, dino eggs")
-            .ForThemes("dinosaurs", "dino", "fossils", "science");
+            .ForThemes("dinosaurs", "dino", "fossils", "science")
+            .WithThemeProfile(new ThemeProfile { Emoji = "🦕", MinAge = 4, MaxAge = 9, Outdoor = false, BudgetFriendly = false });
         yield return new CatalogueItem(SpaceTheme, CatalogueCategory.Theme, "Space Explorers", "Rockets, planets and a moon walk.", "Anywhere", LeslievilleLatitude, LeslievilleLongitude, 100, null, 0, "Rockets, planets, moon walk")
-            .ForThemes("space", "rockets", "science");
+            .ForThemes("space", "rockets", "planets")
+            .WithThemeProfile(new ThemeProfile { Emoji = "🚀", MinAge = 5, MaxAge = 10, Outdoor = false, BudgetFriendly = true });
+        for (var i = 0; i < MoreThemes.Length; i++)
+        {
+            var theme = MoreThemes[i];
+            yield return new CatalogueItem(Guid.Parse($"a1000000-0000-4000-8000-{i + 3:D12}"), CatalogueCategory.Theme, theme.Name, theme.Description, "Anywhere", LeslievilleLatitude, LeslievilleLongitude, 100, null, 0, theme.Description)
+                .ForThemes(theme.Tags)
+                .WithThemeProfile(new ThemeProfile { Emoji = theme.Emoji, MinAge = theme.MinAge, MaxAge = theme.MaxAge, Outdoor = theme.Outdoor, BudgetFriendly = theme.Budget });
+        }
+
         var dinoDen = Profile("🦕", "1124 Queen St E", 4.8m, 212, 3, 9, 150, true, "Dino theme room",
             Slot(10, 0, 12, 30), Slot(13, 0, 15, 30), Slot(16, 0, 18, 30));
         dinoDen.PhotoDescription = "the Fossil Room with a sand dig pit, the café, and the dino slide";
