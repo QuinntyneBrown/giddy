@@ -1,0 +1,87 @@
+<giddy-dialog heading="Import guests" [description]="description()" [busy]="busy()">
+  @if (report(); as done) {
+    <div
+      giddy-alert
+      tone="success"
+      [heading]="done.imported + (done.imported === 1 ? ' guest imported' : ' guests imported')"
+    >
+      <div>{{ reportText() }}</div>
+    </div>
+  } @else {
+    @if (problem(); as message) {
+      <div giddy-alert tone="danger" heading="That file can’t be imported">
+        <div>{{ message }}</div>
+      </div>
+    }
+    @if (source() === 'spreadsheet' && preview()?.missingEmail?.length) {
+      <div giddy-alert tone="warning" [heading]="missingHeading()">
+        <div>{{ missingText() }}</div>
+      </div>
+    }
+    <fieldset>
+      <legend>Where’s the list?</legend>
+      <label giddy-choice description="Columns: child, parent, email, mobile">
+        <input
+          type="radio"
+          name="import-source"
+          [checked]="source() === 'spreadsheet'"
+          [disabled]="busy()"
+          (change)="choose('spreadsheet')"
+        />
+        Spreadsheet (.csv or .xlsx)
+      </label>
+      @for (party of sources.value() ?? []; track party.partyId) {
+        <label giddy-choice [description]="sourceDetail(party)">
+          <input
+            type="radio"
+            name="import-source"
+            [checked]="source() === party.partyId"
+            [disabled]="busy()"
+            (change)="choose(party.partyId)"
+          />
+          {{ party.name }}
+        </label>
+      }
+      <label giddy-choice description="Not available in this browser">
+        <input type="radio" name="import-source" [disabled]="!contactsAvailable" />
+        Phone contacts
+      </label>
+    </fieldset>
+    @if (source() === 'spreadsheet') {
+      <giddy-file-drop
+        accept=".csv,.xlsx"
+        hint=".csv or .xlsx up to 2 MB"
+        [fileName]="file()?.name ?? null"
+        [fileDetail]="fileDetail()"
+        (chosen)="fileChosen($event)"
+      />
+      @if (duplicatesText(); as text) {
+        <p class="text-sm text-muted">{{ text }}</p>
+      }
+    }
+    @if (progress() !== null) {
+      <div class="stack stack--sm">
+        <giddy-progress label="Importing guests" [value]="progress()" />
+        <span class="text-caption">Adding guests and checking for duplicates…</span>
+      </div>
+    }
+  }
+  <ng-container ngProjectAs="[giddyDialogFooter]">
+    @if (report()) {
+      <button giddy-button variant="primary" type="button" (click)="close()">Done</button>
+    } @else {
+      <button giddy-button type="button" [disabled]="busy()" (click)="close()">Cancel</button>
+      <button
+        giddy-button
+        variant="primary"
+        type="button"
+        [busy]="busy()"
+        [disabled]="!ready() || busy() || !!problem()"
+        (click)="start()"
+      >
+        <svg giddy-icon="upload"></svg>Import {{ ready() || '' }}
+        {{ ready() === 1 ? 'guest' : 'guests' }}
+      </button>
+    }
+  </ng-container>
+</giddy-dialog>

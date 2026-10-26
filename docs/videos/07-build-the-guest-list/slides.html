@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 07 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="07" data-video-title="Build the guest list" data-parts="Introduction|Promises|Find and add|Checks|Remove|Import|Reuse|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 07</div>
+  <h1>Build the guest list</h1>
+  <p class="lead">Find, add, remove with undo, and import a class list</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="The list shows who's invited">
+  <h2>What the guest list promises</h2>
+  <div class="cols">
+    <ul>
+      <li>Counts and a table sorted by child</li>
+      <li>Never the same family twice; up to 60 guests</li>
+      <li>Every removal can be undone</li>
+      <li>Class lists are checked before anything is added</li>
+    </ul>
+    <img class="shot" alt="An empty list offers Add the first guest and Import a class list" src="shots/desktop-empty.png">
+  </div>
+</section>
+
+<section id="find" data-part="2" data-cue="Here is Amara with sixteen families on the list." data-clip="clips/find-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Search, chips, add</h3><p>Filters as she types; chips with counts; a missing name becomes a new guest, invited now because invites already went out.</p></div>
+</section>
+
+<section id="checks" data-part="3" data-cue="The add dialog checks the email">
+  <h2>Checks when adding</h2>
+  <img class="shot" alt="An error summary for the email and a non-Canadian mobile" src="shots/desktop-add-invalid.png">
+</section>
+
+<section id="remove" data-part="4" data-cue="On a phone, each row has its own actions" data-clip="clips/remove-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Remove, then Undo</h3><p>Cancel has focus; the parent isn't messaged; Undo for 8 s restores the reply; the server keeps 10 minutes.</p></div>
+</section>
+
+<section id="import" data-part="5" data-cue="Amara's class list is a spreadsheet." data-clip="clips/import-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Check, then import</h3><p>Rows missing an email and guests already listed are named first; upload progress; a report of what was skipped and why.</p></div>
+</section>
+
+<section id="reuse" data-part="6" data-cue="The same dialog can reuse the guests">
+  <h2>Reusing last year's guests</h2>
+  <img class="shot" alt="Zuri's 6th: Mermaid Splash, reuse 2 guests" src="shots/desktop-reuse.png">
+</section>
+
+<section id="testing" data-part="7" data-cue="The API tests cover adding with the Canadian mobile check">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 196 tests</h3><p>Adding, duplicates, the 60 limit, send now, remove and restore, links that stop, CSV and Excel import, limits, malware scan, reuse.</p></div>
+    <div class="card"><h3>Browser · 182 tests</h3><p>Search, chips, row actions, add, remove and undo, import against the fake API, with axe on each dialog.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Search and chips narrow as you go</li><li>No duplicates; up to 60 guests</li><li>Removing always offers Undo</li><li>Class lists are checked first</li></ul>
+  <p class="muted">Next: entertainers, food and cake</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

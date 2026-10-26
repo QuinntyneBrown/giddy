@@ -30,6 +30,9 @@ public static class DependencyInjection
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
         services.AddSingleton<ISmsSender, LoggingSmsSender>();
         services.AddSingleton<IWebLinks, ConfiguredWebLinks>();
+        services.AddHostedService<Guests.RemovedGuestPurgeWorker>();
+        services.AddSingleton<Giddy.Application.Guests.Import.ISpreadsheetReader, Guests.SpreadsheetReader>();
+        services.AddSingleton<Giddy.Application.Guests.Import.IMalwareScanner, Guests.UnscannedFileScanner>();
         return services;
     }
 

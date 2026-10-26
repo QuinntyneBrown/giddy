@@ -1,0 +1,38 @@
+<giddy-dialog
+  tone="danger"
+  size="sm"
+  [heading]="'Remove ' + data.guest.childName + '?'"
+  [description]="data.guest.parentName + ' won’t be messaged.'"
+  [busy]="state() === 'busy'"
+>
+  @if (state() === 'failed') {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>{{ data.guest.childName }} is still on the list. Try again in a moment.</div>
+    </div>
+  }
+  <p>
+    {{ data.guest.childName }} comes off the guest list and the counts. You can undo this for a few
+    seconds afterwards.
+  </p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="state() === 'busy'"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="danger"
+    type="button"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+    (click)="remove()"
+  >
+    Remove {{ data.guest.childName }}
+  </button>
+</giddy-dialog>

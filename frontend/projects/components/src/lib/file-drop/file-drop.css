@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.file-drop__zone {
+  align-items: center;
+  text-align: center;
+  border: 2px dashed var(--color-border-strong);
+  cursor: pointer;
+}
+
+:host:has(input:focus-visible) .file-drop__zone {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.file-drop__zone--dragging {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.file-drop__file {
+  gap: var(--space-2);
+}
+
+.file-drop__detail {
+  display: block;
+}

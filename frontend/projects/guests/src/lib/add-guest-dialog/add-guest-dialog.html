@@ -1,0 +1,90 @@
+<giddy-dialog
+  heading="Add a guest"
+  description="Add one family to the list. You can invite them straight away."
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="That guest wasn’t added">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <giddy-form-field
+    label="Child’s name"
+    inputId="ag-childName"
+    [error]="errors().childName ?? null"
+  >
+    <input
+      giddyInput
+      type="text"
+      data-initial-focus
+      [value]="childName()"
+      (input)="childName.set($any($event.target).value)"
+    />
+  </giddy-form-field>
+  <div class="grid-2">
+    <giddy-form-field
+      label="Parent’s name"
+      inputId="ag-parentName"
+      [error]="errors().parentName ?? null"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="off"
+        [value]="parentName()"
+        (input)="parentName.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Parent’s email" inputId="ag-email" [error]="errors().email ?? null">
+      <input
+        giddyInput
+        type="email"
+        autocomplete="off"
+        [value]="email()"
+        (input)="email.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+  </div>
+  <giddy-form-field
+    label="Parent’s mobile"
+    optional
+    inputId="ag-mobile"
+    help="For a text invite and reminders"
+    [error]="errors().mobile ?? null"
+  >
+    <input
+      giddyInput
+      type="tel"
+      autocomplete="off"
+      [value]="mobile()"
+      (input)="mobile.set($any($event.target).value)"
+    />
+  </giddy-form-field>
+  @if (data.invitesSentOn) {
+    <label giddy-choice [description]="sendNowNote()">
+      <input
+        type="checkbox"
+        [checked]="sendNow()"
+        (change)="sendNow.set($any($event.target).checked)"
+      />
+      Send the invitation now
+    </label>
+  }
+  <button giddyDialogFooter giddy-button type="button" [disabled]="busy()" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    {{ inviting() ? 'Add and invite' : 'Add guest' }}
+  </button>
+</giddy-dialog>

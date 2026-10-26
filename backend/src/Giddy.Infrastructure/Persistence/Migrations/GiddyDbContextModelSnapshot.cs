@@ -435,6 +435,9 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
+                    b.Property<DateTimeOffset?>("RemovedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<DateTimeOffset?>("RepliedAt")
                         .HasColumnType("datetimeoffset");
 

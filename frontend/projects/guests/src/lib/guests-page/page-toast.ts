@@ -8,4 +8,6 @@ export interface PageToast {
   tone: ToastTone;
   action: { label: string; link: string; fragment?: string } | null;
   persistent: boolean;
+  /** The removed guest's id, while Undo is offered. */
+  undo: string | null;
 }

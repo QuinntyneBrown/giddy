@@ -69,6 +69,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.AddSingleton<IVenuePartner>(_ => Partner);
             services.RemoveAll<IEmailSender>();
             services.AddSingleton<IEmailSender>(Email);
+            services.RemoveAll<Giddy.Application.Guests.Import.IMalwareScanner>();
+            services.AddSingleton<Giddy.Application.Guests.Import.IMalwareScanner, FakeMalwareScanner>();
             services.RemoveAll<ISmsSender>();
             services.AddSingleton<ISmsSender>(Sms);
 

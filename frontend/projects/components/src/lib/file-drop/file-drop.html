@@ -1,0 +1,39 @@
+@if (fileName(); as name) {
+  <div class="well cluster cluster--between">
+    <span class="cluster file-drop__file">
+      <svg giddy-icon="upload"></svg>
+      <span>
+        <span class="list__title">{{ name }}</span>
+        @if (fileDetail(); as detail) {
+          <span class="list__meta file-drop__detail">{{ detail }}</span>
+        }
+      </span>
+    </span>
+    <button giddy-button variant="ghost" size="sm" type="button" (click)="chooseAnother()">
+      Choose another file
+    </button>
+  </div>
+}
+@if (!fileName()) {
+  <label
+    class="well stack file-drop__zone"
+    [for]="id"
+    [class.file-drop__zone--dragging]="dragging()"
+    (dragover)="over($event)"
+    (dragleave)="dragging.set(false)"
+    (drop)="drop($event)"
+  >
+    <svg giddy-icon="upload" size="lg"></svg>
+    <span class="list__title">Drop a file here or browse</span>
+    <span class="list__meta">{{ hint() }}</span>
+  </label>
+}
+<input
+  #picker
+  class="visually-hidden"
+  type="file"
+  [id]="id"
+  [accept]="accept()"
+  [attr.aria-label]="'Choose a file, ' + hint()"
+  (change)="pick($event)"
+/>

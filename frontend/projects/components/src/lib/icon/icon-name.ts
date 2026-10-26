@@ -24,6 +24,7 @@ export type IconName =
   | 'refresh'
   | 'search'
   | 'send'
+  | 'upload'
   | 'settings'
   | 'sparkle'
   | 'stop'
