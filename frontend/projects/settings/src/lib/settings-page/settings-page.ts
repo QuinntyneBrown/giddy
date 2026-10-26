@@ -6,6 +6,7 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   Injector,
   signal,
@@ -85,6 +86,7 @@ export class SettingsPage {
   private readonly dialog = inject(GiddyDialog);
   private readonly injector = inject(Injector);
   private readonly summary = viewChild(ErrorSummaryComponent);
+  private readonly statusAlert = viewChild('statusAlert', { read: ElementRef<HTMLElement> });
   protected readonly session = inject(SessionStore).session;
   protected readonly channelRows = channelRows;
   protected readonly channelNames: (keyof Channels)[] = ['email', 'text', 'push'];
@@ -159,10 +161,7 @@ export class SettingsPage {
       );
       const saved = await firstValueFrom(this.settingsApi.saveNotifications(this.channels()!));
       this.fill(saved);
-      this.status.set({
-        heading: 'Your settings are saved',
-        text: 'Giddy will use them from now on.',
-      });
+      this.show({ heading: 'Settings saved', text: 'Changes apply right away.' });
     } catch (error) {
       const problem =
         error instanceof HttpErrorResponse ? (error.error as ApiProblem | null) : null;
@@ -208,7 +207,7 @@ export class SettingsPage {
     this.problem.set(null);
     try {
       await firstValueFrom(this.privacyApi.requestExport());
-      this.status.set({
+      this.show({
         heading: 'We’re getting your data ready',
         text: `We’ll email you a link within 24 hours. It works for 7 days, once you sign in.`,
       });
@@ -232,6 +231,16 @@ export class SettingsPage {
     this.dialog.open<boolean, null, SignOutDialog>(SignOutDialog, null, {
       autoFocus: '[data-initial-focus]',
     });
+  }
+
+  /** The alert sits at the top of the page, so bring it into view wherever the button was. */
+  private show(message: { heading: string; text: string }): void {
+    this.status.set(message);
+    afterNextRender(
+      () =>
+        this.statusAlert()?.nativeElement.scrollIntoView({ block: 'center', behavior: 'smooth' }),
+      { injector: this.injector },
+    );
   }
 
   private fill(settings: Settings): void {

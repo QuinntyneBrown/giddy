@@ -12,7 +12,7 @@ test.describe('profile and email', () => {
     await settings.channel('Giddy’s reminders by email').uncheck();
     await settings.save.click();
 
-    await expect(settings.status).toContainText('Your settings are saved');
+    await expect(settings.status).toContainText('Settings saved');
     expect(fakeApi.settingsStore.settings.mobile).toBe('647-555-0199');
     expect(fakeApi.settingsStore.settings.notifications['reminders'].email).toBe(false);
   });

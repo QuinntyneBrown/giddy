@@ -6,7 +6,14 @@
 </div>
 <div class="stack">
   @if (status(); as message) {
-    <div giddy-alert tone="success" [heading]="message.heading">
+    <div
+      #statusAlert
+      giddy-alert
+      tone="success"
+      dismissible
+      [heading]="message.heading"
+      (dismissed)="status.set(null)"
+    >
       <div>{{ message.text }}</div>
     </div>
   }
