@@ -10,8 +10,8 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "inlineTemplate": true,
-          "inlineStyle": true,
+          "inlineTemplate": false,
+          "inlineStyle": false,
           "skipTests": true
         },
         "@schematics/angular:class": {
@@ -38,7 +38,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "giddy",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -51,9 +51,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "styles": ["projects/components/src/styles/giddy.css", "src/styles.css"]
           },
           "configurations": {
             "production": {

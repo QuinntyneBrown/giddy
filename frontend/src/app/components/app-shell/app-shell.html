@@ -1,1 +1,26 @@
-<a class="skip-link" href="#main-content">Skip to content</a><header class="app-header"><a aria-label="Giddy home" class="brand" routerLink="/">Giddy</a></header><nav aria-label="Primary navigation" class="primary-navigation"><a routerLink="/">Home</a><a routerLink="/ask-giddy">Ask Giddy</a><a routerLink="/parties">My parties</a></nav><main id="main-content" tabindex="-1"><ng-content /></main><footer>Made for birthday planners in the GTA.</footer>
+<a giddy-skip-link mainId="main-content"></a>
+<div class="sidebar-layout">
+  <nav
+    giddy-sidebar-nav
+    aria-label="Primary"
+    ctaLabel="Plan a party"
+    ctaLink="/parties/new"
+    [groups]="sidebarGroups"
+  ></nav>
+  <div class="shell__body">
+    <header
+      giddy-top-bar
+      brandOnSmallScreensOnly
+      searchLabel="Search venues, fun and food"
+      searchPlaceholder="Search venues, entertainers, cakes…"
+      (searched)="search($event)"
+    ></header>
+    <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
+    <footer
+      giddy-footer
+      text="© 2026 Giddy · Made with confetti in Toronto"
+      [links]="footerLinks"
+    ></footer>
+  </div>
+</div>
+<nav giddy-bottom-nav aria-label="Primary, mobile" [items]="bottomItems" [ctaIndex]="2"></nav>

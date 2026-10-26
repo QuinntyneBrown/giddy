@@ -5,6 +5,9 @@ export class AppShellPage {
   readonly skipLink: Locator;
   readonly banner: Locator;
   readonly primaryNavigation: Locator;
+  readonly sidebar: Locator;
+  readonly bottomBar: Locator;
+  readonly search: Locator;
   readonly main: Locator;
   readonly footer: Locator;
   readonly pageHeadings: Locator;
@@ -12,7 +15,12 @@ export class AppShellPage {
   constructor(protected readonly page: Page) {
     this.skipLink = page.getByRole('link', { name: 'Skip to content' });
     this.banner = page.getByRole('banner');
-    this.primaryNavigation = page.getByRole('navigation', { name: 'Primary navigation' });
+    this.primaryNavigation = page
+      .getByRole('navigation', { name: /^Primary/ })
+      .locator('visible=true');
+    this.sidebar = page.getByRole('navigation', { name: 'Primary', exact: true });
+    this.bottomBar = page.getByRole('navigation', { name: 'Primary, mobile' });
+    this.search = page.getByRole('searchbox', { name: 'Search venues, fun and food' });
     this.main = page.getByRole('main');
     this.footer = page.getByRole('contentinfo');
     this.pageHeadings = page.getByRole('heading', { level: 1 });
@@ -37,6 +45,24 @@ export class AppShellPage {
   async skipToContent(): Promise<void> {
     await this.skipLink.focus();
     await this.page.keyboard.press('Enter');
+  }
+
+  sidebarLink(name: string): Locator {
+    return this.sidebar.getByRole('link', { name, exact: true });
+  }
+
+  sidebarGroup(name: string): Locator {
+    return this.sidebar.getByText(name, { exact: true });
+  }
+
+  async bottomBarLabels(): Promise<string[]> {
+    return (await this.bottomBar.getByRole('link').allInnerTexts()).map((text) => text.trim());
+  }
+
+  scrollsSideways(): Promise<boolean> {
+    return this.page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
   }
 
   theme(): Promise<string | null> {

@@ -9,9 +9,12 @@ export class ThemeService {
 
   applySavedOrSystemTheme(): void {
     const saved = localStorage.getItem('giddy-theme');
-    const theme: Theme = saved === 'dark' || saved === 'light'
-      ? saved
-      : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const theme: Theme =
+      saved === 'dark' || saved === 'light'
+        ? saved
+        : window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
 
     this.document.documentElement.dataset['theme'] = theme;
   }

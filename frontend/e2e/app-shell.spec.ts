@@ -55,3 +55,53 @@ test('has no serious or critical accessibility violations', async ({ page }) => 
 
   expect(await shell.seriousAccessibilityViolations()).toEqual([]);
 });
+
+test('shows a sidebar with grouped navigation on wide screens', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.useWidth(1280);
+  await shell.open();
+
+  await expect(shell.sidebar).toBeVisible();
+  await expect(shell.sidebarLink('Giddy')).toBeVisible();
+  await expect(shell.sidebarLink('Plan a party')).toBeVisible();
+  await expect(shell.sidebarGroup('Explore')).toBeVisible();
+  await expect(shell.sidebarGroup('You')).toBeVisible();
+  await expect(shell.bottomBar).toBeHidden();
+  await expect(shell.search).toBeVisible();
+});
+
+test('shows a bottom bar with Ask Giddy in the centre on phones', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.useWidth(360);
+  await shell.open();
+
+  await expect(shell.bottomBar).toBeVisible();
+  expect(await shell.bottomBarLabels()).toEqual([
+    'Home',
+    'Explore',
+    'Ask Giddy',
+    'Parties',
+    'Family',
+  ]);
+  await expect(shell.sidebar).toBeHidden();
+  await expect(shell.search).toBeHidden();
+});
+
+test('shows the search field from tablet width', async ({ page }) => {
+  const shell = new AppShellPage(page);
+  await shell.useWidth(800);
+  await shell.open();
+
+  await expect(shell.search).toBeVisible();
+  await expect(shell.bottomBar).toBeVisible();
+});
+
+for (const width of [360, 600, 800, 1000, 1280]) {
+  test(`never scrolls sideways at ${width}px`, async ({ page }) => {
+    const shell = new AppShellPage(page);
+    await shell.useWidth(width);
+    await shell.open();
+
+    expect(await shell.scrollsSideways()).toBe(false);
+  });
+}
