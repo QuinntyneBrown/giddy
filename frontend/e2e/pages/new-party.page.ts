@@ -12,6 +12,8 @@ export class NewPartyPage extends AppShellPage {
   readonly turningAge: Locator;
   readonly errorSummary: Locator;
   readonly submitError: Locator;
+  readonly fromTemplate: Locator;
+  readonly create: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -24,6 +26,8 @@ export class NewPartyPage extends AppShellPage {
     this.turningAge = page.getByLabel('Age they’re turning');
     this.errorSummary = page.getByRole('alert').filter({ hasText: 'Let’s fix' });
     this.submitError = page.getByRole('alert').filter({ hasText: 'didn’t save' });
+    this.fromTemplate = page.getByRole('status').filter({ hasText: 'Starting from' });
+    this.create = page.getByRole('button', { name: 'Plan it with Giddy' });
   }
 
   async openNew(query = ''): Promise<void> {

@@ -7,6 +7,7 @@ import { FakeFamily } from './fake-family';
 import { FakeNotifications } from './fake-notifications';
 import { FakeSharing } from './fake-sharing';
 import { FakeSettings } from './fake-settings';
+import { FakeWrapUp } from './fake-wrap-up';
 import { FakeRunSheet } from './fake-run-sheet';
 import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
@@ -122,6 +123,7 @@ export class FakeApi {
   readonly notificationStore = new FakeNotifications();
   readonly sharingStore = new FakeSharing();
   readonly settingsStore = new FakeSettings((session) => (this.session = session));
+  readonly wrapUpStore = new FakeWrapUp();
   /** When set, the session has expired: everything but sign-in answers 401. */
   sessionExpired = false;
 
@@ -161,6 +163,7 @@ export class FakeApi {
     this.notificationStore.register((method, path, handler) => this.on(method, path, handler));
     this.sharingStore.register((method, path, handler) => this.on(method, path, handler));
     this.settingsStore.register((method, path, handler) => this.on(method, path, handler));
+    this.wrapUpStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),

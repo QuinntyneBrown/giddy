@@ -1,0 +1,10 @@
+<giddy-avatar size="sm" aria-hidden="true" [name]="name()" [pop]="pop()" />
+<div class="list__body stack stack--sm">
+  <div class="cluster cluster--between">
+    <span class="list__title">{{ heading() }}</span>
+    <span class="cluster person-item__trailing"
+      ><ng-content select="[giddyPersonItemTrailing]"
+    /></span>
+  </div>
+  <ng-content />
+</div>

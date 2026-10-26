@@ -46,6 +46,12 @@ export function formatLongDate(isoDate: string): string {
   return `${longWeekdays[weekday]} ${day} ${longMonths[month - 1]} ${year}`;
 }
 
+/** "September 2027", for something due some time that month. */
+export function formatMonth(isoDate: string): string {
+  const { year, month } = parseIsoDate(isoDate);
+  return `${longMonths[month - 1]} ${year}`;
+}
+
 function clock(time: string): { text: string; period: 'am' | 'pm' } {
   const [hours, minutes] = time.split(':').map(Number);
   const period = hours < 12 ? 'am' : 'pm';

@@ -13,6 +13,7 @@
       "@giddy/checklist": ["./projects/checklist/src/public-api.ts"],
       "@giddy/family": ["./projects/family/src/public-api.ts"],
       "@giddy/party-day": ["./projects/party-day/src/public-api.ts"],
+      "@giddy/wrap-up": ["./projects/wrap-up/src/public-api.ts"],
       "@giddy/guests": ["./projects/guests/src/public-api.ts"],
       "@giddy/notifications": ["./projects/notifications/src/public-api.ts"],
       "@giddy/home": ["./projects/home/src/public-api.ts"],

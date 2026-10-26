@@ -12,7 +12,15 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ApiProblem, BudgetRange, Child, FAMILY_API, PARTIES_API } from '@giddy/api';
+import {
+  ApiProblem,
+  BudgetRange,
+  Child,
+  FAMILY_API,
+  PARTIES_API,
+  PlanTemplate,
+  WRAP_UP_API,
+} from '@giddy/api';
 import {
   AlertComponent,
   AvatarComponent,
@@ -72,6 +80,11 @@ export class NewPartyPage {
 
   /** A child to start with, from the `child` query parameter. */
   readonly child = input<string>();
+  /** A plan saved from an earlier party, from the `template` query parameter. */
+  readonly template = input<string>();
+  private readonly wrapUpApi = inject(WRAP_UP_API);
+  /** The saved plan this party starts from, once loaded. */
+  protected readonly startingFrom = signal<PlanTemplate | null>(null);
 
   protected readonly form = newPartyForm();
   protected readonly someoneElse = someoneElse;
@@ -151,9 +164,19 @@ export class NewPartyPage {
 
   constructor() {
     effect(() => {
+      const id = this.template();
+      this.startingFrom.set(null);
+      if (id)
+        this.wrapUpApi.template(id).subscribe({
+          next: (plan) => this.startingFrom.set(plan),
+          error: () => this.startingFrom.set(null),
+        });
+    });
+    effect(() => {
       const family = this.family.value();
       if (!family || this.form.controls.postalCode.dirty) return;
-      const preferred = family.children.find((c) => c.id === this.child()) ?? family.children[0];
+      const wanted = this.startingFrom()?.childId ?? this.child();
+      const preferred = family.children.find((c) => c.id === wanted) ?? family.children[0];
       this.form.patchValue({
         postalCode: family.postalCode ?? '',
         child: preferred?.id ?? someoneElse,
@@ -193,8 +216,14 @@ export class NewPartyPage {
           timeOfDay: value.timeOfDay,
           budget: Number(value.budget),
           postalCode: value.postalCode.trim().toUpperCase(),
+          ...(this.startingFrom() ? { templateId: this.startingFrom()!.templateId } : {}),
         }),
       );
+      if (this.startingFrom()) {
+        // The saved plan is already in place, so the party opens on its overview.
+        await this.router.navigateByUrl(`/parties/${party.id}`);
+        return;
+      }
       await firstValueFrom(this.partiesApi.startConversation(party.id));
       await this.router.navigateByUrl('/ask-giddy');
     } catch (error) {

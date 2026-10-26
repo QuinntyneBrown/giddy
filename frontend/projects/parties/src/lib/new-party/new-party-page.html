@@ -11,6 +11,14 @@
     @if (summaryErrors().length) {
       <giddy-error-summary [errors]="summaryErrors()" />
     }
+    @if (startingFrom(); as plan) {
+      <div giddy-alert [heading]="'Starting from ' + plan.name">
+        <div>
+          Same theme, vendors and checklist. Giddy moves the checklist dates to the new party.
+        </div>
+        <div class="alert__actions"><a routerLink="/parties/new">Start from scratch</a></div>
+      </div>
+    }
     @if (state() === 'failed') {
       <div giddy-alert tone="danger" heading="Your party didn’t save">
         <div>Everything you typed is still here. Try again in a moment.</div>

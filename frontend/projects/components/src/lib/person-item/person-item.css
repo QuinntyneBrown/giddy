@@ -1,0 +1,7 @@
+:host {
+  align-items: flex-start;
+}
+
+.person-item__trailing {
+  gap: var(--space-2);
+}

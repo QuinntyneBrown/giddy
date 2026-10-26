@@ -16,6 +16,7 @@ import { notFoundRoute, systemRoutes } from '@giddy/system';
 import { themesRoutes } from '@giddy/themes';
 import { vendorsRoutes } from '@giddy/vendors';
 import { venuesRoutes } from '@giddy/venues';
+import { wrapUpRoutes } from '@giddy/wrap-up';
 
 export const routes: Routes = [
   // Open to visitors: accounts, private RSVP links and the system pages.
@@ -34,6 +35,7 @@ export const routes: Routes = [
       ...budgetRoutes,
       ...checklistRoutes,
       ...partyDayRoutes,
+      ...wrapUpRoutes,
       ...invitationsRoutes,
       ...partiesRoutes,
       ...joinRoutes,

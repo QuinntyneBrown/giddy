@@ -1,0 +1,10 @@
+.star-rating__stars {
+  gap: var(--space-1);
+}
+
+/* Stars after the chosen one are outlined, so the rating reads at a glance. */
+.star-rating__star--off .icon {
+  fill: none;
+  stroke: var(--color-fg-muted);
+  stroke-width: 1.5;
+}

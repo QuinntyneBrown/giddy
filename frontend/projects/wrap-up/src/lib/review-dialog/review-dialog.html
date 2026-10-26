@@ -1,0 +1,46 @@
+<giddy-dialog
+  [heading]="'Review ' + data.provider.name"
+  [description]="
+    'You rated it ' +
+    stars +
+    (stars === 1 ? ' star' : ' stars') +
+    '. Your review helps other GTA parents choose.'
+  "
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="Nothing was saved">
+      <div>{{ message }}</div>
+    </div>
+  }
+  <form novalidate (submit)="$event.preventDefault(); save()">
+    <giddy-form-field
+      label="Your review"
+      optional
+      inputId="review-text"
+      help="Up to 500 characters. We show your first name and the month."
+      [counter]="review().length + ' / 500'"
+    >
+      <textarea
+        giddyInput
+        rows="5"
+        maxlength="500"
+        data-initial-focus
+        [value]="review()"
+        (input)="review.set($any($event.target).value)"
+      ></textarea>
+    </giddy-form-field>
+  </form>
+  <button giddyDialogFooter giddy-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    Save review
+  </button>
+</giddy-dialog>

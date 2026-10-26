@@ -70,6 +70,7 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
     circle(18, 19, 2.5),
     path('m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6'),
   ],
+  star: [path('m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z')],
   sparkle: [
     path('M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z'),
     path('M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z'),
