@@ -37,6 +37,10 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
     public FakeSmsSender Sms { get; } = new();
 
+    public FakeVendorDirectory Vendors { get; } = new();
+
+    public const string VendorQuotesSecret = "test-vendor-quotes-secret";
+
     public FakeVenuePartner Partner => partner ??= new FakeVenuePartner(Clock);
 
     private FakeVenuePartner? partner;
@@ -46,6 +50,7 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Giddy", "Server=unused;Database=unused");
         builder.UseSetting("Giddy:EmailEventsSecret", EmailEventsSecret);
+        builder.UseSetting("Giddy:VendorQuotesSecret", VendorQuotesSecret);
         if (Environment.GetEnvironmentVariable("GIDDY_TEST_LOG") is { } logFile)
         {
             builder.ConfigureLogging(logging => logging.AddProvider(new FileLoggerProvider(logFile)));
@@ -71,6 +76,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.AddSingleton<IEmailSender>(Email);
             services.RemoveAll<Giddy.Application.Guests.Import.IMalwareScanner>();
             services.AddSingleton<Giddy.Application.Guests.Import.IMalwareScanner, FakeMalwareScanner>();
+            services.RemoveAll<Giddy.Application.Vendors.IVendorDirectory>();
+            services.AddSingleton<Giddy.Application.Vendors.IVendorDirectory>(Vendors);
             services.RemoveAll<ISmsSender>();
             services.AddSingleton<ISmsSender>(Sms);
 

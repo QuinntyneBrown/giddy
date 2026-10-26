@@ -169,4 +169,35 @@ public sealed class Party
             AllergyUpdateFor = childFirstName;
         }
     }
+
+    /// <summary>A vendor's quote was requested: the vendor is in the plan as "Quote requested".</summary>
+    public void RecordQuoteRequested(Guid vendorId, string vendorName, string category, decimal estimate) =>
+        SetVendor(vendorId, vendorName, existing => existing is null
+            ? new BookingToDo(category, vendorName, estimate, vendorId, BookingStatus.QuoteRequested)
+            : existing with { Status = BookingStatus.QuoteRequested, CatalogueItemId = vendorId });
+
+    /// <summary>The vendor's quote goes into the budget as "Quoted".</summary>
+    public void RecordQuote(Guid vendorId, string vendorName, string category, decimal amount) =>
+        SetVendor(vendorId, vendorName, existing => (existing ?? new BookingToDo(category, vendorName, amount, vendorId)) with
+        {
+            Status = BookingStatus.Quoted,
+            Estimate = amount,
+        });
+
+    public void RecordVendorConfirmed(Guid vendorId, string vendorName) =>
+        SetVendor(vendorId, vendorName, existing => existing is null ? null : existing with { Status = BookingStatus.Confirmed });
+
+    private void SetVendor(Guid vendorId, string vendorName, Func<BookingToDo?, BookingToDo?> change)
+    {
+        var existing = BookingsToDo.FirstOrDefault(b => b.CatalogueItemId == vendorId || b.Name == vendorName);
+        var updated = change(existing);
+        if (updated is null)
+        {
+            return;
+        }
+
+        BookingsToDo = existing is null
+            ? [.. BookingsToDo, updated]
+            : BookingsToDo.Select(b => ReferenceEquals(b, existing) ? updated : b).ToList();
+    }
 }

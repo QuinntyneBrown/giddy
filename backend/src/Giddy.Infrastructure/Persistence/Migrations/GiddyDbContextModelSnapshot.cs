@@ -736,8 +736,90 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Proposals", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Vendors.QuoteRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateOnly?>("ExpiresOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("RequestedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RequestedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("VendorName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId", "VendorId");
+
+                    b.ToTable("QuoteRequests", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Catalogue.CatalogueItem", b =>
                 {
+                    b.OwnsOne("Giddy.Domain.Catalogue.VendorProfile", "Vendor", b1 =>
+                        {
+                            b1.Property<Guid>("CatalogueItemId");
+
+                            b1.Property<int?>("DurationMinutes");
+
+                            b1.Property<string>("Emoji")
+                                .IsRequired();
+
+                            b1.Property<int?>("MaxAge");
+
+                            b1.Property<int?>("MinAge");
+
+                            b1.Property<int?>("NoticeDays");
+
+                            b1.Property<decimal>("Rating")
+                                .HasPrecision(10, 2);
+
+                            b1.Property<int>("ReviewCount");
+
+                            b1.HasKey("CatalogueItemId");
+
+                            b1.ToTable("CatalogueItems");
+
+                            b1
+                                .ToJson("Vendor")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CatalogueItemId");
+                        });
+
                     b.OwnsOne("Giddy.Domain.Catalogue.VenueProfile", "Venue", b1 =>
                         {
                             b1.Property<Guid>("CatalogueItemId");
@@ -888,6 +970,8 @@ namespace Giddy.Infrastructure.Persistence.Migrations
 
                             b1.Navigation("Slots");
                         });
+
+                    b.Navigation("Vendor");
 
                     b.Navigation("Venue");
                 });

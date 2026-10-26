@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using Giddy.Api.Security;
 using Giddy.Application.Guests.RecordEmailEvent;
 using MediatR;
 
@@ -8,13 +7,11 @@ namespace Giddy.Api.Endpoints;
 /// <summary>The email provider's delivery webhook, authenticated by a shared secret from configuration.</summary>
 public static class EmailEventEndpoints
 {
-    public const string SecretHeader = "X-Giddy-Webhook-Secret";
-
     public static IEndpointRouteBuilder MapEmailEventEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/api/email-events", async (HttpRequest http, EmailEventRequest request, IConfiguration configuration, ISender sender, CancellationToken cancel) =>
         {
-            if (!SecretMatches(configuration["Giddy:EmailEventsSecret"], http.Headers[SecretHeader].ToString()))
+            if (!SharedSecret.Matches(configuration["Giddy:EmailEventsSecret"], http.Headers[SharedSecret.Header].ToString()))
             {
                 return Results.Unauthorized();
             }
@@ -25,8 +22,4 @@ public static class EmailEventEndpoints
 
         return app;
     }
-
-    private static bool SecretMatches(string? expected, string actual) =>
-        !string.IsNullOrEmpty(expected)
-        && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expected), Encoding.UTF8.GetBytes(actual));
 }

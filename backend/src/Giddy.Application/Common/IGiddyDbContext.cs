@@ -11,6 +11,7 @@ using Giddy.Domain.Parents;
 using Giddy.Domain.Parties;
 using Giddy.Domain.Payments;
 using Giddy.Domain.Proposals;
+using Giddy.Domain.Vendors;
 using Microsoft.EntityFrameworkCore;
 
 namespace Giddy.Application.Common;
@@ -50,6 +51,8 @@ public interface IGiddyDbContext
     DbSet<Invitation> Invitations { get; }
 
     DbSet<PartyEvent> PartyEvents { get; }
+
+    DbSet<QuoteRequest> QuoteRequests { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

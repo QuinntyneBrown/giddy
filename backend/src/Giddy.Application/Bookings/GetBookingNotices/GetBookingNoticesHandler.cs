@@ -17,6 +17,7 @@ public sealed class GetBookingNoticesHandler(IGiddyDbContext db, IClock clock, T
     public async Task<IReadOnlyList<BookingNotice>> Handle(GetBookingNoticesQuery request, CancellationToken cancellationToken)
     {
         var notices = new List<BookingNotice>();
+        await AddExpiringQuotesAsync(request.PartyId, notices, cancellationToken);
         var latest = await db.Bookings
             .Where(b => b.PartyId == request.PartyId)
             .OrderByDescending(b => b.CreatedAt)
@@ -67,6 +68,31 @@ public sealed class GetBookingNoticesHandler(IGiddyDbContext db, IClock clock, T
         }
 
         return notices;
+    }
+
+    /// <summary>Quotes that expire within two days, so the parent can confirm or look elsewhere.</summary>
+    private async Task AddExpiringQuotesAsync(Guid partyId, List<BookingNotice> notices, CancellationToken cancellationToken)
+    {
+        var today = calendar.Today;
+        var soon = today.PlusDays(2);
+        var quotes = await db.QuoteRequests
+            .Where(q => q.PartyId == partyId && q.Status == Domain.Vendors.QuoteStatus.Quoted && q.ExpiresOn != null)
+            .ToListAsync(cancellationToken);
+        foreach (var quote in quotes.Where(q => q.ExpiresOn >= today && q.ExpiresOn <= soon))
+        {
+            var days = Period.Between(today, quote.ExpiresOn!.Value, PeriodUnits.Days).Days;
+            var when = days switch { 0 => "today", 1 => "tomorrow", _ => $"in {days} days" };
+            notices.Add(new BookingNotice(
+                "quote-expiring",
+                "warning",
+                $"{quote.VendorName}’s quote expires {when}",
+                $"Confirm by {BookingText.Day(quote.ExpiresOn!.Value)} to keep it, or find another {quote.Category.ToLowerInvariant()}.",
+                true,
+                null,
+                quote.VendorId,
+                quote.Id,
+                quote.Category));
+        }
     }
 
     private async Task AddDisruptionsAsync(Booking booking, List<BookingNotice> notices, CancellationToken cancellationToken)
