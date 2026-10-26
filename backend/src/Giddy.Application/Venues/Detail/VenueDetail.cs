@@ -31,6 +31,7 @@ public sealed record VenueDetail(
     FreeDate? NearestFreeDate,
     SimilarVenue? SimilarVenue,
     bool Favourite,
+    string Room,
     decimal Deposit,
     string FreeCancellationUntil,
     BookingView? Booking);

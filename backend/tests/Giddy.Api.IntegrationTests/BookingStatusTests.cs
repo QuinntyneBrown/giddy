@@ -142,6 +142,7 @@ public sealed class BookingStatusTests : IAsyncLifetime
 
         Assert.Equal(JsonValueKind.Null, before.GetProperty("booking").ValueKind);
         Assert.Equal(100m, before.GetProperty("deposit").GetDecimal());
+        Assert.Equal("Fossil Room", before.GetProperty("room").GetString());
         Assert.Equal("2026-10-31", before.GetProperty("freeCancellationUntil").GetString());
         var booking = after.GetProperty("booking");
         Assert.Equal("DD-48213", booking.GetProperty("confirmationNumber").GetString());

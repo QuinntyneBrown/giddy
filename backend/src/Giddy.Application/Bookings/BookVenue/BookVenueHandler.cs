@@ -105,7 +105,7 @@ public sealed class BookVenueHandler(
     }
 
     private static SlotUnavailableException SlotUnavailable(Domain.Catalogue.CatalogueItem venue, LocalDate date, Domain.Catalogue.VenueSlot taken) => new(
-        $"{BookingFormats.Time.Format(taken.Start)} at {venue.Name} is no longer free, so nothing was charged.",
+        $"{BookingText.Time(taken.Start)} at {venue.Name} is no longer free, so nothing was charged.",
         venue.FreeSlotsOn(date)
             .Where(s => s != taken)
             .Select(s => new AlternativeSlot(venue.Id, venue.Name, BookingFormats.Time.Format(s.Start), BookingFormats.Time.Format(s.End)))

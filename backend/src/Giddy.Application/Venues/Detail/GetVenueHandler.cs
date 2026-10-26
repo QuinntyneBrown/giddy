@@ -102,6 +102,7 @@ public sealed class GetVenueHandler(
             nearest,
             similar,
             favourite,
+            profile.Room,
             profile.Deposit,
             PartySummaryMapper.DatePattern.Format(date.PlusDays(-profile.FreeCancellationDays)),
             booking);
