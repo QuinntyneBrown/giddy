@@ -141,3 +141,8 @@ export * from './lib/notifications/inbox-item';
 export * from './lib/notifications/inbox';
 export * from './lib/notifications/notifications-api.token';
 export * from './lib/notifications/notifications-api';
+export * from './lib/sharing/members';
+export * from './lib/sharing/planner';
+export * from './lib/sharing/shared-summary';
+export * from './lib/sharing/sharing-api.token';
+export * from './lib/sharing/sharing-api';

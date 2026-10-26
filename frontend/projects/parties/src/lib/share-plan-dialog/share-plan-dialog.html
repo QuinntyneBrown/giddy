@@ -1,0 +1,97 @@
+<giddy-dialog
+  [heading]="heading()"
+  description="Plan together. Co-planners see changes as they happen."
+  [busy]="busy()"
+>
+  @if (status(); as message) {
+    <div giddy-alert heading="Sharing">
+      <div>{{ message }}</div>
+    </div>
+  }
+  <form class="stack" novalidate (submit)="$event.preventDefault(); invite()">
+    <giddy-form-field label="Email" inputId="share-email" [error]="error()">
+      <input
+        giddyInput
+        type="email"
+        autocomplete="off"
+        data-initial-focus
+        [value]="email()"
+        (input)="email.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <fieldset class="stack stack--sm share__roles">
+      <legend>They can</legend>
+      <label giddy-choice description="Book, invite and change the budget, like you">
+        <input
+          type="radio"
+          name="share-role"
+          [checked]="role() === 'coPlanner'"
+          (change)="role.set('coPlanner')"
+        />
+        Edit everything
+      </label>
+      <label giddy-choice description="Great for grandparents who want to follow along">
+        <input
+          type="radio"
+          name="share-role"
+          [checked]="role() === 'viewer'"
+          (change)="role.set('viewer')"
+        />
+        View only
+      </label>
+    </fieldset>
+  </form>
+  @if (members.value(); as list) {
+    <ul class="list" aria-label="Who’s planning">
+      @for (member of list.members; track member.parentId) {
+        <li class="list__item share__member">
+          <giddy-avatar size="sm" aria-hidden="true" [name]="member.name" />
+          <span class="list__body">
+            <span class="list__title">{{ member.name }}{{ member.isYou ? ' (you)' : '' }}</span>
+            <span class="list__meta">{{ roleName(member) }}</span>
+          </span>
+          @if (member.role !== 'owner' && !member.isYou) {
+            <button
+              giddy-button
+              size="sm"
+              variant="ghost"
+              type="button"
+              [attr.aria-label]="'Remove ' + member.name"
+              (click)="remove(member)"
+            >
+              Remove
+            </button>
+          }
+        </li>
+      }
+    </ul>
+    @for (invite of list.invited; track invite.email) {
+      <p class="text-sm text-muted">
+        {{ invite.email }} · Invited to {{ invite.role === 'viewer' ? 'view' : 'edit' }}
+      </p>
+    }
+  }
+  <div class="stack stack--sm">
+    <p class="text-sm">Or share a view-only link</p>
+    @if (link(); as url) {
+      <giddy-form-field label="View-only link" inputId="share-link">
+        <input giddyInput type="text" readonly [value]="url" />
+      </giddy-form-field>
+    }
+    <div class="cluster">
+      <button giddy-button size="sm" type="button" (click)="copyLink()">Copy link</button>
+    </div>
+  </div>
+  <button giddyDialogFooter giddy-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="invite()"
+  >
+    Send invite
+  </button>
+</giddy-dialog>

@@ -8,6 +8,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { SharePlanData } from '../share-plan-dialog/share-plan-data';
+import { SharePlanDialog } from '../share-plan-dialog/share-plan-dialog';
 import { Router, RouterLink } from '@angular/router';
 import {
   BOOKINGS_API,
@@ -131,6 +133,12 @@ export class PartyOverviewPage {
   );
 
   constructor() {
+    // A party that isn't shared with this parent (any more) is private; it never says whether it exists.
+    effect(() => {
+      if (this.overview.problem()?.status === 404) {
+        untracked(() => void this.router.navigateByUrl('/403', { replaceUrl: true }));
+      }
+    });
     effect(() => {
       this.partyId();
       untracked(() => {
@@ -288,6 +296,14 @@ export class PartyOverviewPage {
       default:
         return null;
     }
+  }
+
+  protected share(): void {
+    this.dialogs.open<void, SharePlanData, SharePlanDialog>(
+      SharePlanDialog,
+      { partyId: this.partyId(), childName: this.party()?.childName ?? null },
+      { autoFocus: '[data-initial-focus]' },
+    );
   }
 
   protected async askGiddy(): Promise<void> {
