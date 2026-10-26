@@ -28,6 +28,7 @@ export type IconName =
   | 'send'
   | 'upload'
   | 'download'
+  | 'cookie'
   | 'sign-out'
   | 'settings'
   | 'sparkle'

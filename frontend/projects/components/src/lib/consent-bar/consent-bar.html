@@ -1,0 +1,8 @@
+<div class="cluster consent-bar__intro">
+  <svg size="lg" [giddy-icon]="icon()"></svg>
+  <div class="stack stack--sm">
+    <h2 class="consent-bar__heading" [id]="headingId">{{ heading() }}</h2>
+    <p class="text-sm text-muted">{{ text() }}</p>
+  </div>
+</div>
+<div class="cluster cluster--end"><ng-content /></div>

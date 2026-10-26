@@ -1,0 +1,75 @@
+<div class="page-header">
+  <div>
+    <h1>Terms &amp; privacy</h1>
+    <p class="subtitle">Last updated Thu 1 Oct 2026</p>
+  </div>
+</div>
+<article giddy-prose>
+  <p>
+    Giddy is built for parents planning kids’ parties in Toronto and the GTA. Here’s the short
+    version, in plain words.
+  </p>
+  <h2>What we collect</h2>
+  <p>
+    Your name and email, your kids’ first names, birthdays and interests, and the guest details you
+    add. Guests’ parents share their own contact details and allergies when they RSVP.
+  </p>
+  <h2>What we never do</h2>
+  <p>
+    We never sell data, never show ads to children, and never contact your guests except to deliver
+    invitations and reminders you asked us to send.
+  </p>
+  <h2>Where it’s stored</h2>
+  <p>
+    In Canada, encrypted at rest. You can download or delete everything from Settings at any time.
+  </p>
+  <h2>Booking with venues and vendors</h2>
+  <p>
+    When you book, the venue or vendor is your contract partner. Giddy passes on only what they
+    need: date, time, guest count and allergies.
+  </p>
+  <h2 id="cookies">Cookies</h2>
+  <p>
+    Essential cookies keep you signed in and remember this choice. Measurement cookies show us which
+    pages help parents most; they load only if you allow them. We ask again after 12 months.
+  </p>
+  <fieldset class="stack stack--sm">
+    <legend>Cookies on this device</legend>
+    <label giddy-choice description="Signing in and this choice">
+      <input
+        type="radio"
+        name="cookies"
+        [checked]="selected() === 'essential'"
+        (change)="selected.set('essential')"
+      />
+      Essential only
+    </label>
+    <label giddy-choice description="Also measure which pages help parents most. No ads, ever.">
+      <input
+        type="radio"
+        name="cookies"
+        [checked]="selected() === 'all'"
+        (change)="selected.set('all')"
+      />
+      Allow all
+    </label>
+  </fieldset>
+  <div class="cluster">
+    <button giddy-button variant="primary" type="button" (click)="save()">
+      Save cookie choice
+    </button>
+  </div>
+  <h2>Contact</h2>
+  <p>privacy&#64;giddy.party · Giddy Party Planning Inc., Toronto, Ontario</p>
+</article>
+<giddy-toast-region>
+  @if (saved(); as choice) {
+    <giddy-toast
+      tone="success"
+      dismissible
+      heading="Cookie choice saved"
+      [text]="choice + ' Change it any time in Terms & privacy.'"
+      (dismissed)="saved.set(null)"
+    />
+  }
+</giddy-toast-region>

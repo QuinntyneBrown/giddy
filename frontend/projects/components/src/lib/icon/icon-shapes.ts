@@ -50,6 +50,10 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
   refresh: [path('M20 11a8 8 0 0 0-14.6-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16m0 4v-4h-4')],
   send: [path('M4 12 20 4l-6 16-3-7z'), path('m11 13 9-9')],
   upload: [path('M12 16V4m0 0-4 4m4-4 4 4M4 17v3h16v-3')],
+  cookie: [
+    path('M12 3a9 9 0 1 0 9 9 3 3 0 0 1-3-3 3 3 0 0 1-3-3 3 3 0 0 1-3-3z'),
+    path('M8.5 11.5h.01M14 15h.01M9 16h.01'),
+  ],
   download: [path('M12 4v12m0 0-4-4m4 4 4-4M4 17v3h16v-3')],
   'sign-out': [path('M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11')],
   stop: [{ kind: 'rect', x: 6, y: 6, width: 12, height: 12, rx: 2 }],

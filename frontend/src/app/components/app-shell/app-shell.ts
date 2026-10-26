@@ -15,6 +15,8 @@ import { ConflictDialog } from '@giddy/checklist';
 import { filter, firstValueFrom, map } from 'rxjs';
 import {
   ConnectionStatus,
+  CookieChoice,
+  CookieConsent,
   OfflineStore,
   PushPrompt,
   SessionStore,
@@ -30,6 +32,7 @@ import {
   BadgeComponent,
   BottomNavComponent,
   ButtonComponent,
+  ConsentBarComponent,
   ErrorPageComponent,
   FooterComponent,
   GiddyDialog,
@@ -38,6 +41,8 @@ import {
   NavItem,
   SidebarNavComponent,
   SkipLinkComponent,
+  ToastComponent,
+  ToastRegionComponent,
   TopBarComponent,
 } from '@giddy/components';
 
@@ -49,12 +54,15 @@ import {
     BadgeComponent,
     BottomNavComponent,
     ButtonComponent,
+    ConsentBarComponent,
     ErrorPageComponent,
     IconComponent,
     FooterComponent,
     LiveRsvpToasts,
     SidebarNavComponent,
     SkipLinkComponent,
+    ToastComponent,
+    ToastRegionComponent,
     TopBarComponent,
     RouterLink,
     NgTemplateOutlet,
@@ -96,6 +104,8 @@ export class AppShellComponent {
 
   protected readonly unread = inject(UnreadNotifications).count;
   protected readonly push = inject(PushPrompt);
+  protected readonly cookies = inject(CookieConsent);
+  protected readonly cookieSaved = signal<string | null>(null);
   protected readonly bellLabel = computed(() =>
     this.unread() ? `Notifications, ${this.unread()} unread` : 'Notifications',
   );
@@ -138,6 +148,11 @@ export class AppShellComponent {
     { label: 'Parties', link: '/parties', icon: 'parties' },
     { label: 'Family', link: '/family', icon: 'family' },
   ];
+
+  protected chooseCookies(choice: CookieChoice): void {
+    this.cookies.choose(choice);
+    this.cookieSaved.set(choice === 'all' ? 'Allow all.' : 'Essential only.');
+  }
 
   protected readonly footerLinks = [
     { label: 'Help', link: '/help' },

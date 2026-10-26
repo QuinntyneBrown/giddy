@@ -213,3 +213,28 @@
     [links]="footerLinks"
   ></footer>
 </ng-template>
+
+@if (cookies.choice() === null) {
+  <section
+    giddy-consent-bar
+    heading="A few cookies, no crumbs"
+    text="We use essential cookies to keep you signed in. With your OK we also measure which pages help parents most. No ads, ever."
+  >
+    <a giddy-button size="sm" routerLink="/legal" fragment="cookies">Choose</a>
+    <button giddy-button size="sm" type="button" (click)="chooseCookies('essential')">
+      Essential only
+    </button>
+    <button giddy-button size="sm" type="button" (click)="chooseCookies('all')">Allow all</button>
+  </section>
+}
+<giddy-toast-region>
+  @if (cookieSaved(); as choice) {
+    <giddy-toast
+      tone="success"
+      dismissible
+      heading="Cookie choice saved"
+      [text]="choice + ' Change it any time in Terms & privacy.'"
+      (dismissed)="cookieSaved.set(null)"
+    />
+  }
+</giddy-toast-region>
