@@ -28,7 +28,11 @@ if (command == "migrate")
 }
 else
 {
-    await new DemoDataSeeder(db).SeedAsync(CancellationToken.None);
+    await new DemoDataSeeder(
+        db,
+        scope.ServiceProvider.GetRequiredService<Giddy.Application.Accounts.IPasswords>(),
+        host.Services.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()["Giddy:DemoPassword"])
+        .SeedAsync(CancellationToken.None);
     Console.WriteLine("Demo data is in place.");
 }
 

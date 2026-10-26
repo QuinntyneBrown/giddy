@@ -638,6 +638,43 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("Notifications", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Parents.AccountToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("ParentId", "Purpose");
+
+                    b.ToTable("AccountTokens", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Parents.Parent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -648,14 +685,75 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(254)
                         .HasColumnType("nvarchar(254)");
 
+                    b.Property<bool>("EmailBounced")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("EmailVerifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("FailedSignIns")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("FirstFailedSignInAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.PrimitiveCollection<string>("KnownDevices")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("MarketingOptIn")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
+                    b.Property<string>("PasswordHash")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTimeOffset?>("SignInPausedUntil")
+                        .HasColumnType("datetimeoffset");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Parents", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Parents.ParentSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Device")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTimeOffset>("LastSeenAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Persistent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("ParentSessions", (string)null);
                 });
 
             modelBuilder.Entity("Giddy.Domain.Parties.Party", b =>
@@ -1165,12 +1263,17 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                             b1.Property<int>("__synthesizedOrdinal")
                                 .ValueGeneratedOnAddOrUpdate();
 
+                            b1.Property<string>("Allergies");
+
                             b1.Property<DateOnly>("Birthday");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired();
 
                             b1.Property<Guid>("Id");
+
+                            b1.PrimitiveCollection<string>("Interests")
+                                .IsRequired();
 
                             b1.HasKey("FamilyId", "__synthesizedOrdinal");
 

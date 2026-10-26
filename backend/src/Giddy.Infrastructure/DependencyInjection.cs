@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
         services.AddSingleton<ISmsSender, LoggingSmsSender>();
         services.AddSingleton<IWebLinks, ConfiguredWebLinks>();
+        services.AddSingleton<Giddy.Application.Accounts.IPasswords, Accounts.IdentityPasswords>();
         services.AddHostedService<Guests.RemovedGuestPurgeWorker>();
         services.AddHostedService<Notifications.TaskReminderWorker>();
         services.AddSingleton<Giddy.Application.Vendors.IVendorDirectory, Vendors.LoggingVendorDirectory>();

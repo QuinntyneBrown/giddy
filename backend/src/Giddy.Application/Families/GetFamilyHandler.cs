@@ -1,5 +1,4 @@
 using Giddy.Application.Common;
-using Giddy.Application.Parties;
 using Giddy.Domain.Calendar;
 using Giddy.Domain.Places;
 using MediatR;
@@ -18,18 +17,14 @@ public sealed class GetFamilyHandler(IGiddyDbContext db, ICurrentParent parent, 
         }
 
         var today = calendar.Today;
+        var parties = await db.Parties.Where(p => p.Members.Any(m => m.ParentId == parent.Id)).ToListAsync(cancellationToken);
         var area = PostalCode.TryParse(family.PostalCode, out var code) ? GtaAreas.Resolve(code!).Name : null;
         return new FamilyView(
-            family.PostalCode,
+            family.PostalCode.Length > 0 ? family.PostalCode : null,
             area,
             family.Children
                 .OrderBy(c => c.NextBirthday(today))
-                .Select(c => new ChildView(
-                    c.Id,
-                    c.FirstName,
-                    PartySummaryMapper.DatePattern.Format(c.Birthday),
-                    PartySummaryMapper.DatePattern.Format(c.NextBirthday(today)),
-                    c.TurningAge(today)))
+                .Select(c => ChildViews.For(c, parties, calendar))
                 .ToList());
     }
 }

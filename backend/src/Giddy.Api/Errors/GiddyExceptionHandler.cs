@@ -49,6 +49,36 @@ public sealed class GiddyExceptionHandler(IProblemDetailsService problemDetails,
                 Status = StatusCodes.Status412PreconditionFailed,
                 Extensions = { ["current"] = changed.Current },
             },
+            Giddy.Application.Accounts.SignIn.WrongCredentialsException wrong => new ProblemDetails
+            {
+                Title = wrong.Message,
+                Detail = "Check for typos, or reset your password. After 5 tries we pause sign-in for 15 minutes to keep your account safe.",
+                Status = StatusCodes.Status401Unauthorized,
+            },
+            Giddy.Application.Accounts.SignIn.SignInPausedException paused => new ProblemDetails
+            {
+                Title = paused.Message,
+                Detail = "Try again later, or reset your password to sign in now.",
+                Status = StatusCodes.Status423Locked,
+            },
+            Giddy.Application.Accounts.LinkExpiredException expired => new ProblemDetails
+            {
+                Title = expired.Message,
+                Status = StatusCodes.Status410Gone,
+                Extensions = { ["email"] = expired.Email },
+            },
+            Giddy.Application.Accounts.TooSoonException tooSoon => new ProblemDetails
+            {
+                Title = tooSoon.Message,
+                Status = StatusCodes.Status429TooManyRequests,
+                Extensions = { ["retryAfterSeconds"] = tooSoon.RetryAfterSeconds },
+            },
+            Giddy.Application.Accounts.EmailNotSentException notSent => new ProblemDetails
+            {
+                Title = notSent.Message,
+                Detail = "Our email service didn’t respond. Your request wasn’t sent; try again in a moment.",
+                Status = StatusCodes.Status502BadGateway,
+            },
             ConflictException conflict => new ProblemDetails { Title = conflict.Message, Status = StatusCodes.Status409Conflict },
             _ => Unexpected(exception),
         };

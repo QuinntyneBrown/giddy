@@ -37,6 +37,10 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
     public FakeSmsSender Sms { get; } = new();
 
+    public FakeBreachedPasswords BreachedPasswords { get; } = new();
+
+    public FakeExternalSignIn External { get; } = new();
+
     public FakeVendorDirectory Vendors { get; } = new();
 
     public const string VendorQuotesSecret = "test-vendor-quotes-secret";
@@ -83,13 +87,24 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<ISmsSender>();
             services.AddSingleton<ISmsSender>(Sms);
 
+            services.RemoveAll<Giddy.Application.Accounts.IBreachedPasswords>();
+            services.AddSingleton<Giddy.Application.Accounts.IBreachedPasswords>(BreachedPasswords);
+            services.RemoveAll<Giddy.Api.Authentication.IExternalSignIn>();
+            services.AddSingleton<Giddy.Api.Authentication.IExternalSignIn>(External);
+
+            // Requests naming a parent in the test header are signed in as them; the rest use the
+            // real session cookie, so sign-in, sign-out and expiry are tested end to end.
             services.AddAuthentication()
-                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null);
+                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null)
+                .AddPolicyScheme(TestOrCookie, TestOrCookie, options => options.ForwardDefaultSelector = context =>
+                    context.Request.Headers.ContainsKey(TestAuthenticationHandler.Header)
+                        ? TestAuthenticationHandler.Scheme
+                        : Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
             services.PostConfigure<AuthenticationOptions>(options =>
             {
-                options.DefaultAuthenticateScheme = TestAuthenticationHandler.Scheme;
-                options.DefaultChallengeScheme = TestAuthenticationHandler.Scheme;
-                options.DefaultForbidScheme = TestAuthenticationHandler.Scheme;
+                options.DefaultAuthenticateScheme = TestOrCookie;
+                options.DefaultChallengeScheme = TestOrCookie;
+                options.DefaultForbidScheme = TestOrCookie;
             });
         });
     }
@@ -106,6 +121,19 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
     {
         using var scope = Services.CreateScope();
         return await query(scope.ServiceProvider.GetRequiredService<GiddyDbContext>());
+    }
+
+    private const string TestOrCookie = "TestOrCookie";
+
+    /// <summary>A browser nobody has signed in on yet, with the anti-forgery token fetched.</summary>
+    public async Task<AccountClient> CreateAnonymousClientAsync(string userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15")
+    {
+        var http = CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true, BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false });
+        http.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+        http.DefaultRequestHeaders.Add("X-Client-City", "Toronto, ON");
+        var client = new AccountClient(http);
+        await client.RefreshAntiforgeryAsync();
+        return client;
     }
 
     public HttpClient CreateClientFor(TestParent parent)
