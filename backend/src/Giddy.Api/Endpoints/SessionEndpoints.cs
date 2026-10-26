@@ -11,7 +11,7 @@ public static class SessionEndpoints
         app.MapGet("/api/session", async (ICurrentParent parent, MediatR.ISender sender, CancellationToken cancel) =>
         {
             await sender.Send(new Giddy.Application.Parents.RecordParentCommand(), cancel);
-            return new SessionResponse(parent.Id, parent.Name, parent.Email);
+            return new SessionResponse(parent.Id, parent.Name, parent.Email, parent.EmailVerified);
         });
 
         app.MapGet("/api/antiforgery", (HttpContext context, IAntiforgery antiforgery) =>

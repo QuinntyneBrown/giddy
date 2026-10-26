@@ -35,6 +35,7 @@ import {
   PopColour,
   SkeletonComponent,
   StatComponent,
+  TabNavComponent,
   TallyComponent,
   TaskComponent,
 } from '@giddy/components';
@@ -42,11 +43,13 @@ import {
   GiddyDatePipe,
   GiddyMoneyPipe,
   GiddyTimeRangePipe,
+  LiveUpdates,
   ResourceLoader,
   formatDate,
   formatMoney,
   formatRelativeDays,
   formatTimeRange,
+  partySections,
   torontoToday,
 } from '@giddy/core';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -80,6 +83,7 @@ const categoryArt: Record<string, { emoji: string; pop: PopColour }> = {
     PartyHeroComponent,
     SkeletonComponent,
     StatComponent,
+    TabNavComponent,
     TallyComponent,
     TaskComponent,
     GiddyDatePipe,
@@ -131,8 +135,13 @@ export class PartyOverviewPage {
         this.notices.reload();
       });
     });
+    const live = inject(LiveUpdates);
+    effect(() => {
+      if (live.version() > 0) untracked(() => this.overview.reload());
+    });
   }
 
+  protected readonly sections = computed(() => partySections(this.partyId()));
   protected readonly party = computed(() => this.overview.value() ?? null);
   protected readonly isDraft = computed(() => {
     const party = this.party();

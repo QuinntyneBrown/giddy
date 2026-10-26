@@ -1,0 +1,222 @@
+@switch (rsvp.status()) {
+  @case ('error') {
+    @if (rsvp.problem()?.status === 404) {
+      <section
+        giddy-empty-state
+        class="card section rsvp"
+        heading="This link no longer works"
+        text="Ask the family who invited you to send it again."
+      ></section>
+    } @else {
+      <section
+        giddy-empty-state
+        class="card section rsvp"
+        tone="error"
+        heading="We couldn’t load your invitation"
+        text="Try again in a moment."
+        [referenceCode]="rsvp.problem()?.referenceCode ?? null"
+      >
+        <button giddy-button variant="primary" type="button" (click)="rsvp.reload()">
+          <svg giddy-icon="refresh"></svg>Try again
+        </button>
+      </section>
+    }
+  }
+  @case ('ready') {
+    @let invite = rsvp.value()!;
+    <div class="rsvp stack">
+      <p class="text-caption rsvp__for">Private invitation for {{ invite.guest.familyName }}</p>
+      <div
+        giddy-invite
+        [level]="1"
+        [design]="invite.invitation.design"
+        [headline]="invite.invitation.headline"
+        [when]="when()"
+        [place]="invite.invitation.details.place"
+        [message]="invite.invitation.message"
+        [replyBy]="'Please reply by ' + formatDate(invite.invitation.rsvpBy)"
+      ></div>
+
+      @if (confirmed(); as done) {
+        <section class="card stack rsvp__done" aria-labelledby="rsvp-done-title">
+          <svg
+            giddy-mascot
+            [mood]="done.guest.rsvp === 'coming' ? 'party' : 'happy'"
+            size="lg"
+          ></svg>
+          <h2 id="rsvp-done-title">
+            {{
+              done.guest.rsvp === 'coming'
+                ? 'Yay! ' + done.guest.childFirstName + ' is coming'
+                : 'Sorry ' + done.guest.childFirstName + ' can’t make it'
+            }}
+          </h2>
+          <p class="text-muted">{{ thanks() }}</p>
+          <div class="cluster rsvp__actions">
+            @if (done.guest.rsvp === 'coming') {
+              <a giddy-button variant="primary" [href]="calendarUrl()" download="party.ics"
+                ><svg giddy-icon="calendar"></svg>Add to my calendar</a
+              >
+            }
+            @if (done.canChange) {
+              <button giddy-button type="button" (click)="changeReply()">Change my reply</button>
+            }
+          </div>
+        </section>
+      } @else if (reply(); as answer) {
+        <section class="card stack" aria-labelledby="rsvp-title">
+          <h2 id="rsvp-title" class="rsvp__question">
+            Will {{ invite.guest.childFirstName }} come?
+          </h2>
+          @if (problem(); as message) {
+            <div giddy-alert tone="danger" heading="That didn’t go through">
+              <div>{{ message }}</div>
+            </div>
+          }
+          @if (summaryErrors().length) {
+            <giddy-error-summary [errors]="summaryErrors()" />
+          }
+          <fieldset
+            giddy-choice-group
+            hideLegend
+            [legend]="'Will ' + invite.guest.childFirstName + ' come?'"
+          >
+            <label giddy-choice-card>
+              <input
+                type="radio"
+                name="rsvp-coming"
+                [checked]="answer.coming"
+                (change)="update('coming', true)"
+              />
+              <span class="emoji" aria-hidden="true">🎉</span>
+              <span>Yes, {{ invite.guest.childFirstName }}’s coming!</span>
+            </label>
+            <label giddy-choice-card>
+              <input
+                type="radio"
+                name="rsvp-coming"
+                [checked]="!answer.coming"
+                (change)="update('coming', false)"
+              />
+              <span class="emoji" aria-hidden="true">😢</span>
+              <span>Sorry, can’t make it</span>
+            </label>
+          </fieldset>
+          @if (answer.coming && invite.questions.allergies) {
+            <giddy-form-field
+              label="Allergies or dietary needs"
+              [help]="'Only ' + host() + ' and the venue see this.'"
+            >
+              <input
+                giddyInput
+                type="text"
+                maxlength="200"
+                [value]="answer.allergies ?? ''"
+                (input)="update('allergies', $any($event.target).value)"
+              />
+            </giddy-form-field>
+          }
+          @if (answer.coming && invite.questions.parentStaying) {
+            <fieldset>
+              <legend>Will a parent stay for the party?</legend>
+              <label giddy-choice>
+                <input
+                  type="radio"
+                  name="rsvp-staying"
+                  [checked]="answer.parentStaying === true"
+                  (change)="update('parentStaying', true)"
+                />
+                Yes, I’ll stay
+              </label>
+              <label giddy-choice>
+                <input
+                  type="radio"
+                  name="rsvp-staying"
+                  [checked]="answer.parentStaying === false"
+                  (change)="update('parentStaying', false)"
+                />
+                No, drop-off
+              </label>
+            </fieldset>
+          }
+          @if (answer.coming && invite.questions.siblings) {
+            <giddy-form-field label="Siblings coming along" optional>
+              <input
+                giddyInput
+                type="number"
+                min="0"
+                max="10"
+                [value]="answer.siblings ?? ''"
+                (input)="
+                  update(
+                    'siblings',
+                    $any($event.target).value === '' ? null : +$any($event.target).value
+                  )
+                "
+              />
+            </giddy-form-field>
+          }
+          <div class="grid-2">
+            <giddy-form-field
+              label="Your name"
+              inputId="rsvp-parentName"
+              [error]="errors().parentName ?? null"
+            >
+              <input
+                giddyInput
+                type="text"
+                autocomplete="name"
+                [value]="answer.parentName"
+                (input)="update('parentName', $any($event.target).value)"
+              />
+            </giddy-form-field>
+            <giddy-form-field
+              label="Mobile"
+              optional
+              inputId="rsvp-mobile"
+              help="For a reminder text the day before"
+              [error]="errors().mobile ?? null"
+            >
+              <input
+                giddyInput
+                type="tel"
+                autocomplete="tel"
+                [value]="answer.mobile ?? ''"
+                (input)="update('mobile', $any($event.target).value)"
+              />
+            </giddy-form-field>
+          </div>
+          <giddy-form-field [label]="'Note for ' + host()" optional>
+            <textarea
+              giddyInput
+              rows="3"
+              maxlength="500"
+              [value]="answer.note ?? ''"
+              (input)="update('note', $any($event.target).value)"
+            ></textarea>
+          </giddy-form-field>
+          <button
+            giddy-button
+            variant="primary"
+            size="lg"
+            block
+            type="button"
+            [busy]="sending()"
+            [disabled]="sending()"
+            (click)="send()"
+          >
+            Send my reply
+          </button>
+        </section>
+      }
+    </div>
+  }
+  @default {
+    @if (rsvp.showSkeleton()) {
+      <div class="rsvp stack section" aria-busy="true">
+        <span class="visually-hidden">Loading your invitation…</span>
+        <giddy-skeleton shape="rect" height="18rem" />
+      </div>
+    }
+  }
+}

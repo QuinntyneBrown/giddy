@@ -15,6 +15,7 @@ export class PartyOverviewPage extends AppShellPage {
   readonly nothingBooked: Locator;
   readonly deleteButton: Locator;
   readonly bookingUpdates: Locator;
+  readonly sections: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -30,6 +31,7 @@ export class PartyOverviewPage extends AppShellPage {
     this.nothingBooked = page.getByRole('region', { name: 'Nothing booked yet' });
     this.deleteButton = page.getByRole('button', { name: 'Delete this party' });
     this.bookingUpdates = page.getByRole('region', { name: 'Booking updates' });
+    this.sections = page.getByRole('navigation', { name: 'Party sections' });
   }
 
   async openParty(id: string): Promise<void> {

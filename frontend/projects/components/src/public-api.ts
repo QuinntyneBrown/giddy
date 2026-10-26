@@ -77,3 +77,6 @@ export * from './lib/table/table-wrap';
 export * from './lib/tile/tile';
 export * from './lib/toast/toast';
 export * from './lib/toast/toast-region';
+export * from './lib/toast/toast-tone';
+export * from './lib/invite/invite';
+export * from './lib/invite/invite-design';

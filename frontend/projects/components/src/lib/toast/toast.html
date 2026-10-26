@@ -1,8 +1,14 @@
-<svg [giddy-icon]="icon()"></svg>
+<svg [giddy-icon]="shownIcon()"></svg>
 <div class="toast__body">
   <div class="toast__title">{{ heading() }}</div>
   @if (text(); as message) {
     <div class="toast__text">{{ message }}</div>
   }
+  <ng-content select="[giddyToastAction]" />
 </div>
 <ng-content />
+@if (dismissible()) {
+  <button class="close" type="button" aria-label="Dismiss" (click)="dismissed.emit()">
+    <svg giddy-icon="close"></svg>
+  </button>
+}

@@ -1,0 +1,22 @@
+.rsvp {
+  max-width: 36rem;
+  margin-inline: auto;
+  margin-block: var(--space-6);
+}
+
+.rsvp__for {
+  text-align: right;
+}
+
+.rsvp__question {
+  font: var(--text-h3);
+}
+
+.rsvp__done {
+  align-items: center;
+  text-align: center;
+}
+
+.rsvp__actions {
+  justify-content: center;
+}

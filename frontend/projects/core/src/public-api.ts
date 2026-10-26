@@ -8,3 +8,6 @@ export * from './lib/resource/resource-loader';
 export * from './lib/resource/resource-status';
 export * from './lib/session/session.store';
 export * from './lib/connection/connection-status';
+export * from './lib/localisation/join-names';
+export * from './lib/party/party-sections';
+export * from './lib/live/live-updates';

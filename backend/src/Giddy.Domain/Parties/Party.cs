@@ -7,7 +7,8 @@ public sealed class Party
 {
     public const int NameMaxLength = 60;
 
-    public const string AllergyListTask = "Share the allergy list";
+    /// <summary>The generated checklist's task; booking a venue adds it when the plan has none.</summary>
+    public const string AllergyListTask = "Share the allergy list with the venue";
 
     private readonly List<PartyMember> members = [];
 
@@ -64,6 +65,12 @@ public sealed class Party
     public List<BookingToDo> BookingsToDo { get; private set; } = [];
 
     public List<ChecklistTask> Checklist { get; private set; } = [];
+
+    /// <summary>When the allergy list last went to the venue.</summary>
+    public Instant? AllergyListSharedAt { get; private set; }
+
+    /// <summary>A child whose allergy arrived after the list was shared, so the venue needs an update.</summary>
+    public string? AllergyUpdateFor { get; private set; }
 
     public static Party Plan(Guid id, string name, LocalDate date, LocalTime startsAt, LocalTime endsAt, Guid ownerId)
     {
@@ -147,4 +154,19 @@ public sealed class Party
         BookingsToDo = BookingsToDo
             .Select(b => b.Category == "Venue" ? b with { Status = BookingStatus.ToBook, Paid = refunded ? 0 : b.Paid } : b)
             .ToList();
+
+    public void MarkAllergyListShared(Instant now)
+    {
+        AllergyListSharedAt = now;
+        AllergyUpdateFor = null;
+        Checklist = Checklist.Select(t => t.Title == AllergyListTask ? t with { Done = true } : t).ToList();
+    }
+
+    public void AllergyArrivedAfterSharing(string childFirstName)
+    {
+        if (AllergyListSharedAt is not null)
+        {
+            AllergyUpdateFor = childFirstName;
+        }
+    }
 }

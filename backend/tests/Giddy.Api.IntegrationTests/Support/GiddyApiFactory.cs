@@ -27,11 +27,15 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
     /// <summary>Starts at 4:00 pm in Toronto on Sun 25 Oct 2026.</summary>
     public FakeClock Clock { get; } = new(Instant.FromUtc(2026, 10, 25, 20, 0));
 
+    public const string EmailEventsSecret = "test-email-events-secret";
+
     public ScriptedPlanningModel Model { get; } = new();
 
     public FakePaymentGateway Payments { get; } = new();
 
     public FakeEmailSender Email { get; } = new();
+
+    public FakeSmsSender Sms { get; } = new();
 
     public FakeVenuePartner Partner => partner ??= new FakeVenuePartner(Clock);
 
@@ -41,6 +45,7 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Giddy", "Server=unused;Database=unused");
+        builder.UseSetting("Giddy:EmailEventsSecret", EmailEventsSecret);
         if (Environment.GetEnvironmentVariable("GIDDY_TEST_LOG") is { } logFile)
         {
             builder.ConfigureLogging(logging => logging.AddProvider(new FileLoggerProvider(logFile)));
@@ -64,6 +69,8 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
             services.AddSingleton<IVenuePartner>(_ => Partner);
             services.RemoveAll<IEmailSender>();
             services.AddSingleton<IEmailSender>(Email);
+            services.RemoveAll<ISmsSender>();
+            services.AddSingleton<ISmsSender>(Sms);
 
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null);

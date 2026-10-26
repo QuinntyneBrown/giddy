@@ -23,16 +23,23 @@ export class FormFieldComponent {
   readonly help = input<string | null>(null);
   readonly error = input<string | null>(null);
   readonly optional = input(false, { transform: booleanAttribute });
+  /** A character count such as "104 / 280", shown under the control. */
+  readonly counter = input<string | null>(null);
   /** The control's id, for links from an error summary; generated when omitted. */
   readonly inputId = input<string | null>(null);
   private readonly generatedId = `giddy-field-${nextId++}`;
   readonly controlId = computed(() => this.inputId() ?? this.generatedId);
   protected readonly helpId = computed(() => `${this.controlId()}-help`);
   protected readonly errorId = computed(() => `${this.controlId()}-error`);
+  protected readonly counterId = computed(() => `${this.controlId()}-counter`);
 
   readonly describedBy = computed(
     () =>
-      [this.error() ? this.errorId() : null, this.help() ? this.helpId() : null]
+      [
+        this.error() ? this.errorId() : null,
+        this.help() ? this.helpId() : null,
+        this.counter() ? this.counterId() : null,
+      ]
         .filter(Boolean)
         .join(' ') || null,
   );

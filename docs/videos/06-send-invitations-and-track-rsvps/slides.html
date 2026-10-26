@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 06 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="06" data-video-title="Send invitations and track RSVPs" data-parts="Introduction|Promises|Send|Checks|Reply|Live|Reminders|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 06</div>
+  <h1>Send invitations and track RSVPs</h1>
+  <p class="lead">Private links, account-free replies, news as it happens</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Every family gets a private link of their own">
+  <h2>What invitations promise</h2>
+  <div class="cols">
+    <ul>
+      <li>A private link per family, by email and text</li>
+      <li>No account needed to reply</li>
+      <li>The reply page shows only that family's reply</li>
+      <li>The host hears within seconds</li>
+    </ul>
+    <img class="shot" alt="The guest list with replies, counts and the allergy list" src="shots/desktop-guests.png">
+  </div>
+</section>
+
+<section id="send" data-part="2" data-cue="Here is Amara on the Invites tab." data-clip="clips/invite-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Draft, preview, test, send</h3><p>Giddy's draft from the party; counters for 60 and 280 characters; a test to yourself; the automatic reminder date.</p></div>
+</section>
+
+<section id="checks" data-part="3" data-cue="Two things stop a send.">
+  <h2>Before it sends</h2>
+  <img class="shot" alt="Verify your email first, with a link to verify" src="shots/desktop-unverified.png">
+</section>
+
+<section id="reply" data-part="4" data-cue="On a phone, Aisha's mum opens her private link." data-clip="clips/rsvp-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Reply without an account</h3><p>Pre-filled with what Giddy knows; the allergy is repeated back; a calendar file and Change my reply.</p></div>
+</section>
+
+<section id="not-working" data-part="4" data-cue="A link that no longer works says so">
+  <h2>A link that no longer works</h2>
+  <div class="cols">
+    <img class="shot phone" alt="This link no longer works" src="shots/phone-link-not-working.png">
+    <div class="card"><h3>Nothing leaks</h3><p>Unknown, replaced or deleted-party links answer 404 with no party details.</p></div>
+  </div>
+</section>
+
+<section id="live" data-part="5" data-cue="Back on the laptop, Amara has the guest list open." data-clip="clips/live-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Live updates</h3><p>Polled every three seconds; counts refresh; a new allergy offers to share the list with the venue.</p></div>
+</section>
+
+<section id="bounced" data-part="5" data-cue="A bounced invitation shows a danger toast">
+  <h2>A bounce stays until fixed</h2>
+  <img class="shot" alt="The invitation to the Chen family bounced, with Fix email" src="shots/desktop-bounced.png">
+</section>
+
+<section id="reminders" data-part="6" data-cue="To nudge families who haven't replied" data-clip="clips/reminders-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Reminders</h3><p>A selection bar with names; info, then success; families who can't be reached are named and stay on screen.</p></div>
+</section>
+
+<section id="testing" data-part="7" data-cue="The API tests cover the guest list">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 173 tests</h3><p>Guests, the draft, test send, channels, verified email, private links, replies, calendar, live updates, reminders, bounces, allergy list.</p></div>
+    <div class="card"><h3>Browser · 161 tests</h3><p>The same flows against the fake API at 360 and 1280 px, with axe on every page. Recordings use the same fake.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="8" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>A private link per family, no account</li><li>Families see only their own reply</li><li>Replies show within seconds</li><li>Reminders skip the last 48 hours</li></ul>
+  <p class="muted">Next: build the guest list</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

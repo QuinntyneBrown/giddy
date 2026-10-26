@@ -25,7 +25,11 @@ public sealed class AntiforgeryValidationMiddleware(RequestDelegate next, IAntif
         await next(context);
     }
 
+    // RSVP links carry their credential in the path and the email webhook a shared secret header;
+    // neither uses the session cookie, so cross-site request forgery does not apply to them.
     private static bool IsStateChanging(HttpRequest request) =>
         request.Path.StartsWithSegments("/api")
+        && !request.Path.StartsWithSegments("/api/rsvp")
+        && !request.Path.StartsWithSegments("/api/email-events")
         && !(HttpMethods.IsGet(request.Method) || HttpMethods.IsHead(request.Method) || HttpMethods.IsOptions(request.Method));
 }

@@ -8,4 +8,6 @@ public interface ICurrentParent
     string Name { get; }
 
     string Email { get; }
+
+    bool EmailVerified { get; }
 }

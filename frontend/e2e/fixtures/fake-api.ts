@@ -1,5 +1,6 @@
 import { Page, Request, Route } from '@playwright/test';
 import { FakeBookings } from './fake-bookings';
+import { FakeGuests } from './fake-guests';
 import { FakeParties } from './fake-parties';
 import { FakePlanner } from './fake-planner';
 import { FakeVenues } from './fake-venues';
@@ -34,6 +35,7 @@ export class FakeApi {
   readonly partyStore = new FakeParties();
   readonly venueStore = new FakeVenues();
   readonly bookingStore = new FakeBookings(() => this.venueStore.venues);
+  readonly guestStore = new FakeGuests(() => this.session);
 
   constructor() {
     this.registerDefaults();
@@ -60,6 +62,7 @@ export class FakeApi {
     this.venueStore.liveBooking = (partyId, venueId) =>
       this.bookingStore.liveBooking(partyId, venueId);
     this.bookingStore.register((method, path, handler) => this.on(method, path, handler));
+    this.guestStore.register((method, path, handler) => this.on(method, path, handler));
     this.partyStore.register(
       (method, path, handler) => this.on(method, path, handler),
       (partyId) => this.planner.startFor(partyId),
@@ -85,7 +88,11 @@ export class FakeApi {
       return;
     }
 
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
+    // Like the API, private RSVP links are exempt: they carry their credential in the path.
+    if (
+      !['GET', 'HEAD', 'OPTIONS'].includes(request.method()) &&
+      !url.pathname.startsWith('/api/rsvp/')
+    ) {
       const token = await request.headerValue('x-xsrf-token');
       if (token !== xsrfToken) {
         await route.fulfill({ status: 400, json: problem(400, 'Missing anti-forgery token.') });

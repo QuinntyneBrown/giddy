@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ConnectionStatus, SessionStore } from '@giddy/core';
+import { LiveRsvpToasts } from '@giddy/guests';
 import { ThemeService } from '../../theme/theme.service';
 import {
   AlertComponent,
@@ -26,6 +27,7 @@ import {
     ButtonComponent,
     IconComponent,
     FooterComponent,
+    LiveRsvpToasts,
     SidebarNavComponent,
     SkipLinkComponent,
     TopBarComponent,

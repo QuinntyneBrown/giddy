@@ -24,6 +24,11 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`DeliveryStatusHandler`** — Consumes provider bounces and failures; raises the danger notification.
 
 
+**As built**
+
+- `POST /api/parties/{id}/reminders` with `guestIds` answers `{ reminded, skipped, undeliverable }`: families who replied, were not invited yet, or were reminded in the last 48 hours are skipped with a reason; families with no working email and no mobile are named as undeliverable. Reminders repeat the family's private link by email and text.
+- The guest list shows a selection bar with the count, names, "Send reminder (n)" and Clear; an info toast while sending, a success toast with "View guests", and a persistent danger toast with "Fix details" for families who can't be reached.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

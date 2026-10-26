@@ -14,6 +14,7 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
         builder.Property(p => p.Name).HasMaxLength(Party.NameMaxLength).IsRequired();
         builder.Property(p => p.ChildName).HasMaxLength(40);
         builder.Property(p => p.Theme).HasMaxLength(80);
+        builder.Property(p => p.AllergyUpdateFor).HasMaxLength(40);
         builder.PrimitiveCollection(p => p.Allergies);
         builder.OwnsOne(p => p.Area, area =>
         {

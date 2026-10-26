@@ -1,0 +1,35 @@
+<giddy-toast-region>
+  @for (toast of toasts(); track toast.key) {
+    <giddy-toast
+      [heading]="toast.heading"
+      [text]="toast.text"
+      [tone]="toast.tone"
+      [dismissible]="toast.persistent"
+      (dismissed)="dismiss(toast.key)"
+    >
+      <ng-container ngProjectAs="[giddyToastAction]">
+        @if (toast.update?.action; as action) {
+          @if (action.kind === 'share-allergies') {
+            <button
+              class="toast__action"
+              type="button"
+              [disabled]="sharing() === toast.key"
+              (click)="share(toast)"
+            >
+              {{ action.label }}
+            </button>
+          } @else {
+            <a
+              class="toast__action"
+              [routerLink]="guestsLink(toast.update!)"
+              [fragment]="
+                action.kind === 'fix-email' ? 'guest-' + toast.update!.guestId : undefined
+              "
+              >{{ action.label }}</a
+            >
+          }
+        }
+      </ng-container>
+    </giddy-toast>
+  }
+</giddy-toast-region>

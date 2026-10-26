@@ -1,0 +1,172 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Guests</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (list.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load the guest list"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="list.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="list.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('empty') {
+    <section
+      giddy-empty-state
+      class="card section"
+      heading="No guests yet"
+      text="Families you add appear here with their replies and allergies."
+    ></section>
+  }
+  @case ('ready') {
+    @let guestList = list.value()!;
+    <div class="guests__summary section">
+      <giddy-tally [items]="tally()" />
+      @if (guestList.allergyList.length) {
+        <section giddy-card heading="Allergy list" class="guests__allergies">
+          <p class="text-sm">{{ allergyText() }}</p>
+          @if (canPlan() && party.value()?.venueName; as venue) {
+            <button
+              giddy-button
+              size="sm"
+              type="button"
+              [busy]="sharing()"
+              [disabled]="sharing()"
+              (click)="shareAllergyList()"
+            >
+              <svg giddy-icon="send"></svg>Send to {{ venue }}
+            </button>
+          }
+        </section>
+      }
+    </div>
+    <giddy-table-wrap class="section">
+      <table class="table">
+        <caption class="visually-hidden">
+          Guest list
+        </caption>
+        <thead>
+          <tr>
+            @if (canPlan()) {
+              <th scope="col"><span class="visually-hidden">Select</span></th>
+            }
+            <th scope="col">Child</th>
+            <th scope="col">RSVP</th>
+            <th scope="col">Allergies</th>
+            <th scope="col">Parent</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (guest of guestList.guests; track guest.id) {
+            <tr [id]="'guest-' + guest.id" [class.guests__row--selected]="isSelected(guest)">
+              @if (canPlan()) {
+                <td class="guests__select">
+                  <label giddy-choice>
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected(guest)"
+                      (change)="toggle(guest, $any($event.target).checked)"
+                    />
+                    <span class="visually-hidden">Select {{ guest.childName }}</span>
+                  </label>
+                </td>
+              }
+              <td>
+                <span class="guests__child">
+                  <giddy-avatar size="sm" aria-hidden="true" [name]="guest.childName" />
+                  <strong>{{ guest.childName }}</strong>
+                </span>
+              </td>
+              <td>
+                <giddy-badge [tone]="badge(guest).tone">{{ badge(guest).label }}</giddy-badge>
+              </td>
+              <td>
+                @if (guest.allergies) {
+                  <giddy-allergy-tag>{{ guest.allergies }}</giddy-allergy-tag>
+                } @else {
+                  <span class="text-muted">None</span>
+                }
+              </td>
+              <td>{{ guest.parentName }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </giddy-table-wrap>
+  }
+  @default {
+    @if (list.showSkeleton()) {
+      <div class="stack section" aria-busy="true">
+        <span class="visually-hidden">Loading the guest list…</span>
+        <giddy-skeleton shape="rect" height="8rem" />
+        <giddy-skeleton shape="rect" height="16rem" />
+      </div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @for (toast of toasts(); track toast.id) {
+    <giddy-toast
+      [heading]="toast.heading"
+      [text]="toast.text"
+      [tone]="toast.tone"
+      [dismissible]="toast.persistent"
+      (dismissed)="dismiss(toast.id)"
+    >
+      @if (toast.action; as action) {
+        <a
+          giddyToastAction
+          class="toast__action"
+          [routerLink]="action.link"
+          [fragment]="action.fragment"
+          >{{ action.label }}</a
+        >
+      }
+    </giddy-toast>
+  }
+  @if (selected().length) {
+    <giddy-toast
+      [heading]="
+        selected().length + (selected().length === 1 ? ' guest selected' : ' guests selected')
+      "
+      [text]="selectedNames()"
+    >
+      <button
+        giddy-button
+        variant="primary"
+        size="sm"
+        type="button"
+        [busy]="reminding()"
+        [disabled]="reminding()"
+        (click)="sendReminders()"
+      >
+        <svg giddy-icon="send"></svg>Send reminder ({{ selected().length }})
+      </button>
+      <button
+        giddy-button
+        variant="ghost"
+        size="sm"
+        iconOnly
+        type="button"
+        aria-label="Clear selection"
+        class="guests__clear"
+        (click)="clearSelection()"
+      >
+        <svg giddy-icon="close"></svg>
+      </button>
+    </giddy-toast>
+  }
+</giddy-toast-region>

@@ -175,3 +175,18 @@ for (const width of [360, 1280]) {
     expect(await overview.seriousAccessibilityViolations()).toEqual([]);
   });
 }
+
+test('the overview links to the party’s guests and invitations', async ({ page }) => {
+  const overview = new PartyOverviewPage(page);
+  await overview.openParty('3d9c1b7e-2f4a-4e8d-b6c5-a1f2e3d4c5b6');
+
+  await expect(overview.sections.getByRole('link', { name: 'Overview' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(overview.sections.getByRole('link', { name: 'Guests' })).toHaveAttribute(
+    'href',
+    '/parties/3d9c1b7e-2f4a-4e8d-b6c5-a1f2e3d4c5b6/guests',
+  );
+  await expect(overview.sections.getByRole('link', { name: 'Invites' })).toBeVisible();
+});

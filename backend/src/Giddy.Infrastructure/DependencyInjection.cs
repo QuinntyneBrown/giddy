@@ -28,6 +28,8 @@ public static class DependencyInjection
         services.AddSingleton<IVenuePartner, CatalogueVenuePartner>();
         services.AddSingleton<IPaymentGateway, SandboxPaymentGateway>();
         services.AddSingleton<IEmailSender, LoggingEmailSender>();
+        services.AddSingleton<ISmsSender, LoggingSmsSender>();
+        services.AddSingleton<IWebLinks, ConfiguredWebLinks>();
         return services;
     }
 

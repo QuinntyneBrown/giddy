@@ -3,4 +3,6 @@ export interface Session {
   parentId: string;
   name: string;
   email: string;
+  /** Sending invitations needs a verified email. */
+  emailVerified: boolean;
 }

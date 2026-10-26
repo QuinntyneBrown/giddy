@@ -26,6 +26,13 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`RsvpTokenService`** — Generates and hashes 128-bit tokens.
 
 
+**As built**
+
+- `GET/PUT /api/parties/{id}/invitation` show Giddy's draft (design from the theme, "{Child} is turning {age}!", RSVP-by eight days before) until a planner saves changes; `POST .../invitation/test` emails only the signed-in parent; `POST .../invitation/send` invites every "Not sent" family and answers `{ sent, automaticReminderOn }` (three days before the RSVP-by date).
+- Sending needs a verified email: otherwise `403` with `code: "email-unverified"`, and the page links to verify. Viewers can see the invitation but not change or send it.
+- `RsvpTokens` issues 128-bit tokens; the database keeps their SHA-256 hash and a data-protection-encrypted copy, so reminders can repeat the same link. Email and text go through `IEmailSender` and `ISmsSender` (logging senders until providers are connected); links use `Giddy:WebBaseUrl`.
+- Sending the automatic reminder on its date arrives with scheduled notifications (journey 14); the date is shown now.
+
 **Open points**
 
 - Invitation designs beyond the four launch designs `<TO SUPPLY>`

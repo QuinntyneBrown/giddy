@@ -3,6 +3,7 @@ export interface SeedSession {
   parentId: string;
   name: string;
   email: string;
+  emailVerified: boolean;
 }
 
 export interface SeedParty {
@@ -19,6 +20,7 @@ export const amara: SeedSession = {
   parentId: '6f1c2a52-8a51-4a5e-9d0e-2f8f0a1b3c01',
   name: 'Amara Okafor',
   email: 'amara.okafor@example.com',
+  emailVerified: true,
 };
 
 export const dinoParty: SeedParty = {

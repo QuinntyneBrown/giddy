@@ -5,6 +5,9 @@
   }
 </label>
 <ng-content />
+@if (counter(); as count) {
+  <span class="field__counter" [id]="counterId()">{{ count }}</span>
+}
 @if (error(); as text) {
   <span class="field__error" [id]="errorId()">{{ text }}</span>
 }

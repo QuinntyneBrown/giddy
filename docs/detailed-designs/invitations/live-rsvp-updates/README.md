@@ -23,6 +23,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`InvitationEventsHandler`** — Consumes opens and bounces from the email provider.
 
 
+**As built**
+
+- Instead of SignalR, the web app polls `GET /api/live-updates?after={cursor}` every three seconds while it is open (replies show within five seconds). Updates come from `PartyEvent` rows written when a family opens the link (once), replies, changes a reply, adds an allergy, or an invitation bounces. Only members of a party receive its updates.
+- `POST /api/parties/{id}/allergy-list/share` sends the booked venue each child's first name and allergy through `IVenuePartner`, ticks "Share the allergy list with the venue", and clears the Home nudge to send an update that appears when an allergy arrives after sharing.
+- Bounces arrive at `POST /api/email-events` with the shared secret `Giddy:EmailEventsSecret` in `X-Giddy-Webhook-Secret`; the message's reference is the guest's id.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

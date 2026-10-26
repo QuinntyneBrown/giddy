@@ -65,7 +65,7 @@ public sealed class BookVenueTests : IAsyncLifetime
         Assert.Equal(100m, venue.GetProperty("paid").GetDecimal());
 
         var party = await factory.QueryAsync(db => db.Parties.SingleAsync(p => p.Id == dinoParty.Id, Cancel));
-        Assert.Contains(party.Checklist, t => t.Title == "Share the allergy list");
+        Assert.Single(party.Checklist, t => t.Title.StartsWith("Share the allergy list"));
 
         var email = Assert.Single(factory.Email.Sent);
         Assert.Equal(TestParent.Amara.Email, email.To);
