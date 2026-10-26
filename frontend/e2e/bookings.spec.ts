@@ -122,3 +122,129 @@ test.describe('booking a venue', () => {
     expect(await venue.seriousAccessibilityViolations()).toEqual([]);
   });
 });
+
+test.describe('when booking does not go through', () => {
+  test('offers the other free slots when the slot was just taken', async ({ page, fakeApi }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    fakeApi.bookingStore.takenByOthers.add(`${dinoDenId}@13:00`);
+    await dialog.mobile.fill('416-555-0188');
+
+    await dialog.pay.click();
+
+    await expect(dialog.dialog).toContainText('1:00 pm was just booked by someone else');
+    await expect(dialog.dialog).toContainText('Nothing was charged.');
+    await expect(dialog.alternatives).toHaveText([/4:00–6:30 pm/]);
+    await dialog.bookAlternative('4:00 pm');
+    await expect(dialog.summary).toContainText('4:00–6:30 pm');
+    await expect(dialog.mobile).toHaveValue('416-555-0188');
+    await dialog.pay.click();
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+    expect(fakeApi.bookingStore.requests.map((r) => r.start)).toEqual(['13:00', '16:00']);
+  });
+
+  test('says nothing was charged when the venue does not confirm', async ({ page, fakeApi }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    fakeApi.bookingStore.venueTimesOut = true;
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    await dialog.mobile.fill('416-555-0188');
+
+    await dialog.pay.click();
+
+    await expect(dialog.problem).toContainText('That didn’t go through');
+    await expect(dialog.problem).toContainText(
+      'Dino Den Play Café didn’t confirm in time, so nothing was charged.',
+    );
+    await expect(dialog.pay).toHaveText('Try again');
+    fakeApi.bookingStore.venueTimesOut = false;
+    await dialog.pay.click();
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+  });
+
+  test('lets the parent try another card when one is declined', async ({ page, fakeApi }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    await dialog.mobile.fill('416-555-0188');
+    await dialog.addCard.check();
+    await dialog.testCard.selectOption({ label: 'Visa ending 0002 (declined)' });
+
+    await dialog.pay.click();
+
+    await expect(dialog.problem).toContainText('That card didn’t go through');
+    await expect(dialog.problem).toContainText(
+      'Visa ending 0002 was declined, so nothing was charged. Try another card.',
+    );
+    await dialog.savedCard('Visa ending 4242').check();
+    await dialog.pay.click();
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+  });
+});
+
+test.describe('paying with a new card', () => {
+  test('sends only the provider’s token and can save the card', async ({ page, fakeApi }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    await dialog.mobile.fill('416-555-0188');
+
+    await dialog.addCard.check();
+    await expect(dialog.testCard).toBeVisible();
+    await expect(dialog.saveCard).toBeChecked();
+    await dialog.testCard.selectOption({ label: 'Mastercard ending 4444 (approved)' });
+    await dialog.pay.click();
+
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+    expect(fakeApi.bookingStore.requests[0].payment).toEqual({
+      token: 'tok_mastercard',
+      savedCardId: null,
+      saveCard: true,
+    });
+  });
+
+  test('holds the slot while the bank checks it is the parent', async ({ page }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    await dialog.mobile.fill('416-555-0188');
+    await dialog.addCard.check();
+    await dialog.testCard.selectOption({ label: 'Visa ending 3184 (asks your bank to check)' });
+
+    await dialog.pay.click();
+
+    await expect(dialog.dialog).toContainText('Your bank wants to check it’s you');
+    await expect(dialog.dialog).toContainText(
+      'Dino Den Play Café is holding 1:00 pm for you until Tue 27 Oct, 4:00 pm while Visa ending 3184 is verified.',
+    );
+    await dialog.approve.click();
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+  });
+
+  test('can finish the bank check later from the venue page', async ({ page }) => {
+    const venue = new VenueDetailPage(page);
+    const dialog = new BookVenueDialog(page);
+    await venue.openVenue(dinoDenId, forDino);
+    await venue.book();
+    await dialog.mobile.fill('416-555-0188');
+    await dialog.addCard.check();
+    await dialog.testCard.selectOption({ label: 'Visa ending 3184 (asks your bank to check)' });
+    await dialog.pay.click();
+
+    await dialog.finishLater.click();
+
+    await expect(dialog.dialog).toBeHidden();
+    await expect(venue.yourBooking()).toContainText(
+      'Dino Den Play Café is holding 1:00 pm for you',
+    );
+    await venue.finishBooking();
+    await dialog.approve.click();
+    await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
+  });
+});
