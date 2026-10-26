@@ -28,3 +28,7 @@
 .detail__alternative .list__meta {
   display: block;
 }
+
+.detail__cancel {
+  color: var(--color-danger-fg);
+}

@@ -23,10 +23,13 @@ import {
   GalleryComponent,
   GiddyDialog,
   IconComponent,
+  IconName,
   RatingComponent,
   SkeletonComponent,
   SlotOption,
   SlotPickerComponent,
+  ToastComponent,
+  ToastRegionComponent,
 } from '@giddy/components';
 import {
   ResourceLoader,
@@ -39,6 +42,9 @@ import {
 import { catchError, firstValueFrom, forkJoin, of } from 'rxjs';
 import { BookVenueData } from '../book-venue-dialog/book-venue-data';
 import { BookVenueDialog } from '../book-venue-dialog/book-venue-dialog';
+import { CancelBookingData } from '../cancel-booking-dialog/cancel-booking-data';
+import { CancelBookingDialog } from '../cancel-booking-dialog/cancel-booking-dialog';
+import { CancelBookingOutcome } from '../cancel-booking-dialog/cancel-booking-outcome';
 import { pickParty } from '../party-context';
 import { duration } from '../venue-format';
 
@@ -59,6 +65,8 @@ import { duration } from '../venue-format';
     RatingComponent,
     SkeletonComponent,
     SlotPickerComponent,
+    ToastComponent,
+    ToastRegionComponent,
   ],
   templateUrl: './venue-detail-page.html',
   styleUrl: './venue-detail-page.css',
@@ -98,6 +106,7 @@ export class VenueDetailPage {
     return !!party && party.role !== 'viewer' && !party.locked;
   });
   protected readonly opening = signal(false);
+  protected readonly toast = signal<{ heading: string; text: string; icon: IconName } | null>(null);
   protected readonly selected = signal<string | null>(null);
   protected readonly favourite = signal(false);
   protected readonly waitlisted = signal(false);
@@ -210,6 +219,40 @@ export class VenueDetailPage {
     } finally {
       this.opening.set(false);
     }
+  }
+
+  protected cancelBooking(booking: Booking): void {
+    const party = this.party();
+    if (!party) return;
+    this.toast.set(null);
+    const ref = this.dialog.open<CancelBookingOutcome, CancelBookingData, CancelBookingDialog>(
+      CancelBookingDialog,
+      { partyId: party.id, booking },
+      { autoFocus: '[data-initial-focus]' },
+    );
+    ref.closed.subscribe((outcome) => {
+      if (!outcome) return;
+      if (outcome === 'failed') {
+        this.toast.set({
+          heading: 'We couldn’t cancel the booking',
+          text: 'It’s still booked; try again in a moment.',
+          icon: 'alert',
+        });
+        return;
+      }
+      const deposit = formatMoney(outcome.amount);
+      const card = booking.card
+        ? `${booking.card.brand} ending ${booking.card.last4}`
+        : 'your card';
+      this.toast.set({
+        heading: 'Booking cancelled',
+        text: outcome.refunded
+          ? `The ${deposit} deposit is on its way back to ${card}.`
+          : `${booking.venueName} keeps the ${deposit} deposit.`,
+        icon: 'check-circle',
+      });
+      this.venue.reload();
+    });
   }
 
   protected async pickDate(date: string): Promise<void> {

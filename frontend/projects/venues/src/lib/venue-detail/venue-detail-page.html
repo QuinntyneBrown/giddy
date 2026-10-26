@@ -185,6 +185,18 @@
           @if (party(); as p) {
             <a giddy-button [routerLink]="['/parties', p.id]">Back to the plan</a>
           }
+          @if (booking.state === 'confirmed' && canPlan()) {
+            <button
+              giddy-button
+              variant="ghost"
+              size="sm"
+              type="button"
+              class="detail__cancel"
+              (click)="cancelBooking(booking)"
+            >
+              Cancel booking
+            </button>
+          }
         } @else {
           <h2 id="book-title" class="card__title">
             {{ party() ? 'Book for ' + party()!.name : 'Availability' }}
@@ -240,3 +252,9 @@
     }
   }
 }
+
+<giddy-toast-region>
+  @if (toast(); as message) {
+    <giddy-toast [heading]="message.heading" [text]="message.text" [icon]="message.icon" />
+  }
+</giddy-toast-region>

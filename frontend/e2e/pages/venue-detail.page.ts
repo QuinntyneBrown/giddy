@@ -46,6 +46,10 @@ export class VenueDetailPage extends AppShellPage {
     await this.bookingCard.getByRole('button', { name: 'Cancel booking' }).click();
   }
 
+  toast(): Locator {
+    return this.page.locator('giddy-toast');
+  }
+
   async finishBooking(): Promise<void> {
     await this.bookingCard.getByRole('button', { name: 'Finish booking' }).click();
   }

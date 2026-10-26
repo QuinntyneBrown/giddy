@@ -165,7 +165,7 @@ test.describe('when booking does not go through', () => {
     await expect(dialog.heading('You’re booked! 🎉')).toBeVisible();
   });
 
-  test('lets the parent try another card when one is declined', async ({ page, fakeApi }) => {
+  test('lets the parent try another card when one is declined', async ({ page }) => {
     const venue = new VenueDetailPage(page);
     const dialog = new BookVenueDialog(page);
     await venue.openVenue(dinoDenId, forDino);
