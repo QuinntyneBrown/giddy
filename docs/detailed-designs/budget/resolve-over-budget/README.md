@@ -22,6 +22,12 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`ApplySwapHandler`** — Replaces the item and cost line after confirmation.
 
 
+**As built**
+
+- `BudgetProjection` asks `SwapAdvisor` for swaps whenever the plan is over budget. For each item not yet booked it takes the cheapest cheaper catalogue item in the same category that is free on the party date, within its service radius of the party, and big enough for the guests (venues need a free slot); per-kid prices are left out. It returns the smallest single swap that is enough, otherwise the biggest savings until the total fits.
+- `POST /api/parties/{id}/budget/swaps` with the category and replacement id applies one swap after the parent confirms it in a dialog; the item goes back to To book and the updated budget is returned. A booked item answers 409.
+- The warning lists every swap with its saving, a Swap button for each, and Talk it through, which opens Ask Giddy.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).

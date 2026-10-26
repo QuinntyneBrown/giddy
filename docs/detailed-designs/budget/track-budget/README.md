@@ -27,6 +27,14 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`Money`** — Value object; CAD, two decimals, tax-inclusive.
 
 
+**As built**
+
+- The budget is a projection of the party, built when it is read: Giddy's plan items (`BookingsToDo`) take their status and amounts from quotes and bookings, so a quote shows as Quoted and a deposit as Deposit paid with no event handler and nothing for the parent to edit. The parent's own costs are `Expense` records stored with the party. The party's budget stays on the party; there is no separate `Budget` aggregate.
+- `GET /api/parties/{id}/budget` returns the budget, planned, paid, left, per kid (planned ÷ guests, rounded), whether it is over and by how much, totals per category, every line (plan items in category order, then the parent's costs) and, when over, Giddy's swaps. `POST/PUT/DELETE .../budget/lines` add, change and remove the parent's own costs. Amounts are positive with at most two decimals ("Enter an amount like 35 or 35.50").
+- Only the parent's own costs have Edit in the table; Giddy's items change through their vendors, quotes and bookings.
+- "Fill in from the plan" is `POST .../budget/estimate`: for a party with no costs, typical GTA costs (venue $300, entertainer $200, cake $80, food $7 and loot bags $4 per child). It answers 409 once a party has costs.
+- The library gained `giddy-legend`, `giddy-table-item` and a labelled variant of `giddy-stat` for the budget page.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
