@@ -24,7 +24,7 @@ public sealed class PartyAuthorizationBehavior<TRequest, TResponse>(IGiddyDbCont
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Party not found.");
 
-        if (request.RequiredAccess == PartyAccess.Plan && !role.CanPlan())
+        if (request.RequiredAccess is PartyAccess.Plan or PartyAccess.WrapUp && !role.CanPlan())
         {
             throw new ForbiddenException("Viewers cannot change this party.");
         }

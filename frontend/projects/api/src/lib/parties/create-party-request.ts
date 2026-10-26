@@ -11,4 +11,6 @@ export interface CreatePartyRequest {
   timeOfDay: TimeOfDay;
   budget: number;
   postalCode: string;
+  /** A plan saved from an earlier party, to start from. */
+  templateId?: string | null;
 }

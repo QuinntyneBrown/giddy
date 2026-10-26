@@ -1,0 +1,51 @@
+<giddy-dialog
+  [heading]="'Thank-you note to ' + data.note.childName"
+  [description]="description()"
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="Nothing was saved">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (error(); as message) {
+    <giddy-error-summary [errors]="[{ targetId: 'note-message', message }]" />
+  }
+  <form class="stack" novalidate (submit)="$event.preventDefault(); save()">
+    <giddy-form-field
+      optional
+      inputId="note-gift"
+      help="Giddy mentions it in the note."
+      [label]="'What ' + guestFirstName + ' gave'"
+    >
+      <input
+        giddyInput
+        type="text"
+        autocomplete="off"
+        data-initial-focus
+        [value]="gift()"
+        (input)="gift.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Note" inputId="note-message" [error]="error()">
+      <textarea
+        giddyInput
+        rows="5"
+        [value]="message()"
+        (input)="editMessage($any($event.target).value)"
+      ></textarea>
+    </giddy-form-field>
+  </form>
+  <button giddyDialogFooter giddy-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    Save note
+  </button>
+</giddy-dialog>

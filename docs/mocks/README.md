@@ -61,7 +61,7 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 | Terms & privacy (`legal`) | [✅](pages/legal/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | `L2-094` |
 | Home (`home`) | [✅](pages/home/default.html) | [✅](pages/home/loading.html) | [✅](pages/home/empty.html) | [✅](pages/home/error.html) |  |  |  |  | [✅](pages/home/partial.html) | [✅](pages/home/offline.html) |  |  |  |  |  |  |  |  |  |  |  | `L2-008`, `L2-046`, `L2-062`, `L2-063`, `L2-064` |
 | Ask Giddy (chat) (`planner-chat`) | [✅](pages/planner-chat/default.html) | [✅](pages/planner-chat/loading.html) | [✅](pages/planner-chat/empty.html) | [✅](pages/planner-chat/error.html) |  |  |  |  |  |  | [✅](pages/planner-chat/thinking.html) | [✅](pages/planner-chat/failed.html) |  |  |  |  |  |  |  |  |  | `L2-015`, `L2-016`, `L2-017`, `L2-019`, `L2-020`, `L2-021` |
-| New party (`new-party`) | [✅](pages/new-party/default.html) | ➖ | ➖ | [✅](pages/new-party/error.html) | [✅](pages/new-party/invalid.html) | [✅](pages/new-party/submitting.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | `L2-010` |
+| New party (`new-party`) | [✅](pages/new-party/default.html) | ➖ | ➖ | [✅](pages/new-party/error.html) | [✅](pages/new-party/invalid.html) | [✅](pages/new-party/submitting.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | `L2-010`; [from-template](pages/new-party/from-template.html) `L2-054` |
 | My parties (`parties`) | [✅](pages/parties/default.html) | [✅](pages/parties/loading.html) | [✅](pages/parties/empty.html) | [✅](pages/parties/error.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | `L2-011`, `L2-054` |
 | Party overview (`party-overview`) | [✅](pages/party-overview/default.html) | [✅](pages/party-overview/loading.html) | [✅](pages/party-overview/empty.html) | [✅](pages/party-overview/error.html) |  |  |  |  | [✅](pages/party-overview/partial.html) |  |  |  | [✅](pages/party-overview/locked.html) |  |  |  |  |  |  |  |  | `L2-009`, `L2-012`, `L2-013`, `L2-054` |
 | Themes (`themes`) | [✅](pages/themes/default.html) | [✅](pages/themes/loading.html) | ➖ | [✅](pages/themes/error.html) |  |  |  | [✅](pages/themes/no-results.html) |  |  |  |  |  | [✅](pages/themes/selected.html) |  |  |  |  |  |  |  | `L2-023`, `L2-024` |
@@ -97,6 +97,8 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 | Delete party (`delete-party`) | [✅](dialogs/delete-party/default.html) | [✅](dialogs/delete-party/busy.html) | [✅](dialogs/delete-party/invalid.html) | [✅](dialogs/delete-party/failed.html) |  | [✅](dialogs/delete-party/confirm.html) | `L2-014` |
 | Change email (`change-email`) | [✅](dialogs/change-email/default.html) |  | [✅](dialogs/change-email/invalid.html) |  |  |  | `L2-065` |
 | Delete account (`delete-account`) | [✅](dialogs/delete-account/default.html) |  | [✅](dialogs/delete-account/invalid.html) |  |  |  | `L2-067` |
+| Edit thank-you note (`edit-thank-you`) | [✅](dialogs/edit-thank-you/default.html) |  | [✅](dialogs/edit-thank-you/invalid.html) |  |  |  | `L2-052` |
+| Write a review (`write-review`) | [✅](dialogs/write-review/default.html) |  |  |  |  |  | `L2-053` |
 | Sign out (`sign-out`) | [✅](dialogs/sign-out/default.html) | [✅](dialogs/sign-out/busy.html) | ➖ |  |  |  | `L2-006` |
 | Session expired (`session-expired`) | [✅](dialogs/session-expired/default.html) | [✅](dialogs/session-expired/busy.html) | [✅](dialogs/session-expired/invalid.html) |  |  |  | `L2-006` |
 

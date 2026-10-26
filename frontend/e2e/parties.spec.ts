@@ -107,7 +107,7 @@ test.describe('Party overview', () => {
 
     await expect(overview.lockedAlert).toContainText('The plan is now read-only');
     await expect(overview.lockedAlert.getByRole('link', { name: 'Send thank-yous' })).toBeVisible();
-    await expect(overview.lockedAlert.getByRole('link', { name: 'Reuse this plan' })).toBeVisible();
+    await expect(overview.reusePlan).toBeVisible();
     await expect(overview.main.getByRole('link', { name: 'Ask Giddy' })).toHaveCount(0);
   });
 

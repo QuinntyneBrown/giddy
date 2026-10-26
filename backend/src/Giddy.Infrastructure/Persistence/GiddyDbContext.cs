@@ -74,6 +74,12 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
 
     public DbSet<Giddy.Domain.Privacy.DataExport> DataExports => Set<Giddy.Domain.Privacy.DataExport>();
 
+    public DbSet<Giddy.Domain.Wrapping.ThankYouNote> ThankYouNotes => Set<Giddy.Domain.Wrapping.ThankYouNote>();
+
+    public DbSet<Giddy.Domain.Wrapping.ProviderRating> ProviderRatings => Set<Giddy.Domain.Wrapping.ProviderRating>();
+
+    public DbSet<Giddy.Domain.Wrapping.PartyTemplate> PartyTemplates => Set<Giddy.Domain.Wrapping.PartyTemplate>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Instant>().HaveConversion<InstantConverter>();

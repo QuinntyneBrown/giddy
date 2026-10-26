@@ -53,7 +53,19 @@
           </div>
           <div class="alert__actions">
             <a [routerLink]="['/parties', party.id, 'wrap-up']">Send thank-yous</a>
-            <a routerLink="/parties/new">Reuse this plan</a>
+            @if (party.role !== 'viewer') {
+              <button
+                giddy-button
+                variant="link"
+                size="sm"
+                type="button"
+                [busy]="reusing()"
+                [disabled]="reusing()"
+                (click)="reusePlan(party.id)"
+              >
+                Reuse this plan
+              </button>
+            }
           </div>
         </div>
       }

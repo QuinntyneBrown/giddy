@@ -92,6 +92,9 @@ public sealed class PrivacyHandlers(
         db.PartyEvents.RemoveRange(await db.PartyEvents.Where(e => ownedIds.Contains(e.PartyId)).ToListAsync(cancellationToken));
         db.QuoteRequests.RemoveRange(await db.QuoteRequests.Where(q => ownedIds.Contains(q.PartyId)).ToListAsync(cancellationToken));
         db.PartyInvites.RemoveRange(await db.PartyInvites.Where(i => ownedIds.Contains(i.PartyId)).ToListAsync(cancellationToken));
+        db.ThankYouNotes.RemoveRange(await db.ThankYouNotes.Where(n => ownedIds.Contains(n.PartyId)).ToListAsync(cancellationToken));
+        db.ProviderRatings.RemoveRange(await db.ProviderRatings.Where(r => ownedIds.Contains(r.PartyId)).ToListAsync(cancellationToken));
+        db.PartyTemplates.RemoveRange(await db.PartyTemplates.Where(t => t.OwnerId == parentId).ToListAsync(cancellationToken));
         db.Parties.RemoveRange(owned);
         foreach (var party in await db.Parties.Where(p => p.Members.Any(m => m.ParentId == parentId)).ToListAsync(cancellationToken))
         {

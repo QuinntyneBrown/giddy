@@ -10,6 +10,7 @@ import {
 import {
   provideRouter,
   withComponentInputBinding,
+  withInMemoryScrolling,
   withNavigationErrorHandler,
 } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -25,6 +26,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
+      // A new page opens at its top (or at its #fragment); Back returns to where you were.
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
       withNavigationErrorHandler(navigationErrorRedirect),
     ),
     provideHttpClient(

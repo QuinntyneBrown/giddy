@@ -1,0 +1,220 @@
+<nav giddy-breadcrumb [items]="breadcrumb()"></nav>
+<div class="page-header">
+  <div>
+    <h1>Wrap-up</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+</div>
+<nav giddy-tab-nav aria-label="Party sections" [tabs]="sections()"></nav>
+
+@switch (wrapUp.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card section"
+      tone="error"
+      heading="We couldn’t load wrap-up"
+      text="Nothing was changed. Try again in a moment."
+      [referenceCode]="wrapUp.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="wrapUp.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+    </section>
+  }
+  @case ('ready') {
+    @if (wrapUp.value(); as data) {
+      @if (!data.open) {
+        <section
+          giddy-empty-state
+          class="card section"
+          heading="Wrap-up opens after the party"
+          [text]="opensText()"
+        ></section>
+      } @else {
+        <div class="split section">
+          <div class="stack stack--lg">
+            @if (problem(); as message) {
+              <div giddy-alert tone="danger" heading="Something went wrong">
+                <div>{{ message }}</div>
+              </div>
+            }
+            @if (sent() !== null) {
+              <div
+                giddy-alert
+                tone="success"
+                dismissible
+                [heading]="
+                  sent() === 1 ? '1 thank-you note sent' : sent() + ' thank-you notes sent'
+                "
+                (dismissed)="sent.set(null)"
+              >
+                <div>Each family gets your note by email.</div>
+              </div>
+            } @else if (toSend() && canWrapUp()) {
+              <div
+                giddy-alert
+                [heading]="'Giddy drafted ' + data.notes.length + ' thank-you notes'"
+              >
+                <div>
+                  Each one mentions the gift you logged. Check them, edit any, then send them all at
+                  once.
+                </div>
+              </div>
+            }
+            <section giddy-card heading="Thank-you notes" class="wrap-up__notes">
+              <p class="text-caption">{{ sentCount() }} of {{ data.notes.length }} sent</p>
+              @if (data.notes.length) {
+                <ul class="list" aria-label="Thank-you notes">
+                  @for (note of data.notes; track note.guestId; let i = $index) {
+                    <li
+                      giddy-person-item
+                      [name]="note.childName"
+                      [heading]="heading(note)"
+                      [pop]="pop(i)"
+                    >
+                      <span giddyPersonItemTrailing class="cluster wrap-up__note-status">
+                        @if (note.status === 'sent') {
+                          <giddy-badge tone="success">Sent</giddy-badge>
+                        } @else if (!note.canSend) {
+                          <giddy-badge>No email</giddy-badge>
+                        } @else {
+                          <giddy-badge>Draft</giddy-badge>
+                        }
+                        @if (note.status === 'draft' && canWrapUp()) {
+                          <button
+                            giddy-button
+                            variant="ghost"
+                            size="sm"
+                            type="button"
+                            [attr.aria-label]="'Edit the note to ' + note.childName"
+                            (click)="editNote(note)"
+                          >
+                            <svg giddy-icon="edit"></svg>Edit
+                          </button>
+                        }
+                      </span>
+                      <p class="list__meta">“{{ note.message }}”</p>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="text-sm">
+                  No guests said they were coming, so there are no thank-you notes to send.
+                </p>
+              }
+              @if (toSend() && canWrapUp()) {
+                <div class="cluster cluster--end">
+                  <button
+                    giddy-button
+                    variant="primary"
+                    type="button"
+                    [busy]="sending()"
+                    [disabled]="sending()"
+                    (click)="sendNotes()"
+                  >
+                    <svg giddy-icon="send"></svg>Send {{ toSend() }}
+                    {{ toSend() === 1 ? 'note' : 'notes' }}
+                  </button>
+                </div>
+              }
+            </section>
+            <section giddy-card heading="How was everyone?">
+              <p class="text-sm text-muted">Your ratings help other GTA parents.</p>
+              @if (data.providers.length) {
+                <div class="grid-2">
+                  @for (provider of data.providers; track provider.providerId) {
+                    <div class="stack stack--sm">
+                      <fieldset
+                        giddy-star-rating
+                        [label]="provider.name"
+                        [value]="provider.stars"
+                        [disabled]="!canWrapUp()"
+                        (rated)="rate(provider, $event)"
+                      ></fieldset>
+                      @if (provider.stars !== null && canWrapUp()) {
+                        <div>
+                          <button
+                            giddy-button
+                            variant="link"
+                            size="sm"
+                            type="button"
+                            [attr.aria-label]="
+                              (provider.review ? 'Change your review of ' : 'Add a review of ') +
+                              provider.name
+                            "
+                            (click)="review(provider)"
+                          >
+                            {{ provider.review ? 'Change your review' : 'Add a review' }}
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-sm">
+                  Nothing was booked through Giddy for this party, so there’s no one to rate.
+                </p>
+              }
+            </section>
+          </div>
+          <aside class="stack">
+            <section giddy-card heading="Final numbers">
+              <dl giddy-description-list [items]="numbers()"></dl>
+            </section>
+            <section giddy-card heading="Do it again next year?" pop="sky">
+              @if (data.template; as template) {
+                <div giddy-alert tone="success" heading="Plan saved for next time">
+                  <div>{{ reminder() }}</div>
+                  <div class="alert__actions">
+                    <a
+                      [routerLink]="['/parties/new']"
+                      [queryParams]="{ template: template.templateId }"
+                      >Start a party from it</a
+                    >
+                  </div>
+                </div>
+              } @else {
+                <p class="text-sm">
+                  Save this plan as a starting point: the same theme, venue, vendors and checklist.
+                </p>
+                @if (canWrapUp()) {
+                  <div>
+                    <button
+                      giddy-button
+                      size="sm"
+                      type="button"
+                      [busy]="savingTemplate()"
+                      [disabled]="savingTemplate()"
+                      (click)="saveTemplate()"
+                    >
+                      Save as template
+                    </button>
+                  </div>
+                }
+              }
+            </section>
+          </aside>
+        </div>
+      }
+    }
+  }
+  @default {
+    @if (wrapUp.showSkeleton()) {
+      <div class="section" aria-busy="true"><giddy-skeleton /></div>
+    }
+  }
+}
+
+<giddy-toast-region>
+  @if (toast(); as message) {
+    <giddy-toast
+      tone="success"
+      dismissible
+      [heading]="message.heading"
+      [text]="message.text"
+      (dismissed)="toast.set(null)"
+    />
+  }
+</giddy-toast-region>

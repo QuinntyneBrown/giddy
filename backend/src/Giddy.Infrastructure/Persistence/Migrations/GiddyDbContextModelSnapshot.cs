@@ -1125,6 +1125,114 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                     b.ToTable("QuoteRequests", (string)null);
                 });
 
+            modelBuilder.Entity("Giddy.Domain.Wrapping.PartyTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChildId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ChildName")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly?>("RemindOn")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset?>("RemindedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("SourcePartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Theme")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("SourcePartyId")
+                        .IsUnique();
+
+                    b.ToTable("PartyTemplates", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Wrapping.ProviderRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("RatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Review")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId", "ProviderId")
+                        .IsUnique();
+
+                    b.ToTable("ProviderRatings", (string)null);
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Wrapping.ThankYouNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Gift")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<Guid>("GuestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("SentAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId", "GuestId")
+                        .IsUnique();
+
+                    b.ToTable("ThankYouNotes", (string)null);
+                });
+
             modelBuilder.Entity("Giddy.Domain.Catalogue.CatalogueItem", b =>
                 {
                     b.OwnsOne("Giddy.Domain.Catalogue.ThemeProfile", "ThemeInfo", b1 =>
@@ -1756,6 +1864,69 @@ namespace Giddy.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Giddy.Domain.Wrapping.PartyTemplate", b =>
+                {
+                    b.OwnsMany("Giddy.Domain.Wrapping.TemplateBooking", "Bookings", b1 =>
+                        {
+                            b1.Property<Guid>("PartyTemplateId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<Guid?>("CatalogueItemId");
+
+                            b1.Property<string>("Category")
+                                .IsRequired();
+
+                            b1.Property<decimal>("Estimate")
+                                .HasPrecision(10, 2);
+
+                            b1.Property<string>("Name")
+                                .IsRequired();
+
+                            b1.HasKey("PartyTemplateId", "__synthesizedOrdinal");
+
+                            b1.ToTable("PartyTemplates");
+
+                            b1
+                                .ToJson("Bookings")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PartyTemplateId");
+                        });
+
+                    b.OwnsMany("Giddy.Domain.Wrapping.TemplateTask", "Tasks", b1 =>
+                        {
+                            b1.Property<Guid>("PartyTemplateId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate();
+
+                            b1.Property<int>("DaysBefore");
+
+                            b1.Property<string>("GiddyAction");
+
+                            b1.Property<string>("Title")
+                                .IsRequired();
+
+                            b1.HasKey("PartyTemplateId", "__synthesizedOrdinal");
+
+                            b1.ToTable("PartyTemplates");
+
+                            b1
+                                .ToJson("Tasks")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PartyTemplateId");
+                        });
+
+                    b.Navigation("Bookings");
+
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,6 +24,27 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`SaveTemplateHandler`** — Copies the plan into a `PartyTemplate` and schedules a reminder.
 
 
+**As built**
+
+**Ratings**
+- `PUT /api/parties/{id}/ratings/{providerId}` takes 1 to 5 stars and an optional review of up to 500 characters.
+- Only businesses in the plan with a confirmed booking or accepted quote can be rated; anything else is 404.
+- The first rating counts in the catalogue item's public rating and review count. Changing it replaces that party's earlier stars.
+- On the page, `giddy-star-rating` is a group of toggle buttons. "Add a review" opens `ReviewDialog`.
+
+**Final numbers**
+- Final numbers come from the same endpoint: kids who came of those invited, everything in the budget against the budget, and gifts logged.
+
+**Saving the plan**
+- `POST /api/parties/{id}/template` saves the theme, the venue and vendors (to book again at their last prices) and the checklist with each task's days before the party (`PartyTemplate`). Saving again returns the same plan.
+- The reminder date is eight weeks before the first birthday after the one celebrated that is still at least eight weeks away.
+- `TemplateReminders` runs in the reminder worker from 9 am and sends "Plan Zuri’s 8th from last year’s party?" once, linking to `/parties/new?template={id}`.
+
+**Starting from the plan**
+- A new party started from the plan (`POST /api/parties` with `templateId`, owner only) takes it over with the checklist re-dated.
+- "Reuse this plan" on a past party's overview saves the plan and opens the new-party form from it.
+- Deleting the account removes saved plans, notes and ratings.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
