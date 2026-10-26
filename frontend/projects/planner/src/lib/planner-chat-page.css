@@ -1,0 +1,11 @@
+.planner__text {
+  white-space: pre-line;
+}
+
+.planner__aside-link {
+  align-self: flex-start;
+}
+
+.planner__memories {
+  padding-left: var(--space-5);
+}

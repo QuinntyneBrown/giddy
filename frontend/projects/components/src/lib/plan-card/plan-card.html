@@ -1,0 +1,23 @@
+<div class="cluster cluster--between">
+  <strong
+    >{{ heading() }}
+    @if (emoji()) {
+      <span class="emoji" aria-hidden="true">{{ emoji() }}</span>
+    }
+  </strong>
+  <giddy-badge [tone]="overBudget() ? 'danger' : 'success'">{{ totalLabel() }}</giddy-badge>
+</div>
+@for (row of rows(); track $index) {
+  <div class="plan-card__row">
+    <span class="emoji" aria-hidden="true">{{ row.emoji }}</span>
+    <div>
+      <div class="list__title">{{ row.title }}</div>
+      <div class="list__meta">{{ row.meta }}</div>
+      @if (row.note) {
+        <div class="plan-card__note">{{ row.note }}</div>
+      }
+    </div>
+    <span class="price">{{ row.price }}</span>
+  </div>
+}
+<div class="cluster"><ng-content /></div>

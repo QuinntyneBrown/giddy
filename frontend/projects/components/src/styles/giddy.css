@@ -1,3 +1,17 @@
 /* The design system is the single source of styling: tokens and component classes. */
+@import '@angular/cdk/overlay-prebuilt.css';
 @import '../../../../../docs/design-system/tokens/tokens.css';
 @import '../../../../../docs/design-system/assets/components.css';
+
+/* Angular CDK dialogs: the overlay pane is the design system's .dialog (a bottom sheet below
+   640px, centred above) and the CDK container takes the panel's width. */
+.cdk-overlay-pane.dialog {
+  display: grid;
+}
+
+.dialog > .cdk-dialog-container {
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  min-height: 0;
+}

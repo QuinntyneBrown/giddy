@@ -9,6 +9,7 @@ using Giddy.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPlanningAgent(builder.Configuration);
 builder.Services.AddGiddyAuthentication();
 builder.Services.AddGiddyAntiforgery();
 builder.Services.AddProblemDetails();
@@ -30,6 +31,8 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 app.MapSessionEndpoints();
 app.MapPartyEndpoints();
 app.MapServiceAreaEndpoints();
+app.MapConversationEndpoints();
+app.MapMemoryEndpoints();
 
 app.Run();
 

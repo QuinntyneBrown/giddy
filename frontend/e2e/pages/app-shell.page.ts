@@ -141,12 +141,14 @@ export class AppShellPage {
   }
 
   async seriousAccessibilityViolations(): Promise<string[]> {
-    // Let colour transitions settle so axe measures what the parent actually sees.
+    // Let transitions and entrance animations settle so axe measures what the parent actually sees.
     await this.page.waitForFunction(() =>
       document
         .getAnimations()
         .every(
-          (animation) => !(animation instanceof CSSTransition) || animation.playState !== 'running',
+          (animation) =>
+            animation.playState !== 'running' ||
+            animation.effect?.getComputedTiming().iterations === Infinity,
         ),
     );
     const results = await new AxeBuilder({ page: this.page }).analyze();

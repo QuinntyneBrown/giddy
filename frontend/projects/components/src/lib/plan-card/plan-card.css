@@ -1,0 +1,4 @@
+.plan-card__note {
+  font: var(--text-caption);
+  color: var(--color-danger-fg);
+}

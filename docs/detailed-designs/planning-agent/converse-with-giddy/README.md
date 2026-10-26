@@ -20,28 +20,25 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 - **`PlannerChatPage`** — Route `/plan/chat`; chat log (`ol` with `aria-live="polite"`), composer, Party-at-a-glance aside from 1024 px.
 - **`ChatComposer`** — Textarea; Enter sends, Shift+Enter adds a line; Send becomes Stop while a turn runs; Esc stops.
-- **`AgentStreamService`** — SignalR client subscribing to `conversation:{id}` events: `step.started`, `step.done`, `reply.delta`, `reply.done`, `turn.failed`.
-- **`ConversationApi`** — Typed client for `/api/conversations`.
+- **`ConversationsApi`** — Typed client for `/api/conversations`; the page polls `GET /api/conversations/{id}/turns/{turnId}?after=n` every 500 ms for `step.started`, `step.done`, `reply.done`, `turn.failed` and `turn.cancelled` events.
 
 **Backend (Giddy API)**
 
-- **`ConversationsController`** — `POST /api/conversations/{id}/messages` (returns 202 with turn id), `POST /api/conversations/{id}/turns/{turnId}/cancel`, `GET /api/conversations/{id}`.
-- **`AgentHub`** — SignalR hub; authorises the caller for the conversation's party before joining its group.
-- **`StartTurnHandler`** — Saves the parent message, enqueues `AgentTurn` on the bus.
+- **Conversation endpoints** — `GET /api/conversations/current`, `POST /api/conversations` (New chat), `POST /api/conversations/{id}/messages` (202 with message and turn id), `GET /api/conversations/{id}/turns/{turnId}?after=n`, `POST /api/conversations/{id}/turns/{turnId}/cancel`. Conversations are private to the parent who started them; anyone else gets 404.
+- **`SendMessageHandler`** — Saves the parent message, records an `AgentTurn` and enqueues it.
 
-**Backend (Planning Agent)**
+**Backend (Planning Agent, in-process for the first release)**
 
-- **`AgentTurnConsumer`** — Consumes `AgentTurn`; runs the loop with a cancellation token tied to the cancel endpoint.
+- **`AgentTurnWorker`** — Hosted service reading an in-process channel; runs each turn in its own scope with a cancellation token tied to the cancel endpoint (`TurnCancellations`). Moving to a separate worker behind a message bus, with SignalR push, is a later scaling step.
 - **`AgentLoop`** — Calls the Claude Messages API with the system prompt, conversation and tool definitions; executes requested tools; repeats until a final reply or 8 tool rounds.
-- **`ToolRegistry`** — Maps tool names (`search_venues`, `compare_entertainers`, `find_bakeries`, `get_party`, `estimate_budget`) to internal API calls.
-- **`StreamPublisher`** — Publishes step and reply events to Redis for the hub to relay.
-- **`ModelClient`** — HTTP client for the Anthropic Claude API with 10 s connect and 60 s overall timeouts and one retry on 529/overloaded.
+- **Tools** — `list_themes`, `search_venues`, `find_entertainers`, `find_cakes`, `find_food`, `find_loot_bags`, `remember`, `suggest_replies`, `propose_plan`. Each records its plain-words step on the turn.
+- **`ClaudePlanningModel`** — `IPlanningModel` on the official Anthropic C# SDK, model `claude-opus-5-5`, a 4 s connect timeout (two attempts stay under 10 s), a 60 s request timeout and one SDK retry; overload, 5xx and timeouts surface as "Giddy can't answer right now". Each turn sends one fresh user message (party facts, family memories, conversation so far, new message), so history is append-only within the turn.
 
 
 **Open points**
 
-- Model ID and version pinning policy for the Claude API `<TO SUPPLY>`
-- System prompt text and its review process `<TO SUPPLY>`
+- Model: `claude-opus-5-5`, set by the `Claude:Model` configuration value.
+- System prompt: `Giddy.Application/Agent/SystemPrompt.cs`; changes are reviewed like code.
 
 ## Requirements
 

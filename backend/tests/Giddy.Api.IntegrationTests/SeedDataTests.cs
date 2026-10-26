@@ -28,5 +28,6 @@ public sealed class SeedDataTests
         var party = await check.Parties.SingleAsync(cancel);
         Assert.Equal("Zuri’s Dino Dig 7th", party.Name);
         Assert.Equal(2, party.Members.Count);
+        Assert.Equal(DemoCatalogue.Items().Count(), await check.CatalogueItems.CountAsync(cancel));
     }
 }

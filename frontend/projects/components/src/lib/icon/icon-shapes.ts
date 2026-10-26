@@ -38,6 +38,8 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
   pin: [path('M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z'), circle(12, 9.5, 2.5)],
   plus: [path('M12 5v14M5 12h14')],
   refresh: [path('M20 11a8 8 0 0 0-14.6-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16m0 4v-4h-4')],
+  send: [path('M4 12 20 4l-6 16-3-7z'), path('m11 13 9-9')],
+  stop: [{ kind: 'rect', x: 6, y: 6, width: 12, height: 12, rx: 2 }],
   search: [circle(11, 11, 7), path('m20 20-3.5-3.5')],
   settings: [
     circle(12, 12, 3),

@@ -18,11 +18,11 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Planning Agent**
 
-- **`ProposePlanTool`** — Terminal tool whose JSON schema is the plan card; the loop validates it with `ProposalValidator` before it reaches the parent.
+- **`ProposePlanTool`** — Tool whose input is the plan card as catalogue IDs; names and tax-inclusive prices are filled in from the catalogue, never from the model, and `ProposalValidator` checks it before it reaches the parent.
 - **`ProposalValidator`** — Rejects proposals whose items are missing from this turn's tool results, are unavailable for the slot, outside the area, over capacity, or conflict with allergies without a flag.
 - **`AllergyGuard`** — Reads the party's allergy list and annotates each food and venue option with compatibility.
 - **`ToolResultSanitizer`** — Wraps third-party text (listings, reviews) as quoted data and strips instruction-like content before it reaches the model.
-- **`TopicPolicy`** — System-prompt rules plus a classifier that declines off-topic or unsafe requests.
+- **`TopicPolicy`** — System-prompt rules that decline off-topic or unsafe requests; a model `refusal` stop is answered with a polite steer back to planning.
 - **`TurnLogger`** — Stores prompts, tool calls and results with the party ID for 90 days, excluding payment data.
 
 **Frontend (Giddy Web)**
@@ -33,8 +33,8 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Open points**
 
-- Off-topic and child-safety classifier choice `<TO SUPPLY>`
-- Retention location and access controls for turn logs `<TO SUPPLY>`
+- A separate off-topic classifier is not used yet; the system prompt and the model's own refusals cover it.
+- Turn logs live in the `TurnLogs` table with the party ID; `TurnLogRetentionWorker` deletes entries older than 90 days daily.
 
 ## Requirements
 

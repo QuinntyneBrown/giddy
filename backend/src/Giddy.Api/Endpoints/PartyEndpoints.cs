@@ -1,3 +1,4 @@
+using Giddy.Application.Parties.ApplyPlan;
 using Giddy.Application.Parties.GetMyParties;
 using Giddy.Application.Parties.GetParty;
 using Giddy.Application.Parties.RenameParty;
@@ -18,6 +19,9 @@ public static class PartyEndpoints
 
         parties.MapPut("/{partyId:guid}", (Guid partyId, RenamePartyRequest request, ISender sender, CancellationToken cancel) =>
             sender.Send(new RenamePartyCommand(partyId, request.Name ?? string.Empty), cancel));
+
+        parties.MapPost("/{partyId:guid}/plan", (Guid partyId, ApplyPlanRequest request, ISender sender, CancellationToken cancel) =>
+            sender.Send(new ApplyPlanCommand(partyId, request.ProposalId), cancel));
 
         return app;
     }

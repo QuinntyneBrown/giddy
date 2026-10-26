@@ -1,7 +1,6 @@
 using Giddy.Domain.Parties;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NodaTime;
 
 namespace Giddy.Infrastructure.Persistence.Configurations;
 
@@ -13,9 +12,13 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(p => p.Name).HasMaxLength(Party.NameMaxLength).IsRequired();
-        builder.Property(p => p.Date).HasConversion(d => d.ToDateOnly(), d => LocalDate.FromDateOnly(d));
-        builder.Property(p => p.StartsAt).HasConversion(t => t.ToTimeOnly(), t => LocalTime.FromTimeOnly(t));
-        builder.Property(p => p.EndsAt).HasConversion(t => t.ToTimeOnly(), t => LocalTime.FromTimeOnly(t));
+        builder.Property(p => p.ChildName).HasMaxLength(40);
+        builder.Property(p => p.Theme).HasMaxLength(80);
+        builder.PrimitiveCollection(p => p.Allergies);
+        builder.OwnsOne(p => p.Area, area =>
+        {
+            area.Property(a => a.Name).HasMaxLength(80);
+        });
         builder.OwnsMany(p => p.Members, members =>
         {
             members.ToTable("PartyMembers");
@@ -25,5 +28,7 @@ public sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
             members.HasIndex(m => m.ParentId);
         });
         builder.Navigation(p => p.Members).HasField("members").UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.OwnsMany(p => p.BookingsToDo, bookings => bookings.ToJson());
+        builder.OwnsMany(p => p.Checklist, tasks => tasks.ToJson());
     }
 }

@@ -20,7 +20,7 @@ The feature is a vertical slice from the Angular web application through the Gid
 **Backend (Giddy API)**
 
 - **`MemoriesController`** — `GET /api/memories`, `DELETE /api/memories/{id}`.
-- **`ForgetMemoryHandler`** — Deletes the memory and evicts agent context caches.
+- **`ForgetMemoryHandler`** — Deletes the memory immediately. Memories are read fresh at the start of every turn and never cached, so the next turn no longer knows it. Until families exist (journey 13) a memory's family is the parent who stated it.
 
 **Frontend (Giddy Web)**
 
