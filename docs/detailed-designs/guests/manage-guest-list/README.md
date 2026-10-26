@@ -27,6 +27,11 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`Guest`** — Entity on the `Party` aggregate.
 
 
+**As built**
+
+- `POST /api/parties/{id}/guests` adds a family (Canadian mobile area codes checked, duplicates by child and parent email refused with `409`, at most 60 guests) and, with `sendNow` after the invitations went out, invites them straight away. `DELETE .../guests/{guestId}` soft-deletes; `POST .../guests/{guestId}/restore` undoes within ten minutes; `RemovedGuestPurgeWorker` deletes them after. A removed family's private link stops working.
+- The guest list searches child and parent names as you type, filters with All, Coming, Waiting and Allergies chips with counts, and offers "Message the parent" (email) and "Remove" on each row: on hover or focus, always on touch screens. Removing asks first with Cancel focused, then offers Undo for eight seconds.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
