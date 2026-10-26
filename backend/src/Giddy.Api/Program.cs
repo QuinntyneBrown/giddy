@@ -14,6 +14,7 @@ builder.Services.AddGiddyAuthentication();
 builder.Services.AddGiddyAntiforgery();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GiddyExceptionHandler>();
+builder.Services.AddGiddyRateLimits();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase)));
 
@@ -25,6 +26,7 @@ app.UseStatusCodePages();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.UseMiddleware<AntiforgeryValidationMiddleware>();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
@@ -38,6 +40,7 @@ app.MapVenueEndpoints();
 app.MapBookingEndpoints();
 app.MapGuestEndpoints();
 app.MapInvitationEndpoints();
+app.MapRsvpEndpoints();
 
 app.Run();
 

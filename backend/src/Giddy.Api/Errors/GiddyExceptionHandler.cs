@@ -24,6 +24,7 @@ public sealed class GiddyExceptionHandler(IProblemDetailsService problemDetails,
                 Title = "Some details need fixing.",
                 Status = StatusCodes.Status400BadRequest,
             },
+            Giddy.Application.Rsvps.RsvpLinkNotWorkingException notWorking => new ProblemDetails { Title = notWorking.Message, Status = StatusCodes.Status404NotFound },
             NotFoundException => new ProblemDetails { Title = "We couldn’t find that.", Status = StatusCodes.Status404NotFound },
             EmailUnverifiedException unverified => new ProblemDetails
             {
