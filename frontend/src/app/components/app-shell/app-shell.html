@@ -1,38 +1,62 @@
 <a giddy-skip-link mainId="main-content"></a>
-<div class="sidebar-layout">
-  <nav
-    giddy-sidebar-nav
-    aria-label="Primary"
-    ctaLabel="Plan a party"
-    ctaLink="/parties/new"
-    [groups]="sidebarGroups"
-  ></nav>
-  <div class="shell__body">
-    <header
-      giddy-top-bar
-      brandOnSmallScreensOnly
-      searchLabel="Search venues, fun and food"
-      searchPlaceholder="Search venues, entertainers, cakes…"
-      (searched)="search($event)"
-    >
-      <button
-        giddy-button
-        type="button"
-        variant="ghost"
-        iconOnly
-        aria-label="Dark theme"
-        [pressed]="themeService.theme() === 'dark'"
-        (click)="themeService.toggle()"
+@if (session(); as parent) {
+  <div class="sidebar-layout">
+    <nav
+      giddy-sidebar-nav
+      aria-label="Primary"
+      ctaLabel="Plan a party"
+      ctaLink="/parties/new"
+      [groups]="sidebarGroups"
+    ></nav>
+    <div class="shell__body">
+      <header
+        giddy-top-bar
+        brandOnSmallScreensOnly
+        searchLabel="Search venues, fun and food"
+        searchPlaceholder="Search venues, entertainers, cakes…"
+        (searched)="search($event)"
       >
-        <svg giddy-icon="moon"></svg>
-      </button>
-    </header>
-    <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
-    <footer
-      giddy-footer
-      text="© 2026 Giddy · Made with confetti in Toronto"
-      [links]="footerLinks"
-    ></footer>
+        <ng-container *ngTemplateOutlet="themeToggle" />
+        <a
+          giddy-avatar
+          size="sm"
+          class="topbar__me"
+          routerLink="/settings"
+          [name]="parent.name"
+          [attr.aria-label]="'Account settings for ' + parent.name"
+        ></a>
+      </header>
+      <ng-container *ngTemplateOutlet="content" />
+    </div>
   </div>
-</div>
-<nav giddy-bottom-nav aria-label="Primary, mobile" [items]="bottomItems" [ctaIndex]="2"></nav>
+  <nav giddy-bottom-nav aria-label="Primary, mobile" [items]="bottomItems" [ctaIndex]="2"></nav>
+} @else {
+  <header giddy-top-bar>
+    <ng-container *ngTemplateOutlet="themeToggle" />
+    <a giddy-button size="sm" routerLink="/sign-in">Sign in</a>
+  </header>
+  <ng-container *ngTemplateOutlet="content" />
+}
+
+<ng-template #themeToggle>
+  <button
+    giddy-button
+    type="button"
+    variant="ghost"
+    iconOnly
+    aria-label="Dark theme"
+    [pressed]="themeService.theme() === 'dark'"
+    (click)="themeService.toggle()"
+  >
+    <svg giddy-icon="moon"></svg>
+  </button>
+</ng-template>
+
+<ng-template #content>
+  <main id="main-content" class="container" tabindex="-1"><ng-content /></main>
+  <footer
+    giddy-footer
+    text="© 2026 Giddy · Made with confetti in Toronto"
+    [links]="footerLinks"
+  ></footer>
+</ng-template>

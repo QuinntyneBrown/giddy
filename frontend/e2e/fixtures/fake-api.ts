@@ -1,9 +1,11 @@
 import { Page, Request, Route } from '@playwright/test';
+import { amara, dinoParty, SeedParty, SeedSession, xsrfToken } from './seed-data';
 
 export interface FakeResponse {
   status?: number;
   body?: unknown;
   delayMs?: number;
+  headers?: Record<string, string>;
 }
 
 type Handler = (request: Request, params: Record<string, string>) => FakeResponse;
@@ -23,6 +25,8 @@ export class FakeApi {
   private readonly routes: RouteDefinition[] = [];
   private readonly overrides: RouteDefinition[] = [];
   readonly unrouted: string[] = [];
+  session: SeedSession | null = { ...amara };
+  parties: SeedParty[] = [{ ...dinoParty }];
 
   constructor() {
     this.registerDefaults();
@@ -39,7 +43,19 @@ export class FakeApi {
   }
 
   private registerDefaults(): void {
-    // Seeded endpoints are registered here as API contracts are added.
+    this.on('GET', '/api/session', () =>
+      this.session
+        ? { body: this.session }
+        : { status: 401, body: problem(401, 'Sign in to continue.') },
+    );
+    this.on('GET', '/api/antiforgery', () =>
+      this.session
+        ? {
+            body: { token: xsrfToken },
+            headers: { 'set-cookie': `XSRF-TOKEN=${xsrfToken}; Path=/; SameSite=Strict` },
+          }
+        : { status: 401, body: problem(401, 'Sign in to continue.') },
+    );
   }
 
   private async handle(route: Route): Promise<void> {
@@ -53,11 +69,23 @@ export class FakeApi {
       return;
     }
 
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
+      const token = await request.headerValue('x-xsrf-token');
+      if (token !== xsrfToken) {
+        await route.fulfill({ status: 400, json: problem(400, 'Missing anti-forgery token.') });
+        return;
+      }
+    }
+
     const response = match.definition.handler(request, match.params);
     if (response.delayMs) {
       await new Promise((resolve) => setTimeout(resolve, response.delayMs));
     }
-    await route.fulfill({ status: response.status ?? 200, json: response.body ?? null });
+    await route.fulfill({
+      status: response.status ?? 200,
+      json: response.body ?? null,
+      headers: response.headers,
+    });
   }
 
   private find(method: string, path: string) {
@@ -83,4 +111,8 @@ export class FakeApi {
     });
     return { method, pattern: new RegExp(`^${source}$`), keys, handler };
   }
+}
+
+export function problem(status: number, title: string, extensions: Record<string, unknown> = {}) {
+  return { status, title, ...extensions };
 }

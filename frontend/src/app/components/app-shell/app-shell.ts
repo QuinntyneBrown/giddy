@@ -1,7 +1,10 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { SessionStore } from '../../session/session.store';
 import { ThemeService } from '../../theme/theme.service';
 import {
+  AvatarComponent,
   BottomNavComponent,
   ButtonComponent,
   FooterComponent,
@@ -16,6 +19,7 @@ import {
 @Component({
   selector: 'giddy-app-shell',
   imports: [
+    AvatarComponent,
     BottomNavComponent,
     ButtonComponent,
     IconComponent,
@@ -23,15 +27,18 @@ import {
     SidebarNavComponent,
     SkipLinkComponent,
     TopBarComponent,
+    RouterLink,
+    NgTemplateOutlet,
   ],
   templateUrl: './app-shell.html',
   styleUrl: './app-shell.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'has-bottom-nav' },
+  host: { '[class.has-bottom-nav]': 'session()' },
 })
 export class AppShellComponent {
   private readonly router = inject(Router);
   protected readonly themeService = inject(ThemeService);
+  protected readonly session = inject(SessionStore).session;
 
   protected readonly sidebarGroups: NavGroup[] = [
     {

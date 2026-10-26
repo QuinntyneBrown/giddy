@@ -9,6 +9,7 @@ export class AppShellPage {
   readonly bottomBar: Locator;
   readonly search: Locator;
   readonly darkThemeToggle: Locator;
+  readonly signIn: Locator;
   readonly main: Locator;
   readonly footer: Locator;
   readonly pageHeadings: Locator;
@@ -21,6 +22,7 @@ export class AppShellPage {
       .locator('visible=true');
     this.sidebar = page.getByRole('navigation', { name: 'Primary', exact: true });
     this.bottomBar = page.getByRole('navigation', { name: 'Primary, mobile' });
+    this.signIn = page.getByRole('link', { name: 'Sign in' });
     this.darkThemeToggle = page.getByRole('button', { name: 'Dark theme' });
     this.search = page.getByRole('searchbox', { name: 'Search venues, fun and food' });
     this.main = page.getByRole('main');
@@ -55,6 +57,10 @@ export class AppShellPage {
   async skipToContent(): Promise<void> {
     await this.skipLink.focus();
     await this.page.keyboard.press('Enter');
+  }
+
+  accountLink(parentName: string): Locator {
+    return this.banner.getByRole('link', { name: `Account settings for ${parentName}` });
   }
 
   sidebarLink(name: string): Locator {
