@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 09 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="09" data-video-title="Choose a theme" data-parts="Introduction|Promises|Browse|No match|Choose|Testing|Recap" data-music="../assets/music/on-the-beach-intro-outro.mp3">
+
+<section id="title" data-part="0">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <div class="kicker">Giddy · Video 09</div>
+  <h1>Choose a theme</h1>
+  <p class="lead">Themes that suit the child, chosen in a tap</p>
+</section>
+
+<section id="promises" data-part="1" data-cue="Themes start from the child.">
+  <h2>What themes promise</h2>
+  <ul>
+    <li>Only themes for the child's age at first</li>
+    <li>Themes matching what Giddy remembers are tagged</li>
+    <li>Filters update at once and announce their state</li>
+    <li>The invitation and Fun &amp; food follow the theme</li>
+  </ul>
+</section>
+
+<section id="browse" data-part="2" data-cue="Here are the party themes on a laptop." data-clip="clips/browse-desktop.mp4">
+  <video class="clip" muted></video>
+  <div class="clip-notes"><span class="tag">Desktop</span><h3>Browse and filter</h3><p>For Zuri (7) on by default; Zuri might love from Giddy's memories; chips with aria-pressed.</p></div>
+</section>
+
+<section id="no-match" data-part="3" data-cue="If no theme fits the filters">
+  <h2>When nothing matches</h2>
+  <img class="shot" alt="No themes match these filters, with Clear filters and Ask Giddy instead" src="shots/desktop-no-match.png">
+</section>
+
+<section id="choose" data-part="4" data-cue="On a phone, Amara chooses Space Explorers." data-clip="clips/choose-phone.mp4">
+  <video class="clip phone" muted></video>
+  <div class="clip-notes"><span class="tag">Phone</span><h3>Choose, then Undo</h3><p>Chosen for Zuri; the list keeps its place; Undo for 8 s restores Dino Dig.</p></div>
+</section>
+
+<section id="testing" data-part="5" data-cue="The API tests cover the child's age filter">
+  <h2>How it is tested</h2>
+  <div class="cols">
+    <div class="card"><h3>API · 219 tests</h3><p>Age, band, outdoor and budget filters, interest tags, choose and undo, clearing, the theme driving invites and Fun &amp; food, viewers.</p></div>
+    <div class="card"><h3>Browser · 202 tests</h3><p>Filters, empty state, choosing, Undo and keeping your place, with axe at 360 and 1280 px.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember.">
+  <img class="mark" alt="Giddy" src="../assets/mark.svg">
+  <h2>Things to remember</h2>
+  <ul class="recap"><li>Themes start from the child</li><li>Filters stay and announce their state</li><li>Choosing keeps your place</li><li>Undo for eight seconds</li></ul>
+  <p class="muted">Next: manage the budget</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
