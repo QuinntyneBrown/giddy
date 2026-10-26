@@ -1,0 +1,33 @@
+.guests__summary {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (width >= 64rem) {
+  .guests__summary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.guests__allergies {
+  align-self: stretch;
+}
+
+.guests__child {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.guests__select {
+  width: 3rem;
+}
+
+.guests__row--selected td {
+  background: var(--color-accent-subtle);
+}
+
+.guests__clear {
+  color: inherit;
+}
