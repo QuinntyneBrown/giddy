@@ -22,6 +22,7 @@ export * from './lib/mascot/mascot';
 export * from './lib/mascot/mascot-mood';
 export * from './lib/empty-state/empty-state';
 export * from './lib/hero/hero';
+export * from './lib/notification/notification';
 export * from './lib/party-card/party-card';
 export * from './lib/skeleton/skeleton';
 export * from './lib/alert/alert';

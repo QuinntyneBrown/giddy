@@ -1,0 +1,17 @@
+<a class="notif" [class.notif--unread]="unread()" [href]="link()" (click)="opened.emit($event)">
+  <span class="notif__icon"
+    ><span class="emoji" aria-hidden="true">{{ icon() }}</span></span
+  >
+  <span class="list__body">
+    <span class="list__title"
+      >{{ heading() }}
+      @if (unread()) {
+        <span class="visually-hidden">(unread)</span>
+      }
+    </span>
+    @if (detail()) {
+      <span class="list__meta">{{ detail() }}</span>
+    }
+  </span>
+  <span class="text-caption notification__when">{{ when() }}</span>
+</a>

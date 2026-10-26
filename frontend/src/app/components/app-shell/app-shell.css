@@ -11,3 +11,13 @@
 main {
   flex: 1;
 }
+
+.shell__bell {
+  position: relative;
+}
+
+.shell__bell giddy-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

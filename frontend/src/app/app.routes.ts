@@ -7,6 +7,7 @@ import { familyRoutes } from '@giddy/family';
 import { partyDayRoutes } from '@giddy/party-day';
 import { guestsRoutes } from '@giddy/guests';
 import { homeRoutes } from '@giddy/home';
+import { notificationsRoutes } from '@giddy/notifications';
 import { invitationsRoutes, rsvpRoutes } from '@giddy/invitations';
 import { partiesRoutes } from '@giddy/parties';
 import { plannerRoutes } from '@giddy/planner';
@@ -27,6 +28,7 @@ export const routes: Routes = [
     children: [
       ...homeRoutes,
       ...familyRoutes,
+      ...notificationsRoutes,
       ...guestsRoutes,
       ...budgetRoutes,
       ...checklistRoutes,

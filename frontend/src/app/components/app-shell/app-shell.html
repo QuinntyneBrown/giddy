@@ -6,7 +6,7 @@
       aria-label="Primary"
       ctaLabel="Plan a party"
       ctaLink="/parties/new"
-      [groups]="sidebarGroups"
+      [groups]="sidebarGroups()"
     ></nav>
     <div class="shell__body">
       <header
@@ -16,6 +16,19 @@
         searchPlaceholder="Search venues, entertainers, cakes…"
         (searched)="search($event)"
       >
+        <a
+          giddy-button
+          variant="ghost"
+          iconOnly
+          class="shell__bell"
+          routerLink="/notifications"
+          [attr.aria-label]="bellLabel()"
+        >
+          <svg giddy-icon="bell"></svg>
+          @if (unread()) {
+            <giddy-badge tone="count" aria-hidden="true">{{ unread() }}</giddy-badge>
+          }
+        </a>
         <ng-container *ngTemplateOutlet="themeToggle" />
         <a
           giddy-avatar

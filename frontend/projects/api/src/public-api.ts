@@ -137,3 +137,7 @@ export * from './lib/auth/sign-up-input';
 export * from './lib/auth/signed-in';
 export * from './lib/family/child-input';
 export * from './lib/family/interest';
+export * from './lib/notifications/inbox-item';
+export * from './lib/notifications/inbox';
+export * from './lib/notifications/notifications-api.token';
+export * from './lib/notifications/notifications-api';

@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+.notification__when {
+  margin-left: auto;
+  white-space: nowrap;
+}
