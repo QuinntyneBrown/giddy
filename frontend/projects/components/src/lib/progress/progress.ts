@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 @Component({
   selector: 'giddy-progress',
   templateUrl: './progress.html',
+  styleUrl: './progress.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'progress',

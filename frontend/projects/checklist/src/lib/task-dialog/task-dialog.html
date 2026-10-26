@@ -1,0 +1,70 @@
+<giddy-dialog
+  [heading]="editing ? 'Change this task' : 'Add a task'"
+  description="It goes on the checklist in date order."
+  [busy]="busy()"
+>
+  @if (problem(); as message) {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>{{ message }}</div>
+    </div>
+  }
+  @if (summaryErrors().length) {
+    <giddy-error-summary [errors]="summaryErrors()" />
+  }
+  <giddy-form-field label="Task" inputId="task-title" [error]="errors().title ?? null">
+    <input
+      giddyInput
+      type="text"
+      maxlength="100"
+      autocomplete="off"
+      data-initial-focus
+      [value]="title()"
+      (input)="title.set($any($event.target).value)"
+    />
+  </giddy-form-field>
+  <div class="grid-2">
+    <giddy-form-field
+      label="Due"
+      inputId="task-due"
+      [help]="dueHint()"
+      [error]="errors().due ?? null"
+    >
+      <input
+        giddyInput
+        type="date"
+        [max]="data.partyDate"
+        [value]="due()"
+        (input)="due.set($any($event.target).value)"
+      />
+    </giddy-form-field>
+    <giddy-form-field label="Who" inputId="task-ownerId" [error]="errors().ownerId ?? null">
+      <select giddyInput (change)="ownerId.set($any($event.target).value)">
+        @for (owner of owners(); track owner.id) {
+          <option [value]="owner.id" [selected]="owner.id === ownerId()">{{ owner.label }}</option>
+        }
+      </select>
+    </giddy-form-field>
+  </div>
+  <label giddy-choice>
+    <input
+      type="checkbox"
+      [checked]="remindMe()"
+      (change)="remindMe.set($any($event.target).checked)"
+    />
+    Remind me the day before
+  </label>
+  <button giddyDialogFooter giddy-button type="button" [disabled]="busy()" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="busy()"
+    [disabled]="busy()"
+    (click)="save()"
+  >
+    {{ editing ? 'Save changes' : 'Add task' }}
+  </button>
+</giddy-dialog>

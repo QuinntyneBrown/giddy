@@ -1,0 +1,43 @@
+<button
+  giddy-button
+  variant="ghost"
+  size="sm"
+  iconOnly
+  type="button"
+  [attr.aria-label]="label()"
+  [cdkMenuTriggerFor]="menu"
+  [cdkMenuPosition]="positions"
+>
+  <svg giddy-icon="more"></svg>
+</button>
+<ng-template #menu>
+  <ul class="menu menu-button__menu" cdkMenu [attr.aria-label]="menuLabel()">
+    @for (item of actions(); track item.id) {
+      <li role="none">
+        <button
+          class="menu__item"
+          cdkMenuItem
+          type="button"
+          (cdkMenuItemTriggered)="selected.emit(item.id)"
+        >
+          <svg [giddy-icon]="item.icon"></svg>{{ item.label }}
+        </button>
+      </li>
+    }
+    @if (actions().length && dangers().length) {
+      <li class="menu__divider" role="separator"></li>
+    }
+    @for (item of dangers(); track item.id) {
+      <li role="none">
+        <button
+          class="menu__item menu__item--danger"
+          cdkMenuItem
+          type="button"
+          (cdkMenuItemTriggered)="selected.emit(item.id)"
+        >
+          <svg [giddy-icon]="item.icon"></svg>{{ item.label }}
+        </button>
+      </li>
+    }
+  </ul>
+</ng-template>

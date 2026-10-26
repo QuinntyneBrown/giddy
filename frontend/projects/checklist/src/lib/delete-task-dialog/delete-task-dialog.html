@@ -1,0 +1,35 @@
+<giddy-dialog
+  tone="danger"
+  size="sm"
+  heading="Delete this task?"
+  [description]="'“' + data.task.title + '” comes off the checklist.'"
+  [busy]="state() === 'busy'"
+>
+  @if (state() === 'failed') {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>The task is still on the checklist. Try again in a moment.</div>
+    </div>
+  }
+  <p>Progress and readiness count the tasks that are left.</p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    data-initial-focus
+    [disabled]="state() === 'busy'"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="danger"
+    type="button"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+    (click)="remove()"
+  >
+    Delete task
+  </button>
+</giddy-dialog>

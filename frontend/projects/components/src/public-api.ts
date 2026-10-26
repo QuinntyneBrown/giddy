@@ -57,6 +57,8 @@ export * from './lib/legend/legend';
 export * from './lib/legend/legend-item';
 export * from './lib/link-card/link-card';
 export * from './lib/list-item/list-item';
+export * from './lib/menu/menu-button';
+export * from './lib/menu/menu-item';
 export * from './lib/meter/meter';
 export * from './lib/meter/meter-segment';
 export * from './lib/party-hero/party-hero';
