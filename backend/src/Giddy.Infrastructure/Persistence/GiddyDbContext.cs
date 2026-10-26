@@ -1,4 +1,5 @@
 using Giddy.Application.Common;
+using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
 using Giddy.Domain.Families;
@@ -35,6 +36,8 @@ public sealed class GiddyDbContext(DbContextOptions<GiddyDbContext> options) : D
     public DbSet<FavouriteVenue> FavouriteVenues => Set<FavouriteVenue>();
 
     public DbSet<VenueWaitlistEntry> VenueWaitlist => Set<VenueWaitlistEntry>();
+
+    public DbSet<Booking> Bookings => Set<Booking>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

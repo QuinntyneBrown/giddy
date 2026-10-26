@@ -1,3 +1,4 @@
+using Giddy.Domain.Bookings;
 using Giddy.Domain.Catalogue;
 using Giddy.Domain.Conversations;
 using Giddy.Domain.Families;
@@ -32,6 +33,8 @@ public interface IGiddyDbContext
     DbSet<FavouriteVenue> FavouriteVenues { get; }
 
     DbSet<VenueWaitlistEntry> VenueWaitlist { get; }
+
+    DbSet<Booking> Bookings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

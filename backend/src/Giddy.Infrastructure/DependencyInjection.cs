@@ -3,6 +3,8 @@ using Giddy.Application;
 using Giddy.Application.Agent;
 using Giddy.Application.Agent.Model;
 using Giddy.Infrastructure.Agent;
+using Giddy.Infrastructure.Bookings;
+using Giddy.Application.Bookings;
 using Giddy.Application.Common;
 using Giddy.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,9 @@ public static class DependencyInjection
         services.AddScoped<IGiddyDbContext>(provider => provider.GetRequiredService<GiddyDbContext>());
         services.AddSingleton<IClock>(SystemClock.Instance);
         services.AddSingleton<Giddy.Application.Venues.IVenueAvailability, CatalogueVenueAvailability>();
+        services.AddSingleton<IVenuePartner, CatalogueVenuePartner>();
+        services.AddSingleton<IPaymentGateway, SandboxPaymentGateway>();
+        services.AddSingleton<IEmailSender, LoggingEmailSender>();
         return services;
     }
 

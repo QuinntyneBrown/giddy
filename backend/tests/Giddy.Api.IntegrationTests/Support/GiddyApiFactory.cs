@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using Giddy.Application.Agent.Model;
+using Giddy.Application.Bookings;
+using Giddy.Application.Common;
 using Giddy.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +29,14 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
     public ScriptedPlanningModel Model { get; } = new();
 
+    public FakePaymentGateway Payments { get; } = new();
+
+    public FakeEmailSender Email { get; } = new();
+
+    public FakeVenuePartner Partner => partner ??= new FakeVenuePartner(Clock);
+
+    private FakeVenuePartner? partner;
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -47,6 +57,13 @@ public sealed class GiddyApiFactory : WebApplicationFactory<Program>
 
             services.RemoveAll<IPlanningModel>();
             services.AddSingleton<IPlanningModel>(Model);
+
+            services.RemoveAll<IPaymentGateway>();
+            services.AddSingleton<IPaymentGateway>(Payments);
+            services.RemoveAll<IVenuePartner>();
+            services.AddSingleton<IVenuePartner>(_ => Partner);
+            services.RemoveAll<IEmailSender>();
+            services.AddSingleton<IEmailSender>(Email);
 
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.Scheme, null);

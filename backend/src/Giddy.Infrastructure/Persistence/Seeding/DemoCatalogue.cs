@@ -62,6 +62,8 @@ public static class DemoCatalogue
         var dinoDen = Profile("🦕", "1124 Queen St E", 4.8m, 212, 3, 9, 150, true, "Dino theme room",
             Slot(10, 0, 12, 30), Slot(13, 0, 15, 30), Slot(16, 0, 18, 30));
         dinoDen.PhotoDescription = "the Fossil Room with a sand dig pit, the café, and the dino slide";
+        dinoDen.Room = "Fossil Room";
+        dinoDen.Contact = "Bea at 416-555-0142";
         dinoDen.Booked.Add(new BookedSlot(ZurisParty, new LocalTime(10, 0)));
         dinoDen.Includes.AddRange(["2.5 hours in the Fossil Room for up to 20 kids", "A party host for games and the fossil dig", "Tables, chairs, plates and juice for everyone", "Clean-up afterwards"]);
         dinoDen.AddOns.AddRange([new VenueAddOn("Dino egg hunt", "+$40"), new VenueAddOn("Pizza from the café", "$14 per pizza")]);

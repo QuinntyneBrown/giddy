@@ -1,0 +1,63 @@
+using Giddy.Application.Common;
+using Giddy.Domain.Bookings;
+using Giddy.Domain.Calendar;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using NodaTime;
+
+namespace Giddy.Application.Bookings.BookVenue;
+
+/// <summary>
+/// Holds the slot at the venue, authorises the deposit and confirms the booking. A hold is never
+/// left without a payment, or a payment without a booking: each failure undoes the earlier steps.
+/// </summary>
+public sealed class BookVenueHandler(
+    IGiddyDbContext db,
+    IVenuePartner partner,
+    IPaymentGateway payments,
+    BookingCompletion completion,
+    ICurrentParent parent,
+    TorontoCalendar calendar,
+    IClock clock) : IRequestHandler<BookVenueCommand, BookingView>
+{
+    public async Task<BookingView> Handle(BookVenueCommand request, CancellationToken cancellationToken)
+    {
+        var party = await db.Parties.SingleAsync(p => p.Id == request.PartyId, cancellationToken);
+        var venue = await db.CatalogueItems.SingleOrDefaultAsync(i => i.Id == request.VenueId && i.Venue != null, cancellationToken)
+            ?? throw new NotFoundException("Venue not found.");
+        var date = BookingFormats.Date.Parse(request.Date).Value;
+        if (date != party.Date)
+        {
+            throw new ConflictException("That slot is on a different day from the party.");
+        }
+
+        var start = BookingFormats.Time.Parse(request.Start).Value;
+        var slot = venue.Venue!.Slots.SingleOrDefault(s => s.Start == start)
+            ?? throw new NotFoundException("Slot not found.");
+
+        var hold = await partner.HoldAsync(venue, date, slot, cancellationToken);
+        var booking = Booking.Hold(
+            Guid.NewGuid(), party.Id, venue.Id, venue.Name, date, slot.Start, slot.End,
+            venue.Venue.Room, venue.Capacity ?? 0, venue.Price, venue.Venue.Deposit, date.PlusDays(-venue.Venue.FreeCancellationDays),
+            hold.Reference, hold.ExpiresAt, parent.Id, request.BookingName, request.Mobile, request.Child, request.Notes,
+            clock.GetCurrentInstant());
+        db.Bookings.Add(booking);
+
+        var authorisation = await payments.AuthoriseAsync(
+            new PaymentRequest(request.Payment.Token!, booking.Deposit, booking.Id.ToString(), $"{venue.Name} deposit for {party.Name}"),
+            cancellationToken);
+        booking.Paying(authorisation.PaymentId, authorisation.Brand, authorisation.Last4);
+
+        if (authorisation.Outcome == PaymentOutcome.Declined)
+        {
+            await partner.ReleaseAsync(hold, CancellationToken.None);
+            booking.Decline();
+            await db.SaveChangesAsync(CancellationToken.None);
+            throw new PaymentDeclinedException(
+                $"{authorisation.Brand} ending {authorisation.Last4} was declined, so nothing was charged. Try another card.");
+        }
+
+        await completion.CompleteAsync(booking, new BookingContact(booking.BookingName, booking.Mobile, booking.Child, booking.Notes), cancellationToken);
+        return BookingViews.From(booking, venue.Venue.Contact, calendar.Today);
+    }
+}
