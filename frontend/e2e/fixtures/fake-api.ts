@@ -1,4 +1,5 @@
 import { Page, Request, Route } from '@playwright/test';
+import { FakePlanner } from './fake-planner';
 import { amara, dinoParty, SeedParty, SeedSession, xsrfToken } from './seed-data';
 
 export interface FakeResponse {
@@ -27,6 +28,7 @@ export class FakeApi {
   readonly unrouted: string[] = [];
   session: SeedSession | null = { ...amara };
   parties: SeedParty[] = [{ ...dinoParty }];
+  readonly planner = new FakePlanner();
 
   constructor() {
     this.registerDefaults();
@@ -49,6 +51,7 @@ export class FakeApi {
         : { status: 401, body: problem(401, 'Sign in to continue.') },
     );
     this.on('GET', '/api/parties', () => ({ body: this.parties }));
+    this.planner.register((method, path, handler) => this.on(method, path, handler));
     this.on('GET', '/api/antiforgery', () =>
       this.session
         ? {

@@ -105,3 +105,25 @@ export function greetingAt(instant: Date): string {
   if (hour >= 12 && hour < 17) return 'Good afternoon';
   return 'Good evening';
 }
+
+/** "2:03 pm": the time in Toronto at the given instant. */
+export function formatClockTime(instant: Date): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: torontoTimeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(instant);
+  const hour = parts.find((p) => p.type === 'hour')?.value ?? '00';
+  const minute = parts.find((p) => p.type === 'minute')?.value ?? '00';
+  return formatTime(`${hour}:${minute}`);
+}
+
+/** "7th", "1st", "22nd", "13th". */
+export function ordinal(n: number): string {
+  const teen = n % 100 >= 11 && n % 100 <= 13;
+  const suffix = teen
+    ? 'th'
+    : (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th');
+  return `${n}${suffix}`;
+}

@@ -33,6 +33,8 @@ public sealed class ConverseWithGiddyTests : IAsyncLifetime
 
         var party = conversation.GetProperty("party");
         Assert.Equal(dinoParty.Id, party.GetProperty("partyId").GetGuid());
+        Assert.Equal("Zuri", party.GetProperty("childName").GetString());
+        Assert.Equal(7, party.GetProperty("turningAge").GetInt32());
         Assert.Equal("Zuri, turning 7", party.GetProperty("who").GetString());
         Assert.Equal("2026-11-14", party.GetProperty("date").GetString());
         Assert.Equal("afternoon", party.GetProperty("timeOfDay").GetString());

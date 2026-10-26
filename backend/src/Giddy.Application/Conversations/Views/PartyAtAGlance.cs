@@ -4,6 +4,8 @@ namespace Giddy.Application.Conversations.Views;
 public sealed record PartyAtAGlance(
     Guid PartyId,
     string Name,
+    string? ChildName,
+    int? TurningAge,
     string? Who,
     string Date,
     string TimeOfDay,

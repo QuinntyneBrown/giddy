@@ -1,0 +1,46 @@
+<giddy-dialog
+  [heading]="'Use this plan for ' + childName() + '’s party?'"
+  description="Giddy will set up everything below. You can change any part later."
+  [busy]="state() === 'busy'"
+>
+  @if (state() === 'failed') {
+    <div giddy-alert tone="danger" heading="That didn’t go through">
+      <div>We couldn’t save the plan. Nothing was booked or changed; try again.</div>
+    </div>
+  }
+  <ul class="stack stack--sm accept-plan__changes">
+    <li>
+      Sets the theme to <strong>{{ data.proposal.theme.name }}</strong>
+    </li>
+    <li>Adds {{ data.proposal.items.length }} bookings to do: {{ bookings() }}</li>
+    <li>Fills your budget with {{ estimates() }} of estimates</li>
+    <li>Creates a {{ checklistSteps }}-step checklist working back from {{ partyDate() }}</li>
+  </ul>
+  <p class="text-sm text-muted">
+    Nothing is booked or paid yet. You confirm each booking yourself.
+  </p>
+  <button
+    giddyDialogFooter
+    giddy-button
+    type="button"
+    [disabled]="state() === 'busy'"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+  <button
+    giddyDialogFooter
+    giddy-button
+    variant="primary"
+    type="button"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+    (click)="confirm()"
+  >
+    @if (state() === 'failed') {
+      <svg giddy-icon="refresh"></svg>Try again
+    } @else {
+      <svg giddy-icon="check"></svg>Use this plan
+    }
+  </button>
+</giddy-dialog>

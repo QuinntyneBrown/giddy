@@ -1,0 +1,187 @@
+<div class="page-header">
+  <div>
+    <h1>Ask Giddy</h1>
+    <p class="subtitle">{{ subtitle() }}</p>
+  </div>
+  <div class="cluster">
+    <button giddy-button size="sm" type="button" [disabled]="chat.busy()" (click)="chat.startNew()">
+      <svg giddy-icon="plus"></svg>New chat
+    </button>
+  </div>
+</div>
+
+@switch (chat.loader.status()) {
+  @case ('error') {
+    <section
+      giddy-empty-state
+      class="card"
+      tone="error"
+      heading="We couldn’t load this conversation"
+      text="Giddy’s brain is fine, but this chat didn’t arrive. Your plan is safe and unchanged."
+      [referenceCode]="chat.loader.problem()?.referenceCode ?? null"
+    >
+      <button giddy-button variant="primary" type="button" (click)="chat.loader.reload()">
+        <svg giddy-icon="refresh"></svg>Try again
+      </button>
+      <a giddy-button routerLink="/">Open the plan instead</a>
+    </section>
+  }
+  @case ('loading') {
+    @if (chat.loader.showSkeleton()) {
+      <div class="split" aria-busy="true">
+        <span class="visually-hidden">Loading your conversation…</span>
+        <div class="stack" aria-hidden="true">
+          <giddy-skeleton shape="title" />
+          <giddy-skeleton />
+          <giddy-skeleton />
+          <giddy-skeleton />
+        </div>
+      </div>
+    }
+  }
+  @default {
+    <div class="split">
+      <div class="chat">
+        <ol giddy-chat-log aria-label="Conversation with Giddy" [busy]="chat.busy()">
+          @if (!chat.entries().length) {
+            <li giddy-chat-message author="giddy">
+              <p>
+                <strong>Hi {{ firstName() }}! I’m Giddy.</strong> Tell me about the birthday kid and
+                I’ll plan the whole party: theme, venue, entertainment, food and invites.
+              </p>
+              <p>
+                The more you share, the better: age, what they love, how many friends, your budget
+                and neighbourhood.
+              </p>
+              <giddy-suggestion-chips
+                [suggestions]="starters()"
+                [disabled]="chat.busy()"
+                (chosen)="send($event)"
+              />
+            </li>
+          }
+          @for (entry of chat.entries(); track entry.message.id) {
+            @let message = entry.message;
+            <li
+              giddy-chat-message
+              [author]="message.author"
+              [authorName]="parentName()"
+              [time]="entry.status === 'sent' ? time(message) : null"
+            >
+              @if (message.steps.length) {
+                <ul giddy-tool-steps [steps]="message.steps"></ul>
+              }
+              @if (message.text) {
+                <p class="planner__text">{{ message.text }}</p>
+              }
+              @if (message.proposal; as proposal) {
+                <section
+                  giddy-plan-card
+                  emoji="🦕"
+                  [heading]="proposal.title"
+                  [rows]="planRows(proposal)"
+                  [totalLabel]="planTotal(proposal)"
+                  [overBudget]="proposal.overBudgetBy > 0"
+                >
+                  @if (proposal.applied) {
+                    <span class="inline-status inline-status--success"
+                      ><svg giddy-icon="check-circle"></svg>Saved to the party</span
+                    >
+                  } @else {
+                    <button
+                      giddy-button
+                      variant="primary"
+                      type="button"
+                      (click)="useThisPlan(proposal)"
+                    >
+                      Use this plan
+                    </button>
+                    <button giddy-button type="button" (click)="swapSomething()">
+                      Swap something
+                    </button>
+                  }
+                </section>
+              }
+              @if (message.suggestions.length && isLastGiddyMessage(entry)) {
+                <giddy-suggestion-chips
+                  [suggestions]="message.suggestions"
+                  [disabled]="chat.busy()"
+                  (chosen)="send($event)"
+                />
+              }
+              @if (entry.status === 'failed') {
+                <div giddy-alert tone="danger" heading="This message wasn’t sent">
+                  <div class="alert__actions">
+                    <button giddy-button size="sm" type="button" (click)="sendAgain(entry)">
+                      Send again
+                    </button>
+                    <button
+                      giddy-button
+                      size="sm"
+                      variant="ghost"
+                      type="button"
+                      (click)="editMessage(entry)"
+                    >
+                      Edit message
+                    </button>
+                  </div>
+                </div>
+              }
+            </li>
+          }
+          @if (chat.running(); as turn) {
+            <li giddy-chat-message author="giddy">
+              @if (turn.steps.length) {
+                <ul giddy-tool-steps [steps]="turn.steps"></ul>
+              }
+              <giddy-typing-indicator />
+            </li>
+          }
+          @if (chat.failure(); as reason) {
+            <li giddy-chat-message author="giddy">
+              <div giddy-alert tone="danger" heading="Giddy can’t answer right now">
+                <div>{{ reason }}</div>
+              </div>
+            </li>
+          }
+        </ol>
+        <form
+          giddy-composer
+          label="Message Giddy"
+          placeholder="Ask Giddy anything about the party…"
+          stopLabel="Stop Giddy"
+          [busy]="chat.busy()"
+          [(value)]="draft"
+          (sent)="send($event)"
+          (stopped)="chat.stop()"
+        ></form>
+      </div>
+      <aside class="stack" aria-label="Party at a glance">
+        @if (party()) {
+          <section giddy-card heading="Party at a glance" pop="mint">
+            <dl giddy-description-list [items]="glance()"></dl>
+            <a giddy-button size="sm" class="planner__aside-link" routerLink="/"
+              >Open the full plan</a
+            >
+          </section>
+        }
+        <section giddy-card heading="Giddy knows">
+          @if (chat.conversation()?.memories?.length) {
+            <ul class="stack stack--sm text-sm planner__memories">
+              @for (memory of chat.conversation()?.memories; track memory.id) {
+                <li>{{ memory.text }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="text-sm text-muted">
+              Nothing yet. Tell Giddy what your kids love and Giddy will remember.
+            </p>
+          }
+          <p class="text-caption">
+            Giddy remembers this for future plans. <a routerLink="/settings">Manage</a>
+          </p>
+        </section>
+      </aside>
+    </div>
+  }
+}

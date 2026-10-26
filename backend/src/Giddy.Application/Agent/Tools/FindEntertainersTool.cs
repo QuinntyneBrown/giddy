@@ -17,7 +17,7 @@ public sealed class FindEntertainersTool(CatalogueSearch search) : IAgentTool
     {
         var theme = ToolSchema.OptionalString(input, "theme");
         var result = await search.SearchAsync(CatalogueCategory.Entertainer, context, theme, cancellationToken);
-        var kind = string.IsNullOrWhiteSpace(theme) ? "" : $"{theme.Trim().ToLowerInvariant()} ";
-        return new ToolOutcome(result.Json, $"Compared {result.Matches} {kind}entertainers");
+        var forTheme = string.IsNullOrWhiteSpace(theme) ? string.Empty : $" for {theme.Trim().ToLowerInvariant()}";
+        return new ToolOutcome(result.Json, $"Compared {result.Matches} entertainers{forTheme}");
     }
 }

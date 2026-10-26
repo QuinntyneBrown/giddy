@@ -45,6 +45,8 @@ public sealed class ConversationViewBuilder(IGiddyDbContext db)
     public static PartyAtAGlance Glance(Party party) => new(
         party.Id,
         party.Name,
+        party.ChildName,
+        party.TurningAge,
         party.ChildName is null ? null : $"{party.ChildName}, turning {party.TurningAge}",
         LocalDatePattern.Iso.Format(party.Date),
         TimeOfDay.Of(party.StartsAt),
