@@ -34,6 +34,7 @@ app.MapServiceAreaEndpoints();
 app.MapConversationEndpoints();
 app.MapMemoryEndpoints();
 app.MapHomeEndpoints();
+app.MapVenueEndpoints();
 
 app.Run();
 

@@ -77,6 +77,23 @@ public sealed class CatalogueItem
 
     public LocalDate[] UnavailableDates { get; private set; } = [];
 
+    /// <summary>Venue-only details; null for themes and vendors.</summary>
+    public VenueProfile? Venue { get; private set; }
+
+    public CatalogueItem WithVenueProfile(VenueProfile profile)
+    {
+        Venue = profile;
+        return this;
+    }
+
+    /// <summary>The slots still free on a date.</summary>
+    public IReadOnlyList<VenueSlot> FreeSlotsOn(LocalDate date) =>
+        Venue is null || !IsAvailableOn(date)
+            ? []
+            : Venue.Slots.Where(slot => !Venue.Booked.Any(b => b.Date == date && b.Start == slot.Start)).ToList();
+
+    public bool HasFeature(string feature) => Features.Contains(feature, StringComparer.OrdinalIgnoreCase);
+
     public CatalogueItem WithFeatures(params string[] values)
     {
         Features = [.. Features, .. Lower(values)];

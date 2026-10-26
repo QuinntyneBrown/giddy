@@ -29,5 +29,9 @@ public interface IGiddyDbContext
 
     DbSet<Family> Families { get; }
 
+    DbSet<FavouriteVenue> FavouriteVenues { get; }
+
+    DbSet<VenueWaitlistEntry> VenueWaitlist { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

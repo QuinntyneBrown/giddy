@@ -21,17 +21,17 @@ The feature is a vertical slice from the Angular web application through the Gid
 
 **Backend (Giddy API)**
 
-- **`VenuesController`** — `GET /api/venues/search`.
-- **`SearchVenuesQuery`** — Combines the venue catalogue, geodistance, capacity and live availability.
-- **`AvailabilityService`** — Fan-out to partner APIs with 3 s per-partner timeout; caches results in Redis for 15 minutes.
+- **Venue endpoints** — `GET /api/venues/search?partyId|postalCode&date&guests&radiusKm&maxPrice&indoor&nutFree&parking&stepFree&sort`.
+- **`SearchVenuesQuery`** — Combines the venue catalogue, geodistance, capacity and live availability. Venues up to two kids short are listed with a warning ("Fits 15; you invited 16").
+- **`IVenueAvailability`** — Free slots per venue and date. The first implementation reads the slots venues share with Giddy; partner APIs plug in behind it, and a timeout (`AvailabilityUnavailableException`) becomes HTTP 503 with the filters kept.
 - **`RelaxationAdvisor`** — Tries single-filter relaxations against cached data to build the hint.
-- **`GeoService`** — Postal code to coordinates; caches lookups; enforces the GTA service area.
+- **`VenueOrigins` / `GtaAreas`** — The party's area, a postal code or the family's postal code; codes outside the GTA return `outsideServiceArea` and no venues.
 
 
 **Open points**
 
 - List of launch venue partners and their API contracts `<TO SUPPLY>`
-- Ranking weights for Best match `<TO SUPPLY>`
+- Best match: rating × 2 − distance × 0.3 − price ÷ 200, highest first; to be tuned with real bookings.
 
 ## Requirements
 
