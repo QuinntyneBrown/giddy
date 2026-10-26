@@ -35,6 +35,7 @@ export const ICON_SHAPES: Record<IconName, IconShape[]> = {
       'M4 21V13a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8zM4 16c2 1.5 4 1.5 5.3 0 1.4 1.5 4 1.5 5.4 0 1.3 1.5 3.3 1.5 5.3 0M12 11V7M12 7c-1 0-1.5-1-1-2l1-2 1 2c.5 1 0 2-1 2z',
     ),
   ],
+  heart: [path('M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z')],
   home: [path('M3 11 12 4l9 7'), path('M5 10v10h5v-6h4v6h5V10')],
   info: [circle(12, 12, 9), path('M12 11v5M12 8h.01')],
   mail: [{ kind: 'rect', x: 3, y: 5, width: 18, height: 14, rx: 2 }, path('m3 7 9 6 9-6')],

@@ -13,6 +13,7 @@ export type IconName =
   | 'trash'
   | 'share'
   | 'food'
+  | 'heart'
   | 'home'
   | 'info'
   | 'mail'

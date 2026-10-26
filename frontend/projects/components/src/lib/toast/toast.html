@@ -1,0 +1,8 @@
+<svg [giddy-icon]="icon()"></svg>
+<div class="toast__body">
+  <div class="toast__title">{{ heading() }}</div>
+  @if (text(); as message) {
+    <div class="toast__text">{{ message }}</div>
+  }
+</div>
+<ng-content />

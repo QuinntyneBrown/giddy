@@ -1,0 +1,7 @@
+@if (best()) {
+  <span class="best"><ng-container *ngTemplateOutlet="content" /></span>
+  <span class="best-value__label">Best</span>
+} @else {
+  <ng-container *ngTemplateOutlet="content" />
+}
+<ng-template #content><ng-content /></ng-template>
