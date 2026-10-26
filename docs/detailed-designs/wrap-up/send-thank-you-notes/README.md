@@ -23,6 +23,24 @@ The feature is a vertical slice from the Angular web application through the Gid
 - **`SendThankYousHandler`** — Queues one email per unsent note; marks Sent on delivery.
 
 
+**As built**
+
+**Opening and drafting**
+- `GET /api/parties/{id}/wrap-up` returns everything on the page. Before the party it says when wrap-up opens (the day after), and the page shows "Wrap-up opens after the party".
+- Notes are never written ahead: a guest who replied Coming has Giddy's draft (`ThankYouDrafts`), in the birthday child's voice, which mentions the gift when one is logged.
+
+**Editing**
+- `PUT /api/parties/{id}/thank-yous/{guestId}` stores the gift and, only if the parent changed the wording, their own message (`ThankYouNote`).
+- `NoteDialog` (CDK) edits both. Until the wording is changed, a new gift updates Giddy's draft.
+- An emptied note shows "Write a note, or keep Giddy’s draft".
+
+**Sending**
+- `POST .../thank-yous/send` emails each unsent note whose guest's parent has an email ("A thank-you from Zuri") and marks it Sent. It answers how many went; sending again sends nothing twice.
+- Guests without an email show "No email" and are not counted in "Send N notes".
+
+**Who can do what**
+- Owners and co-planners can edit and send after the party (`PartyAccess.WrapUp`). Viewers can only read, and parents outside the party get 404.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines the level-1 (L1) requirement cited beside it; the full acceptance criteria are in [`docs/specs/L2.md`](../../../specs/L2.md).
