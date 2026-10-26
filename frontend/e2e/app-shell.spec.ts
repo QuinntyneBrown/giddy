@@ -20,3 +20,11 @@ test('uses the system dark theme when no preference is saved', async ({ page }) 
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
+
+test('uses a saved theme choice ahead of the system preference', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => localStorage.setItem('giddy-theme', 'light'));
+  await page.goto('/');
+
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+});
