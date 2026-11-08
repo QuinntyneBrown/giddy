@@ -459,19 +459,23 @@ h1, h2, h3, h4, .card__title, .dialog__title, .drawer__title, .empty__title { fo
 .logo-mark .balloon { fill: var(--color-accent); }
 .logo-mark .shine { fill: var(--color-bg-surface); opacity: 0.55; }
 .logo-mark .string { fill: none; stroke: var(--color-accent); stroke-width: 2.6; stroke-linecap: round; }
-.mascot { width: var(--size-illustration-md); height: var(--size-illustration-md); flex: none; }
-.mascot--sm { width: var(--size-illustration-sm); height: var(--size-illustration-sm); } .mascot--lg { width: 7rem; height: 7rem; } .mascot--xl { width: var(--size-illustration-xl); height: var(--size-illustration-xl); }
-.mascot .balloon { fill: var(--color-accent); }
-.mascot .cheek { fill: var(--color-pop-pink-solid); opacity: 0.85; }
-.mascot .face { fill: var(--color-fg-on-accent); }
-.mascot .smile { fill: none; stroke: var(--color-fg-on-accent); stroke-width: 2.5; stroke-linecap: round; }
-.mascot .shine { fill: var(--color-fg-on-accent); opacity: 0.35; }
-.mascot .knot { fill: var(--color-accent-press); }
-.mascot .string { fill: none; stroke: var(--color-fg-subtle); stroke-width: 2; stroke-linecap: round; }
-.mascot--worried .balloon { fill: var(--color-pop-orange-solid); }
-.mascot--sleepy .balloon { fill: var(--color-pop-sky-solid); }
-.mascot--party .hat { fill: var(--color-pop-sun-solid); }
-.mascot--party .hat-dot { fill: var(--color-pop-pink-solid); }
+/* Giddy the balloon, as drawn in the Magic Patterns brand guidelines: 64 x 84 artwork, width follows height. */
+.mascot { --mascot-body: var(--color-accent); --mascot-face: var(--color-mascot-face); height: var(--size-illustration-md); width: auto; aspect-ratio: 64 / 84; flex: none; }
+.mascot--sm { height: var(--size-illustration-sm); } .mascot--lg { height: 7rem; } .mascot--xl { height: var(--size-illustration-xl); }
+.mascot--sleepy { --mascot-body: var(--color-pop-sky-solid); --mascot-face: var(--color-mascot-face-on-pop); }
+.mascot--worried { --mascot-body: var(--color-pop-orange-solid); --mascot-face: var(--color-mascot-face-on-pop); }
+.mascot .balloon, .mascot .knot { fill: var(--mascot-body); }
+.mascot .string { fill: none; stroke: var(--mascot-body); stroke-width: 2.4; stroke-linecap: round; }
+.mascot .shine { fill: var(--color-mascot-shine); opacity: 0.45; }
+.mascot .face { fill: var(--mascot-face); }
+.mascot .feature { fill: none; stroke: var(--mascot-face); stroke-linecap: round; stroke-linejoin: round; }
+.mascot .mouth { fill: var(--mascot-face); stroke: var(--mascot-face); stroke-width: 1.5; stroke-linejoin: round; }
+.mascot .cheek { fill: var(--color-pop-pink-solid); }
+.mascot--sleepy .cheek { opacity: 0.6; }
+.mascot .hat { fill: var(--color-pop-sun-solid); }
+.mascot .hat-trim { fill: none; stroke: var(--color-pop-pink-solid); stroke-width: 2; stroke-linecap: round; }
+.mascot .hat-dot { fill: var(--color-pop-pink-solid); }
+.mascot .zz { fill: none; stroke: var(--color-pop-sky-fg); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ---------- Party pops: colour families for tiles, avatars, chips -------- */
 .pop--sun    { --pop-bg: var(--color-pop-sun-bg);    --pop-fg: var(--color-pop-sun-fg);    --pop-solid: var(--color-pop-sun-solid); }
