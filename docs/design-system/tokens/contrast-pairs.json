@@ -420,6 +420,18 @@
       "bg": "--color-bg-canvas",
       "min": 4.5,
       "note": "brand wordmark and links on canvas"
+    },
+    {
+      "fg": "--color-logo-ink",
+      "bg": "--color-bg-canvas",
+      "min": 3,
+      "note": "wordmark letters (logotype; held to the 3:1 graphics bar)"
+    },
+    {
+      "fg": "--color-logo-ink",
+      "bg": "--color-bg-surface",
+      "min": 3,
+      "note": "wordmark letters (logotype; held to the 3:1 graphics bar)"
     }
   ]
 }
