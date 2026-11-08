@@ -16,6 +16,7 @@ Giddy is fun for kids and clear for parents. It uses a grape accent on a warm cr
 | [Shape](foundations/shape.html) | Pills and soft corners |
 | [Motion](foundations/motion.html) | Durations, easings, reduced motion |
 | [Iconography](foundations/iconography.html) | Icons, emoji art, mascot |
+| [Brand](foundations/brand.html) | Brand guidelines from Magic Patterns “Giddy Brand Guidelines”: the idea and principles, colour proportion, type faces, mascot moods, voice and examples in use |
 | [Logo](foundations/logo.html) | The giddy wordmark, the balloon symbol and the app icon (`assets/brand/`) |
 | [Theming](foundations/theming.html) | Light, dark, new themes |
 | [Responsive](foundations/responsive.html) | Phone-first rules |

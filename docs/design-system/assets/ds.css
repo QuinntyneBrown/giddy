@@ -191,3 +191,42 @@ pre code { background: none; padding: 0; }
 .ds-logo-construction { position: relative; max-width: 35rem; margin: var(--space-6) auto; }
 .ds-logo-construction > span { position: absolute; inset-inline: 0; border-top: 1px dashed var(--color-accent); font-size: var(--font-size-xs); color: var(--color-fg-muted); text-align: right; line-height: 1; padding-top: var(--space-1); }
 .ds-logo-clear { padding: 1.4rem; outline: 1px dashed var(--color-accent); }
+
+/* Brand foundation page */
+.ds-brand-statement { font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-2xl); line-height: var(--line-height-snug); color: var(--color-fg-accent); max-width: 40rem; }
+.ds-brand-principles { display: grid; border-block: 1px solid var(--color-border-default); }
+.ds-brand-principles > div { padding-block: var(--space-4); }
+.ds-brand-principles > div + div { border-top: 1px solid var(--color-border-default); }
+.ds-brand-principles dt { font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-lg); }
+.ds-brand-principles dd { margin: var(--space-1) 0 0; color: var(--color-fg-muted); }
+.ds-brand-colour { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.ds-brand-lead { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); min-height: 16rem; padding: var(--space-6); border-radius: var(--radius-xl); background: var(--palette-grape-600); color: var(--palette-cream-50); }
+.ds-brand-lead > b { font-family: var(--font-family-display); font-weight: var(--font-weight-heavy); font-size: var(--font-size-3xl); }
+.ds-brand-lead dl { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-6); margin: 0; font-size: var(--font-size-sm); }
+.ds-brand-lead dt { color: var(--palette-grape-100); }
+.ds-brand-lead dd { margin: 0; }
+.ds-brand-lead code, .ds-brand-swatch code, .ds-brand-pop code { background: none; color: inherit; padding: 0; }
+.ds-brand-swatch { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); padding: var(--space-5); border-radius: var(--radius-lg); }
+.ds-brand-swatch b { display: block; font-family: var(--font-family-display); font-size: var(--font-size-lg); }
+.ds-brand-swatch small { font-size: var(--font-size-sm); }
+.ds-brand-pops { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); }
+.ds-brand-pop { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); border-radius: var(--radius-lg); }
+.ds-brand-pop__dot { width: 2.5rem; height: 2.5rem; border-radius: 50%; margin-bottom: var(--space-4); }
+.ds-brand-pop b { font-family: var(--font-family-display); font-size: var(--font-size-lg); }
+.ds-brand-pop code { font-size: var(--font-size-xs); }
+.ds-brand-proportion { display: flex; height: 3.5rem; overflow: hidden; border-radius: var(--radius-lg); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+.ds-brand-proportion > span { display: flex; align-items: center; padding-inline: var(--space-3); white-space: nowrap; overflow: hidden; }
+.ds-brand-proportion i { flex: 1; align-self: stretch; }
+.ds-brand-faces { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.ds-brand-faces > div { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-6); border-radius: var(--radius-xl); }
+.ds-brand-faces b { margin-top: var(--space-4); font-size: var(--font-size-xl); }
+.ds-brand-faces small { color: var(--color-fg-muted); }
+.ds-brand-aa { font-size: 6rem; line-height: 1; }
+.ds-brand-scale th small { display: block; font-weight: var(--font-weight-regular); }
+.ds-brand-say { color: var(--color-success-fg); font-weight: var(--font-weight-bold); }
+.ds-brand-not { color: var(--color-danger-fg); font-weight: var(--font-weight-bold); }
+.ds-brand-uses { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.ds-brand-app { overflow: hidden; border: 1px solid var(--color-border-default); border-radius: var(--radius-xl); background: var(--color-bg-canvas); }
+.ds-brand-app__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-5); border-bottom: 1px solid var(--color-border-default); background: var(--color-bg-surface); }
+.ds-brand-app__body { display: grid; gap: var(--space-3); padding: var(--space-5); }
+.ds-brand-invite { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); text-align: center; border-radius: var(--radius-xl); }
