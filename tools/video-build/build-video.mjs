@@ -12,6 +12,10 @@
 // <body data-music="../assets/music/x.mp3"> lays that track under the narration:
 // looped if it is shorter, at data-music-db (default -10.8 dB), faded in over
 // 1.5 s; the last slide holds 3 s after the narration so the music fades out.
+// data-music-lead="s" holds the first slide with music alone for that long before the narration,
+// data-music-start="s" skips that much of the track, for songs with a quiet intro, and
+// data-music-tail="s" (default 3) is how long the last slide holds after the narration file ends.
+// Every build also writes <folder>/<name>.vtt, the captions as WebVTT for a <track>.
 // Needs Chromium (Playwright's, or EDGE_PATH) and ffmpeg with libx264 and libass
 // (FFMPEG_PATH overrides).
 import { execFileSync } from 'node:child_process';
@@ -71,13 +75,20 @@ async function readSlides() {
       clipDelay: Number(s.dataset.clipDelay ?? 0),
     })),
   );
-  const music = await page.evaluate(() => ({ src: document.body.dataset.music ?? null, db: document.body.dataset.musicDb ?? null }));
+  const music = await page.evaluate(() => ({
+    src: document.body.dataset.music ?? null,
+    db: document.body.dataset.musicDb ?? null,
+    lead: Number(document.body.dataset.musicLead ?? 0),
+    start: Number(document.body.dataset.musicStart ?? 0),
+    tail: document.body.dataset.musicTail ?? null,
+  }));
   // Every Giddy video has background music (AGENTS.md): the deck must name the track.
   if (!music.src) throw new Error('slides.html: <body> has no data-music; every deck names ../assets/music/on-the-beach-intro-outro.mp3');
   {
     music.file = join(folder, music.src);
     if (!existsSync(music.file)) throw new Error(`data-music: ${music.src} not found`);
     music.db = Number(music.db ?? MUSIC_DB);
+    music.tail = Number(music.tail ?? MUSIC_TAIL);
   }
   return { browser, page, url, slides, music };
 }
@@ -152,6 +163,17 @@ function captions(timing) {
   return cues;
 }
 
+function vttFile(cues, file) {
+  const ts = (t) => {
+    const ms = Math.round(t * 1000);
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const sec = Math.floor((ms % 60000) / 1000);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}.${String(ms % 1000).padStart(3, '0')}`;
+  };
+  writeFileSync(file, ['WEBVTT', '', ...cues.flatMap((c, i) => [String(i + 1), `${ts(c.start)} --> ${ts(c.end)}`, c.text, ''])].join('\n'));
+}
+
 function assFile(cues, file) {
   const ts = (t) => {
     const cs = Math.round(t * 100);
@@ -190,10 +212,15 @@ async function main() {
   if (!existsSync(timingFile)) throw new Error(`${timingFile} is missing: run tools/video-audio/generate-audio.mjs ${folder} first`);
   const timing = JSON.parse(readFileSync(timingFile, 'utf8'));
   const mp3 = join(folder, `${name}.mp3`);
-  const total = duration(mp3);
+  const narration = duration(mp3);
 
   const { browser, page, url, slides, music } = await readSlides();
-  const { times, errors } = schedule(slides, script, timing);
+  // The narration starts after the music's lead-in; every cue and caption moves with it.
+  const lead = music.lead;
+  const total = narration + lead;
+  const scheduled = schedule(slides, script, timing);
+  const errors = scheduled.errors;
+  const times = scheduled.times.map((t, i) => (i === 0 || t === null ? t : t + lead));
   if (errors.length) {
     await browser.close();
     throw new Error(errors.join('\n'));
@@ -217,7 +244,7 @@ async function main() {
     if (note.includes('←')) warnings++;
     console.log(`${String(s.index).padStart(3)}  ${mmss(s.start).padStart(7)}  ${d.toFixed(1).padStart(5)} s  ${s.id}${note}`);
   }
-  if (music) console.log(`music: ${basename(music.file)} at ${music.db} dB under the narration, ${MUSIC_TAIL} s tail`);
+  if (music) console.log(`music: ${basename(music.file)} from ${music.start} s at ${music.db} dB under the narration, ${lead} s lead-in, ${music.tail} s tail`);
   console.log(`${slides.length} slides, ${mmss(total)} total, ${warnings} warning(s)`);
   if (flag('check')) {
     await browser.close();
@@ -249,7 +276,7 @@ async function main() {
   const list = [];
   // With music the last slide holds for a tail after the narration, so the track fades out
   // instead of being cut with the last word.
-  const tail = music ? MUSIC_TAIL : 0;
+  const tail = music ? music.tail : 0;
   for (const s of spans) {
     const last = s === spans.at(-1);
     const frames = Math.round((s.end + (last ? tail : 0)) * FPS) - Math.round(s.start * FPS);
@@ -277,8 +304,10 @@ async function main() {
   const silent = join(cache, 'video.mp4');
   ff('-f', 'concat', '-safe', '0', '-i', concat, '-c', 'copy', silent);
 
+  const cues = captions(timing).map((c) => ({ ...c, start: c.start + lead, end: c.end + lead }));
   const ass = join(cache, 'captions.ass');
-  assFile(captions(timing), ass);
+  assFile(cues, ass);
+  vttFile(cues, join(folder, `${name}.vtt`));
   const mp4 = join(folder, `${name}.mp4`);
   const assArg = ass.replace(/\\/g, '/').replace(/:/g, '\\:').replace(/'/g, "\\'");
   const video = flag('no-captions') ? '[0:v]null[v]' : `[0:v]ass='${assArg}'[v]`;
@@ -287,13 +316,13 @@ async function main() {
   const audio = music
     ? [
         `[2:a]volume=${music.db}dB,afade=t=in:d=${MUSIC_FADE_IN},afade=t=out:st=${Math.max(0, total + tail - MUSIC_FADE_OUT).toFixed(3)}:d=${MUSIC_FADE_OUT}[m]`,
-        `[1:a]apad=pad_dur=${tail}[n]`,
+        `[1:a]adelay=${Math.round(lead * 1000)}:all=1,apad=pad_dur=${tail}[n]`,
         '[n][m]amix=inputs=2:duration=first:normalize=0[a]',
       ]
     : ['[1:a]anull[a]'];
-  const inputs = ['-i', silent, '-i', mp3, ...(music ? ['-stream_loop', '-1', '-i', music.file] : [])];
+  const inputs = ['-i', silent, '-i', mp3, ...(music ? ['-stream_loop', '-1', ...(music.start ? ['-ss', String(music.start)] : []), '-i', music.file] : [])];
   ff(...inputs, '-filter_complex', [video, ...audio].join(';'), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '26', '-tune', 'stillimage', '-pix_fmt', 'yuv420p', '-r', String(FPS), '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', '-shortest', mp4);
-  console.log(`\n${mp4} (${duration(mp4).toFixed(1)} s; narration ${total.toFixed(1)} s)`);
+  console.log(`\n${mp4} (${duration(mp4).toFixed(1)} s; narration ${narration.toFixed(1)} s after a ${lead} s lead-in)`);
 }
 
 main().catch((err) => {
