@@ -31,7 +31,7 @@ The feature is a frontend-only change: two tokens, one new library component, tw
 
 **Frontend: apps (`frontend/src`, `frontend/projects/marketing`)**
 
-- **`public/`.** Each app gets `favicon.svg` and `apple-touch-icon.png` (180 px, rendered from `app-icon.svg`), and `favicon.ico` is regenerated from the symbol (16, 32 and 48 px).
+- **`public/`.** Each app gets `favicon.svg` and `apple-touch-icon.png` (180 px, rendered square from `app-icon.svg` because iOS applies its own rounding), and `favicon.ico` is regenerated from the symbol (16, 32 and 48 px).
 - **`index.html`.** Declares `<link rel="icon" href="favicon.svg" type="image/svg+xml">`, keeps `favicon.ico` as the fallback (`sizes="48x48"`) and adds `<link rel="apple-touch-icon" href="apple-touch-icon.png">` (AC4).
 
 **e2e (`frontend/e2e`)**

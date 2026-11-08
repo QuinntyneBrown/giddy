@@ -1,6 +1,7 @@
 import { expect, test } from './fixtures/test';
 import { AppShellPage } from './pages/app-shell.page';
-import { MarketingPage } from './pages/marketing.page';
+import { MARKETING_ORIGIN, MarketingPage } from './pages/marketing.page';
+import { SiteIconsPage } from './pages/site-icons.page';
 
 // L2-096: the giddy wordmark is the brand in the app's top bar and sidebar.
 
@@ -57,3 +58,30 @@ test('shows the giddy wordmark in the marketing site header', async ({ page }) =
 
   await expect(site.logoWordmark).toBeVisible();
 });
+
+for (const [site, url] of [
+  ['the app', '/'],
+  ['the marketing site', `${MARKETING_ORIGIN}/`],
+] as const) {
+  test(`declares the app icon as the favicon and touch icon on ${site}`, async ({ page }) => {
+    const icons = new SiteIconsPage(page);
+    await icons.open(url);
+
+    expect(await icons.declaredIcons()).toEqual([
+      expect.objectContaining({
+        rel: 'icon',
+        href: '/favicon.svg',
+        type: 'image/svg+xml',
+        status: 200,
+        contentType: expect.stringContaining('image/svg+xml'),
+      }),
+      expect.objectContaining({ rel: 'icon', href: '/favicon.ico', sizes: '48x48', status: 200 }),
+      expect.objectContaining({
+        rel: 'apple-touch-icon',
+        href: '/apple-touch-icon.png',
+        status: 200,
+        contentType: expect.stringContaining('image/png'),
+      }),
+    ]);
+  });
+}
