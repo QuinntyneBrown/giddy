@@ -4,6 +4,7 @@ import {
   HeroComponent,
   MascotComponent,
   TopBarComponent,
+  VideoComponent,
 } from '@giddy/components';
 import { environment } from '../../../environments/environment';
 
@@ -13,7 +14,7 @@ import { environment } from '../../../environments/environment';
  */
 @Component({
   selector: 'mk-marketing-page',
-  imports: [ButtonComponent, HeroComponent, MascotComponent, TopBarComponent],
+  imports: [ButtonComponent, HeroComponent, MascotComponent, TopBarComponent, VideoComponent],
   templateUrl: './marketing-page.html',
   styleUrl: './marketing-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

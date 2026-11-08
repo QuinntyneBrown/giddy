@@ -1,0 +1,34 @@
+<div class="video__frame">
+  @if (unavailable()) {
+    <img [src]="poster()" [alt]="posterAlt()" />
+    <p class="video__fallback" role="status">
+      <strong>This browser can’t play the video.</strong>
+      <a [href]="'#' + transcriptId" (click)="transcriptOpen.set(true)">Read the transcript</a>
+    </p>
+  } @else {
+    <video
+      controls
+      playsinline
+      preload="metadata"
+      width="1920"
+      height="1080"
+      [attr.poster]="poster()"
+      [src]="src()"
+      [attr.aria-label]="label()"
+      (error)="failed()"
+    >
+      @if (captions(); as vtt) {
+        <track kind="captions" srclang="en" label="English" [src]="vtt" />
+      }
+    </video>
+  }
+</div>
+<details
+  class="video__transcript"
+  [id]="transcriptId"
+  [open]="transcriptOpen()"
+  (toggle)="toggled($event)"
+>
+  <summary>Read the transcript</summary>
+  <div class="video__transcript-body"><ng-content /></div>
+</details>

@@ -29,3 +29,20 @@
   font: var(--text-body-lg);
   max-width: var(--layout-measure);
 }
+
+.mk-heading {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  max-width: var(--layout-measure);
+}
+
+.mk-heading p {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+
+.mk-watch {
+  max-width: 56rem;
+  margin-inline: auto;
+}

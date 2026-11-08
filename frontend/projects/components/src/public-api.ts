@@ -98,3 +98,4 @@ export * from './lib/file-drop/file-drop';
 export * from './lib/progress/progress';
 export * from './lib/prose/prose';
 export * from './lib/search-field/search-field';
+export * from './lib/video/video';
