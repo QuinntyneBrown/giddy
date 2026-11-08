@@ -133,7 +133,7 @@ Giddy additions to the standard token set:
 
 ## Changelog
 
-- Sun 8 Nov 2026 — Added the Video component (`.video`, `.video__frame`, `.video__fallback`, `.video__transcript`) for the marketing site’s pitch video; documented plain `href` links on Button, the top bar brand (`brandHref`) and footer links. No token values changed.
+- Sun 8 Nov 2026 — Added the Video component (`.video`, `.video__frame`, `.video__fallback`, `.video__transcript`) for the marketing site’s pitch video; documented plain `href` links on Button, the top bar brand (`brandHref`, `brandLabel`, the `[giddyTopBarNav]` slot) and footer links; `li[giddy-card]` and `headingLevel` on Card and Tile. No token values changed.
 
 ## Verification
 

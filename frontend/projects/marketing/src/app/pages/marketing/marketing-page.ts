@@ -39,7 +39,7 @@ import { RevealDirective } from './reveal.directive';
   styleUrl: './marketing-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketingPageComponent {
+export class MarketingPage {
   protected readonly signUpUrl = `${environment.appUrl}/sign-up`;
   protected readonly signInUrl = `${environment.appUrl}/sign-in`;
 

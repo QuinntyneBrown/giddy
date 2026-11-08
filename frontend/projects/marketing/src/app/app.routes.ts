@@ -7,8 +7,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./pages/marketing/marketing-page').then((m) => m.MarketingPageComponent),
+    loadComponent: () => import('./pages/marketing/marketing-page').then((m) => m.MarketingPage),
     data: { page: 'marketing' },
   },
   { path: '**', redirectTo: '' },
