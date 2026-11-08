@@ -19,6 +19,7 @@ Giddy is an agentic birthday planner for kids in Toronto and the Greater Toronto
 - The components library MUST NOT depend on the API client, the app or any feature library. It contains no business logic and makes no HTTP calls.
 - Components MUST meet WCAG 2.2 AA, read tokens by role and expose the design system's variants, sizes and states through inputs.
 - A screen that uses a hand-rolled substitute for a library component is incomplete and MUST be corrected before it is considered done.
+- `docs/screen-composition.md` is binding: before implementing a page, dialog, notification or shell part, read its entry and use exactly the library components it lists; build locally only what it marks as local. Keep it aligned with the mocks.
 
 ## Architecture rules
 

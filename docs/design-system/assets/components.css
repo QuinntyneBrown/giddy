@@ -715,3 +715,19 @@ h1, h2, h3, h4, .card__title, .dialog__title, .drawer__title, .empty__title { fo
 .alert__body { min-width: 0; } .alert__actions { flex-wrap: wrap; }
 /* Lock page scroll while a modal is open. */
 body:has(> .dialog) { overflow: hidden; }
+
+/* ---------- Video player: native controls, poster, captions, transcript ---- */
+.video { display: grid; gap: var(--space-3); margin: 0; }
+.video__frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-bg-surface-sunken); box-shadow: var(--shadow-3); }
+.video__frame video, .video__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.video__fallback { position: absolute; inset: auto var(--space-3) var(--space-3); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg); background: var(--color-bg-surface); color: var(--color-fg-default); box-shadow: var(--shadow-2); font: var(--text-body-sm); }
+.video__fallback strong { font: var(--text-label); }
+.video__transcript { border: 1px solid var(--color-border-default); border-radius: var(--radius-md); background: var(--color-bg-surface); }
+.video__transcript summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) var(--space-4); min-height: var(--target-comfortable); font: var(--text-label); cursor: pointer; list-style: none; border-radius: inherit; }
+.video__transcript summary::-webkit-details-marker { display: none; }
+.video__transcript summary::after { content: "+"; font-size: var(--font-size-xl); color: var(--color-fg-subtle); transition: rotate var(--duration-base) var(--ease-standard); }
+.video__transcript[open] summary::after { rotate: 45deg; }
+.video__transcript summary:hover { background: var(--color-bg-subtle); }
+.video__transcript-body { padding: 0 var(--space-4) var(--space-4); color: var(--color-fg-muted); display: grid; gap: var(--space-2); }
+.video__transcript-body p { margin: 0; }
+@media (max-width: 39.99rem) { .video__frame { border-radius: var(--radius-lg); } .video__fallback { position: static; border-radius: 0; box-shadow: none; } .video__frame:has(.video__fallback) { aspect-ratio: auto; } .video__frame:has(.video__fallback) img { aspect-ratio: 16 / 9; height: auto; } }
