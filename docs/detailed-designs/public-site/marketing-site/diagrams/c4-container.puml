@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Marketing site
+
+Person(visitor, "Visitor", "A parent in the GTA")
+System_Boundary(giddy_b, "Giddy") {
+  Container(site, "Marketing site", "Angular application `marketing`, static files", "One page, no API client, no session; deployed on its own")
+  Container(web, "Giddy Web", "Angular application", "The app; /sign-up and /sign-in")
+  Container(api, "Giddy API", "ASP.NET Core", "Never called by the marketing site")
+}
+
+Rel(visitor, site, "Opens any path", "HTTPS")
+Rel(site, web, "Links into", "environment.appUrl")
+Rel(web, api, "Calls", "HTTPS/JSON")
+@enduml
