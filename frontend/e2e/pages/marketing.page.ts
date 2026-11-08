@@ -21,6 +21,7 @@ export class MarketingPage {
   readonly videoUnavailable: Locator;
   readonly posterStill: Locator;
   readonly footer: Locator;
+  readonly revealBlocks: Locator;
   private readonly apiRequests: string[] = [];
 
   constructor(private readonly page: Page) {
@@ -40,6 +41,7 @@ export class MarketingPage {
       .filter({ hasText: 'This browser can’t play the video.' });
     this.posterStill = this.watch.getByRole('img', { name: /Meet Giddy/ });
     this.footer = page.getByRole('contentinfo');
+    this.revealBlocks = page.locator('[data-reveal]');
     page.on('request', (request: Request) => {
       if (new URL(request.url()).pathname.startsWith('/api/')) this.apiRequests.push(request.url());
     });
@@ -76,6 +78,78 @@ export class MarketingPage {
 
   heroText(text: string): Locator {
     return this.hero.getByText(text, { exact: true });
+  }
+
+  path(): string {
+    return new URL(this.page.url()).pathname;
+  }
+
+  async preferReducedMotion(): Promise<void> {
+    await this.page.emulateMedia({ reducedMotion: 'reduce' });
+  }
+
+  async preferColourScheme(colorScheme: 'dark' | 'light'): Promise<void> {
+    await this.page.emulateMedia({ colorScheme });
+  }
+
+  /** Whether the page is wider than the viewport, so it would scroll sideways. */
+  async scrollsHorizontally(): Promise<boolean> {
+    return this.page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+  }
+
+  /** The opacity of every reveal block as the page first renders, before any scrolling. */
+  async revealOpacities(): Promise<number[]> {
+    return this.revealBlocks.evaluateAll((blocks) =>
+      blocks.map((block) => Number(getComputedStyle(block).opacity)),
+    );
+  }
+
+  /**
+   * Presses Tab through the whole page and returns every link and disclosure that took focus,
+   * with whether its box sat inside the viewport's width, and every visible one that never did.
+   */
+  async tabThroughPage(): Promise<{
+    reached: { name: string; fits: boolean }[];
+    missed: string[];
+  }> {
+    const reached = new Map<string, boolean>();
+    for (let i = 0; i < 80; i++) {
+      await this.page.keyboard.press('Tab');
+      const focused = await this.page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || !el.matches('a, summary, button')) return null;
+        const box = el.getBoundingClientRect();
+        return {
+          name: (el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/\s+/g, ' ').trim(),
+          href: el.getAttribute('href') ?? el.tagName,
+          fits: box.left >= 0 && box.right <= document.documentElement.clientWidth + 0.5,
+        };
+      });
+      if (focused) reached.set(`${focused.name}|${focused.href}`, focused.fits);
+    }
+    const visible = await this.page
+      .locator('a:visible, summary:visible')
+      .evaluateAll((els) =>
+        els.map(
+          (el) =>
+            `${(el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/\s+/g, ' ').trim()}|${el.getAttribute('href') ?? el.tagName}`,
+        ),
+      );
+    return {
+      reached: [...reached].map(([key, fits]) => ({ name: key, fits })),
+      missed: visible.filter((key) => !reached.has(key)),
+    };
+  }
+
+  /** Plays the pitch video muted, as a visitor pressing play would, and waits for it to run. */
+  async playVideo(): Promise<void> {
+    await this.video.evaluate(async (video: HTMLVideoElement) => {
+      video.muted = true;
+      await video.play();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
   }
 
   /** A content section, by its id, such as `how` or `themes`. */

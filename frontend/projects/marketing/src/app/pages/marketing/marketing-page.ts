@@ -14,6 +14,7 @@ import {
 } from '@giddy/components';
 import { environment } from '../../../environments/environment';
 import { MarketingTheme } from './marketing-content';
+import { RevealDirective } from './reveal.directive';
 
 /**
  * The marketing page (L2-095), composed from the library as docs/screen-composition.md lists. Links
@@ -29,6 +30,7 @@ import { MarketingTheme } from './marketing-content';
     FooterComponent,
     HeroComponent,
     MascotComponent,
+    RevealDirective,
     TileComponent,
     TopBarComponent,
     VideoComponent,

@@ -58,11 +58,11 @@
   </section>
 
   <section class="section" id="how" aria-labelledby="how-title">
-    <div class="mk-heading">
+    <div class="mk-heading" mkReveal>
       <h2 id="how-title">How Giddy works</h2>
       <p>Three steps from “what should we do?” to cake time.</p>
     </div>
-    <ol class="grid-3 mk-list">
+    <ol class="grid-3 mk-list" mkReveal>
       <li giddy-card heading="Chat about your kid" [headingLevel]="3" pop="sun">
         <p class="overline mk-step"><span class="emoji" aria-hidden="true">💬</span> Step 1</p>
         <p class="text-muted">
@@ -87,11 +87,11 @@
   </section>
 
   <section class="section" id="themes" aria-labelledby="themes-title">
-    <div class="mk-heading">
+    <div class="mk-heading" mkReveal>
       <h2 id="themes-title">Popular themes</h2>
       <p>A few of the parties GTA kids are asking for this season.</p>
     </div>
-    <ul class="grid-3 mk-list">
+    <ul class="grid-3 mk-list" mkReveal>
       @for (theme of themes; track theme.name) {
         <li
           giddy-tile
@@ -108,15 +108,15 @@
 
   <section giddy-card class="section" id="parents" heading="What parents get">
     <p class="text-muted">Everything for the party in one place, shared with your co-planner.</p>
-    <ul giddy-feature-list [features]="parentBenefits"></ul>
+    <ul giddy-feature-list mkReveal [features]="parentBenefits"></ul>
   </section>
 
   <section class="section" id="where" aria-labelledby="where-title">
-    <div class="mk-heading">
+    <div class="mk-heading" mkReveal>
       <h2 id="where-title">Where we plan</h2>
       <p>Parties all over Toronto and the GTA.</p>
     </div>
-    <ul class="mk-list mk-areas">
+    <ul class="mk-list mk-areas" mkReveal>
       @for (area of areas; track area) {
         <li giddy-chip>{{ area }}</li>
       }
@@ -124,7 +124,7 @@
   </section>
 
   <section giddy-hero class="section mk-final" id="start" aria-labelledby="start-title">
-    <div class="stack">
+    <div class="stack" mkReveal>
       <h2 id="start-title">The next birthday is closer than you think</h2>
       <p>Start a plan now and Giddy will remind you of every step.</p>
       <div class="cluster">

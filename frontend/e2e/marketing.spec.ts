@@ -183,4 +183,59 @@ test.describe('Marketing site', () => {
     await expect(site.footerLink('Watch the tour')).toHaveAttribute('href', '#watch');
     await expect(site.footerLink('Sign in')).toHaveAttribute('href', `${APP_ORIGIN}/sign-in`);
   });
+
+  test('shows the marketing page at any other address', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open('/parties/whatever?from=ad');
+
+    expect(site.path()).toBe('/');
+    await expect(site.body).toHaveAttribute('data-page', 'marketing');
+    await expect(site.heroHeading).toBeVisible();
+  });
+
+  test('fits a 390px phone with every link reachable by keyboard', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.useWidth(390);
+    await site.open();
+
+    expect(await site.scrollsHorizontally()).toBe(false);
+    const { reached, missed } = await site.tabThroughPage();
+    expect(missed).toEqual([]);
+    expect(reached.filter((target) => !target.fits)).toEqual([]);
+  });
+
+  test('shows every section at once when the visitor prefers reduced motion', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.preferReducedMotion();
+    await site.open();
+
+    const opacities = await site.revealOpacities();
+    expect(opacities.length).toBeGreaterThan(0);
+    expect(opacities.every((opacity) => opacity === 1)).toBe(true);
+  });
+
+  for (const width of [390, 1280]) {
+    for (const scheme of ['light', 'dark'] as const) {
+      test(`has no serious accessibility issues at ${width}px in the ${scheme} theme`, async ({
+        page,
+      }) => {
+        const site = new MarketingPage(page);
+        await site.useWidth(width);
+        await site.preferColourScheme(scheme);
+        await site.preferReducedMotion();
+        await site.open();
+
+        expect(await site.accessibilityViolations()).toEqual([]);
+      });
+    }
+  }
+
+  test('never calls the Giddy API, even while the video plays', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+    await site.playVideo();
+
+    expect(await site.isPaused()).toBe(false);
+    expect(site.requestsToApi()).toEqual([]);
+  });
 });
