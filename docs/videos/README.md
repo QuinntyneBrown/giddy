@@ -23,6 +23,7 @@ captured from `clips/shots.mjs`) and the generated `NN-topic.mp3` and `NN-topic.
 | 13 | [Sign up and set up the family](13-sign-up-and-set-up-the-family/README.md) | ~3.5 min | Accounts, sessions, the family and birthday nudges |
 | 14 | [Manage plans and notifications](14-manage-plans-and-notifications/README.md) | ~4 min | Sharing, the notification centre, delivery, settings, push, cookies and your data |
 | 15 | [Wrap up after the party](15-wrap-up-after-the-party/README.md) | ~3 min | Thank-you notes, ratings, final numbers and a plan for next year |
+| 16 | [Meet Giddy](16-meet-giddy/README.md) | ~0:21 | The marketing site's pitch: chat, a priced plan, the day, "Start planning free" |
 
 ## Making or updating a video
 
@@ -46,8 +47,26 @@ node tools/video-build/build-video.mjs docs/videos/NN-topic --no-captions   # ca
 The tools need Node 22+, Python 3 with `edge-tts`, ffmpeg with libx264, and Playwright
 installed in `frontend/`. Acronyms are spoken through `tools/video-audio/pronunciations.json`.
 
+### Voice
+
+Videos 01–15 use the free Edge voices (`edge-tts`). Video 16, the marketing pitch, is narrated by
+**Kokoro-82M** from Hugging Face ([hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
+Apache-2.0), voice `af_heart` (Kokoro's highest-rated American English voice, warm and clear for a
+parent-facing product) at speed 1.0. It runs offline after the first model download:
+
+```sh
+python3.12 -m venv .cache/venv && .cache/venv/bin/pip install kokoro soundfile   # once; espeak-ng helps
+PYTHON=.cache/venv/bin/python KOKORO_SPEED=1.0 node tools/video-audio/generate-audio.mjs docs/videos/16-meet-giddy --engine kokoro
+```
+
+`KOKORO_VOICE` (default `af_heart`) and `KOKORO_SPEED` (default `0.9`) shape it. The `edge` and
+`piper` engines are unchanged.
+
 ### Background music (mandatory)
 
-Every deck names `<body data-music="../assets/music/on-the-beach-intro-outro.mp3">`; the builder
-lays it under the narration at −10.8 dB with a fade in and a 3 s tail. Source and licence are in
+Every journey deck names `<body data-music="../assets/music/on-the-beach-intro-outro.mp3">`; the builder
+lays it under the narration at −10.8 dB with a fade in and a 3 s tail. The marketing pitch (16) names
+`en-la-playa-soca.mp3` instead, with `data-music-db="-15"`, `data-music-start="20"` (past the quiet
+intro), `data-music-lead="0.9"` (1.5 s of music before the first word, with the narration's own
+0.6 s lead) and `data-music-tail="1.5"`. Every build also writes `<name>.vtt` for a `<track>`. Source and licence are in
 `assets/music/README.md`.

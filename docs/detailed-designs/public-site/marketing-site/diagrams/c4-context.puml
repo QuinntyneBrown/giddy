@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Marketing site
+
+Person(visitor, "Visitor", "A parent in the GTA who has not heard of Giddy")
+System(site, "Giddy marketing site", "Static pitch page with a twenty-second narrated video")
+System(giddy, "Giddy", "Agentic kids' birthday planner for the GTA")
+
+Rel(visitor, site, "Reads, watches the pitch")
+Rel(site, giddy, "Links to /sign-up and /sign-in", "HTTPS, absolute address")
+Rel(visitor, giddy, "Signs up or signs in")
+@enduml

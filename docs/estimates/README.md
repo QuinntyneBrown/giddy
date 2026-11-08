@@ -1,7 +1,7 @@
 # Estimates
 
-- Overall effort: 213 days
-- Complete: 0%
+- Overall effort: 216 days
+- Complete: 1%
 
 | Subsystem | Effort | Complete |
 |---|---|---|
@@ -21,7 +21,7 @@
 | [party-day](party-day.md) | 10 days | 0% |
 | [wrap-up](wrap-up.md) | 8 days | 0% |
 | [account](account.md) | 9 days | 0% |
-| [public-site](public-site.md) | 4 days | 0% |
+| [public-site](public-site.md) | 7 days | 43% |
 
 ## Roadmap
 

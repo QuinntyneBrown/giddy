@@ -25,6 +25,8 @@ let nextId = 0;
 })
 export class TileComponent {
   readonly heading = input.required<string>();
+  /** Level of the title: 2 in a page's results grid, 3 when the grid sits inside a section. */
+  readonly headingLevel = input<2 | 3>(2);
   /** Where the title goes; without one the title is plain text. */
   readonly link = input<string | unknown[] | null>(null);
   readonly queryParams = input<Record<string, string> | null>(null);

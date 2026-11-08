@@ -1,9 +1,22 @@
-<a
-  class="topbar__brand"
-  [class.topbar__brand--mobile]="brandOnSmallScreensOnly()"
-  [routerLink]="brandLink()"
-  ><svg giddy-logo-mark></svg>Giddy</a
->
+@if (brandHref(); as href) {
+  <a
+    class="topbar__brand"
+    [class.topbar__brand--mobile]="brandOnSmallScreensOnly()"
+    [href]="href"
+    [attr.aria-label]="brandLabel()"
+    ><ng-container *ngTemplateOutlet="brand"
+  /></a>
+} @else {
+  <a
+    class="topbar__brand"
+    [class.topbar__brand--mobile]="brandOnSmallScreensOnly()"
+    [routerLink]="brandLink()"
+    [attr.aria-label]="brandLabel()"
+    ><ng-container *ngTemplateOutlet="brand"
+  /></a>
+}
+<ng-template #brand><svg giddy-logo-mark></svg>Giddy</ng-template>
+<ng-content select="[giddyTopBarNav]" />
 @if (searchLabel(); as label) {
   <form class="search topbar__search" role="search" (submit)="search($event, query.value)">
     <label class="visually-hidden" for="giddy-top-bar-search">{{ label }}</label>

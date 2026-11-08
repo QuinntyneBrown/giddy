@@ -1,6 +1,10 @@
 <span>{{ text() }}</span>
 <span class="cluster">
-  @for (link of links(); track link.link) {
-    <a [routerLink]="link.link">{{ link.label }}</a>
+  @for (item of links(); track item.label) {
+    @if (item.href) {
+      <a [href]="item.href">{{ item.label }}</a>
+    } @else {
+      <a [routerLink]="item.link">{{ item.label }}</a>
+    }
   }
 </span>

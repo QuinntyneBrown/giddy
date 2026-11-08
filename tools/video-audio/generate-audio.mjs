@@ -3,11 +3,14 @@
 // plus a timing manifest in .cache/videos/<folder>/timing.json.
 //
 //   node tools/video-audio/generate-audio.mjs docs/videos/NN-topic --dry-run
-//   node tools/video-audio/generate-audio.mjs docs/videos/NN-topic [--engine edge|piper]
+//   node tools/video-audio/generate-audio.mjs docs/videos/NN-topic [--engine edge|piper|kokoro]
 //   node tools/video-audio/generate-audio.mjs --say "Giddy" --out .cache/pronunciation-test.wav
 //
 // Engines: edge (default; the free edge-tts package, needs internet) and piper
-// (offline; PIPER_MODEL names the .onnx voice, PIPER_MODEL_2 the second voice).
+// (offline; PIPER_MODEL names the .onnx voice, PIPER_MODEL_2 the second voice) and kokoro
+// (Kokoro-82M from Hugging Face, hexgrad/Kokoro-82M, Apache-2.0; offline after the first model
+// download; `pip install kokoro soundfile`, espeak-ng helps; tools/video-audio/kokoro_say.py).
+// KOKORO_VOICE (default af_heart) and KOKORO_SPEED (default 0.9) shape it.
 // PYTHON names the interpreter that has the engine installed. EDGE_VOICE and
 // EDGE_VOICE_2 override the edge voices; EDGE_RATE (e.g. +8%) and EDGE_PITCH
 // (e.g. +2Hz) adjust their pace and pitch.
@@ -41,7 +44,9 @@ const TAIL = 1.5;
 const voices = {
   edge: { 1: process.env.EDGE_VOICE ?? 'en-US-AndrewMultilingualNeural', 2: process.env.EDGE_VOICE_2 ?? 'en-US-AvaMultilingualNeural' },
   piper: { 1: process.env.PIPER_MODEL, 2: process.env.PIPER_MODEL_2 ?? process.env.PIPER_MODEL },
+  kokoro: { 1: process.env.KOKORO_VOICE ?? 'af_heart', 2: process.env.KOKORO_VOICE_2 ?? process.env.KOKORO_VOICE ?? 'af_heart' },
 };
+const KOKORO_SPEED = process.env.KOKORO_SPEED ?? '0.9';
 
 function lexicon(folder) {
   const read = (file) => (existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {});
@@ -75,8 +80,13 @@ function synthesize(text, speaker, out) {
     const r = spawnSync(PYTHON, ['-m', 'piper', '-m', voice, '-f', raw], { input: text, stdio: ['pipe', 'ignore', 'pipe'] });
     if (r.status !== 0) throw new Error(`piper failed: ${r.stderr.toString().trim().split('\n').at(-1)}`);
     normalizeAudio(raw, out);
+  } else if (engine === 'kokoro') {
+    const raw = `${out}.raw.wav`;
+    const r = spawnSync(PYTHON, [join(here, 'kokoro_say.py'), voice, KOKORO_SPEED, raw], { input: text, stdio: ['pipe', 'ignore', 'pipe'] });
+    if (r.status !== 0 || !existsSync(raw)) throw new Error(`kokoro failed (pip install kokoro soundfile; set PYTHON): ${r.stderr.toString().trim().split('\n').at(-1)}`);
+    normalizeAudio(raw, out);
   } else {
-    throw new Error(`Unknown engine "${engine}" (edge or piper)`);
+    throw new Error(`Unknown engine "${engine}" (edge, piper or kokoro)`);
   }
 }
 
@@ -158,7 +168,7 @@ function main() {
       }
       const text = spoken(item.text, lex);
       const voice = voices[engine]?.[item.speaker] ?? '';
-      const key = createHash('sha256').update(`${engine}|${voice}|${process.env.EDGE_RATE ?? ''}|${process.env.EDGE_PITCH ?? ''}|${text}`).digest('hex').slice(0, 20);
+      const key = createHash('sha256').update(`${engine}|${voice}|${process.env.EDGE_RATE ?? ''}|${process.env.EDGE_PITCH ?? ''}|${engine === 'kokoro' ? KOKORO_SPEED : ''}|${text}`).digest('hex').slice(0, 20);
       const file = join(clips, `${key}.wav`);
       if (!existsSync(file)) {
         process.stdout.write(`  synthesizing ${file.slice(-28)} "${text.slice(0, 50)}…"\n`);

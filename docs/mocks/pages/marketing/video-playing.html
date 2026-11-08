@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing site · video playing — Giddy mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="marketing">
+<meta name="mock:state" content="video-playing">
+<meta name="mock:requirements" content="L2-095">
+<meta name="description" content="The standalone public marketing site: sells Giddy in a glance, plays a twenty-second pitch video and hands parents into the app.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/marketing/marketing.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body data-page="marketing">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="topbar__brand" href="#top" aria-label="Giddy, back to the top"><svg class="logo-mark" aria-hidden="true" viewBox="0 0 32 32"><path class="balloon" d="M16 2c-6 0-10 4.4-10 10 0 6.4 5.6 11 10 11s10-4.6 10-11C26 6.4 22 2 16 2z"/><ellipse class="shine" cx="12" cy="8" rx="2" ry="3.2" transform="rotate(-25 12 8)"/><path class="string" d="M16 23c0 3-3 3-2 7"/></svg>Giddy</a>
+  <nav class="topbar__nav" aria-label="Page sections"><a class="nav-link" href="#how">How it works</a><a class="nav-link" href="#themes">Themes</a><a class="nav-link" href="#parents">For parents</a><a class="nav-link" href="#where">Where we plan</a></nav>
+  <span class="topbar__spacer"></span>
+  <span class="cluster"><a class="btn btn--ghost btn--sm" href="../../pages/sign-in/default.html">Sign in</a><a class="btn btn--primary btn--sm mk-header__start" href="../../pages/sign-up/default.html">Start planning free</a></span>
+</header>
+<main id="main" class="container mk-main">
+
+<section class="hero confetti mk-hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__layout">
+    <div class="stack">
+      <p class="hero__eyebrow">Kids’ birthday parties across Toronto &amp; the GTA</p>
+      <h1 id="hero-title">Parties they’ll flip for. Planning you won’t flip over.</h1>
+      <p class="mk-hero__lead">Tell Giddy about your kid. You get a plan with a theme they’ll love, real venues near you that are free on the day, entertainers, cake, invites and a checklist that keeps you on track.</p>
+      <div class="cluster"><a class="btn btn--primary btn--lg" href="../../pages/sign-up/default.html">Start planning free</a><a class="btn btn--lg" href="#watch">Watch the 20-second tour</a></div>
+      <p class="text-sm">Free to plan · No credit card · Venues and vendors across the GTA</p>
+    </div>
+    <svg class="mascot mascot--xl mascot--party" role="img" aria-label="Giddy celebrating" viewBox="0 -8 64 80"><path class="hat" d="M24 9 32 -6 40 9z" transform="translate(0 4)"/><circle class="hat-dot" cx="32" cy="-1" r="2.5"/><path class="balloon" d="M32 4C19 4 10 13.5 10 26c0 14 12 24 22 24s22-10 22-24C54 13.5 45 4 32 4z"/><ellipse class="shine" cx="21" cy="16" rx="4" ry="7" transform="rotate(-25 21 16)"/><circle class="cheek" cx="20" cy="33" r="3.5"/><circle class="cheek" cx="44" cy="33" r="3.5"/><circle class="face" cx="25" cy="26" r="2.8"/><circle class="face" cx="39" cy="26" r="2.8"/><path class="smile" d="M24 34c4 5 12 5 16 0"/><path class="knot" d="M28 50h8l-4 5z"/><path class="string" d="M32 55c0 6-5 7-3 14"/></svg>
+  </div>
+</section>
+
+<section class="section mk-watch" id="watch" aria-labelledby="watch-title">
+  <div class="mk-heading">
+    <h2 id="watch-title">Giddy in twenty seconds</h2>
+    <p>See how a party goes from an idea to a plan, then to the day itself.</p>
+  </div>
+  <figure class="video">
+      <div class="video__frame">
+        <video controls playsinline preload="metadata" poster="../../assets/marketing/meet-giddy-playing.jpg" aria-label="Meet Giddy, a twenty-second tour" width="1920" height="1080">
+          <track kind="captions" srclang="en" label="English" src="../../assets/marketing/meet-giddy.vtt">
+        </video>
+      </div>
+      <details class="video__transcript" id="transcript">
+        <summary>Read the transcript</summary>
+        <div class="video__transcript-body">
+          <p>Planning a kid’s party in the GTA?</p>
+          <p>Just tell Giddy about your kid, and get real venues, fun and cake near you, in one priced plan.</p>
+          <p>Then invites, RSVPs and a run sheet for the day.</p>
+          <p>Start planning free.</p>
+        </div>
+      </details>
+  </figure>
+      <p class="mock-note">Shown mid-play at 0:07, “get real venues, fun and cake near you”. In the product the frame comes from the video itself.</p>
+</section>
+
+<section class="section" id="how" aria-labelledby="how-title">
+  <div class="mk-heading is-in" data-reveal><h2 id="how-title">How Giddy works</h2><p>Three steps from “what should we do?” to cake time.</p></div>
+  <ol class="grid-3 mk-list">
+    <li class="card pop--sun stack"><p class="overline"><span class="emoji" aria-hidden="true">💬</span> Step 1</p><h3>Chat about your kid</h3><p class="text-muted">Age, what they’re into, how many friends, your budget and neighbourhood. Talk like you would to a friend.</p></li>
+    <li class="card pop--pink stack"><p class="overline"><span class="emoji" aria-hidden="true">🎈</span> Step 2</p><h3>Get a priced plan</h3><p class="text-muted">Giddy checks real availability and prices, then proposes a theme, venue, entertainer and food that fit.</p></li>
+    <li class="card pop--mint stack"><p class="overline"><span class="emoji" aria-hidden="true">✅</span> Step 3</p><h3>Book, invite, enjoy</h3><p class="text-muted">Book in a tap, send invites, track RSVPs and allergies, and run the day from one sheet.</p></li>
+  </ol>
+</section>
+
+<section class="section" id="themes" aria-labelledby="themes-title">
+  <div class="mk-heading is-in" data-reveal><h2 id="themes-title">Popular themes</h2><p>A few of the parties GTA kids are asking for this season.</p></div>
+  <ul class="grid-3 mk-list"><li class="card card--flush tile pop--mint"><div class="tile__art"><span class="emoji" aria-hidden="true">🦕</span></div><div class="tile__body"><h3 class="tile__title">Dino Dig</h3><p class="tile__meta">Fossil hunts, volcano science and roaring fun</p></div></li><li class="card card--flush tile pop--grape"><div class="tile__art"><span class="emoji" aria-hidden="true">🚀</span></div><div class="tile__body"><h3 class="tile__title">Outer Space</h3><p class="tile__meta">Rocket crafts, star maps and moon-bounce games</p></div></li><li class="card card--flush tile pop--sky"><div class="tile__art"><span class="emoji" aria-hidden="true">🐠</span></div><div class="tile__body"><h3 class="tile__title">Under the Sea</h3><p class="tile__meta">Bubble stations, mermaid tails and treasure</p></div></li><li class="card card--flush tile pop--pink"><div class="tile__art"><span class="emoji" aria-hidden="true">🦄</span></div><div class="tile__body"><h3 class="tile__title">Unicorn Rainbow</h3><p class="tile__meta">Glitter horns, rainbow cake and pony games</p></div></li><li class="card card--flush tile pop--orange"><div class="tile__art"><span class="emoji" aria-hidden="true">🦸</span></div><div class="tile__body"><h3 class="tile__title">Superhero City</h3><p class="tile__meta">Capes, obstacle courses and secret missions</p></div></li><li class="card card--flush tile pop--sun"><div class="tile__art"><span class="emoji" aria-hidden="true">🧪</span></div><div class="tile__body"><h3 class="tile__title">Mad Science</h3><p class="tile__meta">Slime, fizzing potions and a lab coat each</p></div></li></ul>
+</section>
+
+<section class="section card stack" id="parents" aria-labelledby="parents-title">
+  <div class="mk-heading is-in" data-reveal><h2 id="parents-title">What parents get</h2><p>Everything for the party in one place, shared with your co-planner.</p></div>
+  <ul class="feature-list">
+    <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m22 4-10 10-3-3"/></svg>A budget that adds up every booking and cost as you go</li>
+    <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m22 4-10 10-3-3"/></svg>Invitations with RSVPs and allergies collected in one list</li>
+    <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m22 4-10 10-3-3"/></svg>A checklist with reminders, so nothing slips</li>
+    <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m22 4-10 10-3-3"/></svg>A run sheet for the day that works even offline</li>
+    <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="m22 4-10 10-3-3"/></svg>Thank-you notes and a template for next year</li>
+  </ul>
+</section>
+
+<section class="section" id="where" aria-labelledby="where-title">
+  <div class="mk-heading is-in" data-reveal><h2 id="where-title">Where we plan</h2><p>Parties all over Toronto and the GTA.</p></div>
+  <ul class="mk-list mk-areas"><li class="chip">Toronto</li><li class="chip">Mississauga</li><li class="chip">Brampton</li><li class="chip">Markham</li><li class="chip">Vaughan</li><li class="chip">Richmond Hill</li><li class="chip">Oakville</li><li class="chip">Pickering</li><li class="chip">Ajax</li><li class="chip">Whitby</li></ul>
+</section>
+
+<section class="section hero confetti mk-final" id="start" aria-labelledby="start-title">
+  <div class="stack">
+    <h2 id="start-title">The next birthday is closer than you think</h2>
+    <p>Start a plan now and Giddy will remind you of every step.</p>
+    <div class="cluster"><a class="btn btn--primary btn--lg" href="../../pages/sign-up/default.html">Start planning free</a><a class="btn btn--lg" href="../../pages/sign-in/default.html">Sign in</a></div>
+  </div>
+</section>
+<p class="mock-note">Playing: the browser’s native controls show progress, volume, full screen and the captions menu (one track, English). Pausing or reaching the end leaves the last frame; the poster returns only on reload.</p>
+</main>
+<footer class="footer">
+  <span>© 2026 Giddy · Made with confetti in Toronto</span>
+  <span class="cluster"><a href="#how">How it works</a><a href="#watch">Watch the tour</a><a href="../../pages/sign-in/default.html">Sign in</a></span>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Marketing site</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="video-playing.html" aria-current="page">video-playing</a></li><li><a href="video-unavailable.html">video-unavailable</a></li><li><a href="reduced-motion.html">reduced-motion</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

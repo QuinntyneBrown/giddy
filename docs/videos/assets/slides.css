@@ -131,3 +131,34 @@ body.promo section.split .words p { font-size: 44px; color: var(--slide-muted); 
 /* Screenshots of the real UI, side by side in .cols. */
 .shot { display: block; max-width: 100%; max-height: 720px; border-radius: 18px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); justify-self: center; }
 img.mark { width: 140px; height: 140px; }
+
+/* Pitch deck (16, the marketing video): the hero gradient on the first and last slides, real
+   phone screens beside a few big words. Scoped to body.pitch. */
+body.pitch section.hero-slide { background: linear-gradient(135deg, var(--color-hero-from), var(--color-hero-to)); color: var(--color-fg-on-hero); align-items: center; text-align: center; gap: 40px; }
+body.pitch section.hero-slide .mascot { width: 260px; height: 325px; }
+body.pitch section.hero-slide h1, body.pitch section.hero-slide h2 { font-size: 112px; line-height: 1.04; max-width: 1500px; }
+body.pitch section.hero-slide p { font-size: 46px; opacity: 0.95; }
+body.pitch .wordmark { display: inline-flex; align-items: center; gap: 24px; font-size: 96px; font-weight: 800; }
+
+body.pitch .cta { display: inline-block; padding: 30px 64px; border-radius: 999px; background: var(--color-bg-surface); color: var(--color-fg-accent); font-size: 48px; font-weight: 800; }
+body.pitch section.phone-slide { flex-direction: row; align-items: center; justify-content: center; gap: 120px; padding-top: 60px; padding-bottom: 60px; }
+body.pitch .phone-frame { flex: none; width: 430px; padding: 18px; border-radius: 64px; background: var(--color-bg-inverse); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25); }
+body.pitch .phone-frame img { display: block; width: 100%; border-radius: 48px; }
+body.pitch .words { display: grid; gap: 28px; max-width: 900px; }
+body.pitch .words .kicker { font-size: 34px; }
+body.pitch .words h2 { font-size: 104px; line-height: 1.04; }
+body.pitch .words h2 em { font-style: normal; color: var(--slide-accent); }
+body.pitch .words p { font-size: 46px; color: var(--slide-muted); }
+body.pitch .mascot .balloon { fill: var(--color-pop-sun-solid); }
+body.pitch .mascot .shine { fill: var(--color-bg-surface); opacity: 0.6; }
+body.pitch .mascot .cheek { fill: var(--color-pop-pink-solid); opacity: 0.85; }
+body.pitch .mascot .face { fill: var(--color-fg-default); }
+body.pitch .mascot .smile { fill: none; stroke: var(--color-fg-default); stroke-width: 2.5; stroke-linecap: round; }
+body.pitch .mascot .knot { fill: var(--color-pop-orange-solid); }
+body.pitch .mascot .string { fill: none; stroke: var(--color-fg-on-hero); stroke-width: 2; stroke-linecap: round; }
+body.pitch .mascot .hat { fill: var(--color-pop-pink-solid); }
+body.pitch .mascot .hat-dot { fill: var(--color-pop-mint-solid); }
+body.pitch .wordmark .mascot { width: 120px; height: 150px; }
+body.pitch .phones { display: flex; align-items: flex-start; gap: 40px; flex: none; }
+body.pitch .phones .phone-frame { width: 360px; }
+body.pitch .phones .phone-frame + .phone-frame { margin-top: 80px; }

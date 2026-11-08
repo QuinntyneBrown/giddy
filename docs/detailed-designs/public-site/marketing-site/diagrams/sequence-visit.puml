@@ -1,0 +1,35 @@
+@startuml
+title UML sequence behaviour — Marketing site — visit, watch, go to the app
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+actor "Visitor" as actor
+box "Static hosting" #F2F4F7
+  participant "Static host\n(staticwebapp.config.json)" as host
+end box
+box "Frontend — marketing application" #E0F2FE
+  participant "App" as app
+  participant "MarketingPage" as page
+  participant "VideoComponent" as video
+end box
+box "Frontend — Giddy Web application" #EDE9FE
+  participant "Giddy Web" as web
+end box
+actor -> host : GET /any/path
+host --> actor : index.html (navigation fallback)
+actor -> app : Bootstrap
+app -> app : '**' redirects to '' (L2-095 AC11)
+app -> page : Render; stamp body[data-page="marketing"] (AC1)
+page --> actor : Hero, sections, footer; no /api request (AC15)
+actor -> video : Press play
+alt the file plays
+  video --> actor : Narrated video; captions off until chosen (AC4)
+else the browser cannot play it
+  video -> video : error → unavailable
+  video --> actor : Poster still, status, transcript open (AC5)
+end
+actor -> page : "Start planning free"
+page -> web : Navigate to {appUrl}/sign-up (AC3)
+@enduml

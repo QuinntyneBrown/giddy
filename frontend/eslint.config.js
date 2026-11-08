@@ -35,6 +35,20 @@ module.exports = tseslint.config(
     },
   },
   {
+    // The standalone marketing site (L2-095) uses its own `mk` prefix.
+    files: ['projects/marketing/**/*.ts'],
+    rules: {
+      '@angular-eslint/component-selector': [
+        'error',
+        { type: ['element', 'attribute'], prefix: ['giddy', 'mk'], style: 'kebab-case' },
+      ],
+      '@angular-eslint/directive-selector': [
+        'error',
+        { type: 'attribute', prefix: ['giddy', 'mk'], style: 'camelCase' },
+      ],
+    },
+  },
+  {
     files: ['src/**/*.html', 'projects/**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
   },

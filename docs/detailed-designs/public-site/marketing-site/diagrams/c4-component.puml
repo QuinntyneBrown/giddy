@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Marketing site
+
+Container_Boundary(site_b, "Marketing site (frontend/projects/marketing)") {
+  Component(app, "App", "Angular component mk-root", "Skip link, main#main, router outlet, stamps body[data-page]")
+  Component(routes, "routes", "Angular Routes", "'' → MarketingPage; ** → ''")
+  Component(page, "MarketingPage", "Angular component mk-marketing-page", "Header, hero, #watch, #how, #themes, #parents, #where, #start, footer")
+  Component(reveal, "RevealDirective", "Angular directive [mkReveal]", "Fades blocks in on scroll; off with reduced motion")
+  Component(env, "environment", "TypeScript constant", "appUrl, swapped by fileReplacements")
+}
+Container_Boundary(lib_b, "@giddy/components") {
+  Component(lib, "Library components", "Angular", "TopBar, Button, Hero, Mascot, Video, Card, Tile, FeatureList, Chip, Footer, SkipLink")
+}
+Container(web, "Giddy Web", "Angular application", "/sign-up, /sign-in")
+
+Rel(app, routes, "Routes with")
+Rel(routes, page, "Loads")
+Rel(page, reveal, "Uses")
+Rel(page, env, "Builds app links from")
+Rel(page, lib, "Composes")
+Rel(app, lib, "Uses SkipLink")
+Rel(page, web, "Links to", "absolute address")
+@enduml

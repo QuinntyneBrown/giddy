@@ -39,6 +39,27 @@
       "journey": "Marketing"
     },
     {
+      "id": "marketing",
+      "kind": "page",
+      "title": "Marketing site",
+      "route": "/ (marketing app)",
+      "requirements": [
+        "L2-095"
+      ],
+      "states": [
+        "default",
+        "video-playing",
+        "video-unavailable",
+        "reduced-motion"
+      ],
+      "not_applicable": {
+        "loading": "Static content shipped with the site; there is no data request to wait for.",
+        "empty": "Static content shipped with the site; there is nothing to be empty.",
+        "error": "The site makes no data request; the one failure, a video that cannot play, is the video-unavailable state."
+      },
+      "journey": "Marketing"
+    },
+    {
       "id": "sign-in",
       "kind": "page",
       "title": "Sign in",

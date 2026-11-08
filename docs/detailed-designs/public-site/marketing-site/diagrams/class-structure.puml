@@ -1,0 +1,80 @@
+@startuml
+title Class structure — Marketing site
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+package "marketing app" {
+  class App {
+    - router : Router
+    - page : Signal<string>
+    - readPage() : string
+  }
+  class MarketingPage {
+    # signUpUrl : string
+    # signInUrl : string
+    # themes : MarketingTheme[]
+    # parentBenefits : string[]
+    # areas : string[]
+    # footerLinks : FooterLink[]
+  }
+  class RevealDirective {
+    + constructor()
+  }
+  class "environment" as Env <<const>> {
+    + appUrl : string
+  }
+}
+package "@giddy/components" {
+  class TopBarComponent {
+    + brandLink : string
+    + brandHref : string | null
+    + brandLabel : string | null
+  }
+  class VideoComponent {
+    + src : string
+    + poster : string
+    + captions : string | null
+    + label : string
+    + posterAlt : string
+    # unavailable : Signal<boolean>
+    # transcriptOpen : Signal<boolean>
+    # failed() : void
+  }
+  class FooterComponent {
+    + text : string
+    + links : FooterLink[]
+  }
+  class FooterLink <<interface>> {
+    + label : string
+    + link? : string
+    + href? : string
+  }
+  class CardComponent {
+    + heading : string
+    + headingLevel : 2 | 3
+    + pop : PopColour | null
+  }
+  class TileComponent {
+    + heading : string
+    + headingLevel : 2 | 3
+    + emoji : string
+    + pop : PopColour
+  }
+  class ButtonComponent {
+    + variant : ButtonVariant
+    + size : ButtonSize
+  }
+}
+
+App ..> MarketingPage : routes to
+MarketingPage ..> Env : reads appUrl
+MarketingPage ..> RevealDirective
+MarketingPage ..> TopBarComponent
+MarketingPage ..> VideoComponent
+MarketingPage ..> FooterComponent
+MarketingPage ..> CardComponent
+MarketingPage ..> TileComponent
+MarketingPage ..> ButtonComponent
+FooterComponent o-- FooterLink
+@enduml

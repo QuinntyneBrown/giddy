@@ -91,6 +91,82 @@
           "defaultConfiguration": "development"
         }
       }
+    },
+    "marketing": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": false,
+          "inlineStyle": false,
+          "skipTests": true
+        }
+      },
+      "root": "projects/marketing",
+      "sourceRoot": "projects/marketing/src",
+      "prefix": "mk",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/marketing/src/main.ts",
+            "tsConfig": "projects/marketing/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/marketing/public"
+              }
+            ],
+            "styles": [
+              "projects/components/src/styles/giddy.css",
+              "projects/marketing/src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "projects/marketing/src/environments/environment.ts",
+                  "with": "projects/marketing/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4300
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "marketing:build:production"
+            },
+            "development": {
+              "buildTarget": "marketing:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
     }
   }
 }

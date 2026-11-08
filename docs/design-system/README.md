@@ -21,7 +21,7 @@ Giddy is fun for kids and clear for parents. It uses a grape accent on a warm cr
 | [Accessibility](foundations/accessibility.html) | WCAG 2.2 AA commitments |
 | [Content](foundations/content.html) | Voice, formulas, microcopy |
 
-## Components (49)
+## Components (50)
 
 Every page has the same 13 sections: overview, anatomy, variants, sizes, states (matrix plus both themes), responsive, theming, accessibility, content, do and don't, tokens, code and sources.
 
@@ -76,6 +76,7 @@ Every page has the same 13 sections: overview, anatomy, variants, sizes, states 
 | [Hero & party card](components/hero.html) | Giddy | [pages/home/default](../mocks/pages/home/default.html), [pages/landing/default](../mocks/pages/landing/default.html), [pages/checklist/all-done](../mocks/pages/checklist/all-done.html) |
 | [Budget meter](components/meter.html) | Giddy | [pages/budget/default](../mocks/pages/budget/default.html), [pages/budget/over-budget](../mocks/pages/budget/over-budget.html) |
 | [Mascot & logo](components/mascot.html) | Giddy | [pages/landing/default](../mocks/pages/landing/default.html), [pages/not-found/default](../mocks/pages/not-found/default.html), [pages/home/error](../mocks/pages/home/error.html) |
+| [Video](components/video.html) | Giddy | [pages/marketing/default](../mocks/pages/marketing/default.html), [pages/marketing/video-unavailable](../mocks/pages/marketing/video-unavailable.html) |
 
 ## Patterns
 
@@ -129,6 +130,10 @@ Giddy additions to the standard token set:
 | pages/settings/default | Switch inside a form that has a Save button | Documented as a don't on the switch page |
 | tokens.css (starter structure) | A `[data-theme="light"]` region inside a dark page kept dark values; component tokens resolved once on `:root` | Light block also matches `[data-theme="light"]`; component tokens and `--shadow-press`/focus aliases re-declared per theme |
 | many pages | One-off inline `style` for layout (padding, widths) | Allowed by mock conventions; recurring ones should become classes when the Angular components are built |
+
+## Changelog
+
+- Sun 8 Nov 2026 — Added the Video component (`.video`, `.video__frame`, `.video__fallback`, `.video__transcript`) for the marketing site’s pitch video; documented plain `href` links on Button, the top bar brand (`brandHref`, `brandLabel`, the `[giddyTopBarNav]` slot) and footer links; `li[giddy-card]` and `headingLevel` on Card and Tile. No token values changed.
 
 ## Verification
 

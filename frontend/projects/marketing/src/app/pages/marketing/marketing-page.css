@@ -1,0 +1,97 @@
+/* One-off layout of the marketing page; the components come from @giddy/components. */
+.mk-header__start {
+  display: none;
+}
+
+@media (width >= 30rem) {
+  .mk-header__start {
+    display: inline-flex;
+  }
+}
+
+.mk-page {
+  padding-bottom: var(--space-12);
+}
+
+.mk-page section[id] {
+  scroll-margin-top: calc(var(--layout-topbar-height) + var(--space-4));
+}
+
+.mk-hero {
+  margin-top: var(--space-6);
+}
+
+.mk-hero h1 {
+  font: var(--text-display);
+}
+
+.mk-hero__lead {
+  font: var(--text-body-lg);
+  max-width: var(--layout-measure);
+}
+
+.mk-heading {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  max-width: var(--layout-measure);
+}
+
+.mk-heading p {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+
+.mk-watch {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.mk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-step {
+  order: -1;
+}
+
+.mk-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.mk-final {
+  text-align: center;
+}
+
+.mk-final .stack {
+  align-items: center;
+}
+
+.mk-final .cluster {
+  justify-content: center;
+}
+
+[data-reveal] {
+  opacity: 0;
+  translate: 0 var(--space-4);
+  transition:
+    opacity var(--duration-slow) var(--ease-standard),
+    translate var(--duration-slow) var(--ease-standard);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  translate: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+}
