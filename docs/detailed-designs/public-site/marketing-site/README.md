@@ -19,7 +19,7 @@ The feature is a frontend-only slice: a second application in the workspace and 
 
 **Frontend — marketing application (`frontend/projects/marketing`)**
 
-- **`App`** — Shell component (`app.ts`, `app.html`), selector `mk-root`. It renders `a[giddy-skip-link]` and one `router-outlet` in `main#main`, and stamps `<body data-page>` from route data. The stamping routine is a few lines kept in the site, because the site must not import the app or `@giddy/core`.
+- **`App`** — Shell component (`app.ts`, `app.html`), selector `mk-root`. It renders `a[giddy-skip-link]` and the `router-outlet`, and stamps `<body data-page>` from route data. The page owns its header, `main#main` and footer, so the three are landmarks side by side. The stamping routine is a few lines kept in the site, because the site must not import the app or `@giddy/core`.
 - **`routes`** — `app.routes.ts`: `''` lazy-loads `MarketingPage` with `data: { page: 'marketing' }`; `**` redirects to `''` (`L2-095` AC11).
 - **`appConfig`** — `provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }))` and the global error listeners. No `HttpClient`, so the site cannot call an API.
 - **`MarketingPage`** — `pages/marketing/marketing-page.ts|html|css`, selector `mk-marketing-page`. The template is the mock section by section, composed from the library as [`docs/screen-composition.md`](../../../screen-composition.md) lists. App links are built from `environment.appUrl`; themes, benefits, areas and footer links are typed constants.

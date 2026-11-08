@@ -5,7 +5,8 @@ import { SkipLinkComponent } from '@giddy/components';
 import { filter } from 'rxjs';
 
 /**
- * Marketing site shell: the skip link and `main#main` around the router outlet. The active route's
+ * Marketing site shell: the skip link and the router outlet; the page owns its header, `main#main`
+ * and footer, so they are landmarks side by side. The active route's
  * `page` data is stamped on `<body data-page>`, the contract the app's shell keeps too; the site
  * must not import the app or `@giddy/core`, so the few lines live here.
  */

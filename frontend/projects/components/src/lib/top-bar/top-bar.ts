@@ -1,21 +1,27 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { booleanAttribute, ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '../icon/icon';
 import { LogoMarkComponent } from '../logo-mark/logo-mark';
 
 /**
- * Sticky top bar with the wordmark, an optional search field (shown from 768px) and a slot for
- * actions such as notifications and the account avatar.
+ * Sticky top bar with the wordmark, an optional search field (shown from 768px), a slot for
+ * section links beside the wordmark (`giddyTopBarNav`, shown from 768px) and a slot for actions
+ * such as notifications and the account avatar.
  */
 @Component({
   selector: 'header[giddy-top-bar]',
-  imports: [RouterLink, IconComponent, LogoMarkComponent],
+  imports: [NgTemplateOutlet, RouterLink, IconComponent, LogoMarkComponent],
   templateUrl: './top-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'topbar' },
 })
 export class TopBarComponent {
   readonly brandLink = input('/');
+  /** A plain address for the brand instead of a router link, such as `#top` on the marketing site. */
+  readonly brandHref = input<string | null>(null);
+  /** Accessible name of the brand link when it says more than "Giddy", such as "Giddy, back to the top". */
+  readonly brandLabel = input<string | null>(null);
   /** Hide the wordmark from 1024px, where the sidebar shows it instead. */
   readonly brandOnSmallScreensOnly = input(false, { transform: booleanAttribute });
   /** Accessible label of the search field; the field is omitted when null. */

@@ -1,10 +1,36 @@
-<div class="container mk-page">
+<header giddy-top-bar brandHref="#top" brandLabel="Giddy, back to the top">
+  <nav giddyTopBarNav class="topbar__nav" aria-label="Page sections">
+    <a class="nav-link" href="#how">How it works</a>
+    <a class="nav-link" href="#themes">Themes</a>
+    <a class="nav-link" href="#parents">For parents</a>
+    <a class="nav-link" href="#where">Where we plan</a>
+  </nav>
+  <span class="cluster">
+    <a giddy-button variant="ghost" size="sm" [href]="signInUrl">Sign in</a>
+    <a giddy-button variant="primary" size="sm" class="mk-header__start" [href]="signUpUrl"
+      >Start planning free</a
+    >
+  </span>
+</header>
+
+<main id="main" class="container mk-page">
   <section giddy-hero class="mk-hero" id="top" aria-labelledby="hero-title">
     <div class="hero__layout">
       <div class="stack">
         <p class="hero__eyebrow">Kids’ birthday parties across Toronto &amp; the GTA</p>
         <h1 id="hero-title">Parties they’ll flip for. Planning you won’t flip over.</h1>
+        <p class="mk-hero__lead">
+          Tell Giddy about your kid. You get a plan with a theme they’ll love, real venues near you
+          that are free on the day, entertainers, cake, invites and a checklist that keeps you on
+          track.
+        </p>
+        <div class="cluster">
+          <a giddy-button variant="primary" size="lg" [href]="signUpUrl">Start planning free</a>
+          <a giddy-button size="lg" href="#watch">Watch the 20-second tour</a>
+        </div>
+        <p class="text-sm">Free to plan · No credit card · Venues and vendors across the GTA</p>
       </div>
+      <svg giddy-mascot mood="party" size="xl"></svg>
     </div>
   </section>
-</div>
+</main>
