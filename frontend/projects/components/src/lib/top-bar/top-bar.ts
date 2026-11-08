@@ -2,7 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { booleanAttribute, ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '../icon/icon';
-import { LogoMarkComponent } from '../logo-mark/logo-mark';
+import { WordmarkComponent } from '../wordmark/wordmark';
 
 /**
  * Sticky top bar with the wordmark, an optional search field (shown from 768px), a slot for
@@ -11,7 +11,7 @@ import { LogoMarkComponent } from '../logo-mark/logo-mark';
  */
 @Component({
   selector: 'header[giddy-top-bar]',
-  imports: [NgTemplateOutlet, RouterLink, IconComponent, LogoMarkComponent],
+  imports: [NgTemplateOutlet, RouterLink, IconComponent, WordmarkComponent],
   templateUrl: './top-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'topbar' },

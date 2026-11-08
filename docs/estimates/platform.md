@@ -7,3 +7,4 @@
 | localise-for-gta | 3 days | 0% |
 | responsive-themed-shell | 4 days | 0% |
 | system-states | 3 days | 0% |
+| brand-logo | 1 day | 100% |

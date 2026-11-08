@@ -13,6 +13,8 @@ export class AppShellPage {
   readonly main: Locator;
   readonly footer: Locator;
   readonly pageHeadings: Locator;
+  readonly topBarBrand: Locator;
+  readonly sidebarBrand: Locator;
 
   constructor(protected readonly page: Page) {
     this.skipLink = page.getByRole('link', { name: 'Skip to content' });
@@ -28,6 +30,8 @@ export class AppShellPage {
     this.main = page.getByRole('main');
     this.footer = page.getByRole('contentinfo');
     this.pageHeadings = page.getByRole('heading', { level: 1 });
+    this.topBarBrand = this.banner.getByRole('link', { name: 'Giddy', exact: true });
+    this.sidebarBrand = this.sidebar.getByRole('link', { name: 'Giddy', exact: true });
   }
 
   /** Starts the browser clock at an instant, for example '2026-10-25T20:00:00Z', and lets it run. */
@@ -124,6 +128,24 @@ export class AppShellPage {
 
   accountLink(parentName: string): Locator {
     return this.banner.getByRole('link', { name: `Account settings for ${parentName}` });
+  }
+
+  /** The giddy wordmark inside a brand link: an image named "Giddy" (L2-096). */
+  wordmarkIn(brand: Locator): Locator {
+    return brand.getByRole('img', { name: 'Giddy', exact: true });
+  }
+
+  /** The text a sighted parent reads in a brand link, beside the wordmark image. */
+  async visibleTextOf(brand: Locator): Promise<string> {
+    return (await brand.innerText()).trim();
+  }
+
+  /** The computed colours of a wordmark's letters and balloon, as `rgb(...)`. */
+  async wordmarkColours(brand: Locator): Promise<{ ink: string; tittle: string }> {
+    return brand.evaluate((link) => ({
+      ink: getComputedStyle(link.querySelector('.wordmark__ink')!).stroke,
+      tittle: getComputedStyle(link.querySelector('.wordmark__tittle')!).fill,
+    }));
   }
 
   sidebarLink(name: string): Locator {

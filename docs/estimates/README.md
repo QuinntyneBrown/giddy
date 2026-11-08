@@ -1,11 +1,11 @@
 # Estimates
 
-- Overall effort: 216 days
-- Complete: 1%
+- Overall effort: 217 days
+- Complete: 2%
 
 | Subsystem | Effort | Complete |
 |---|---|---|
-| [platform](platform.md) | 19 days | 0% |
+| [platform](platform.md) | 20 days | 5% |
 | [identity](identity.md) | 21 days | 0% |
 | [notifications](notifications.md) | 17 days | 0% |
 | [family](family.md) | 11 days | 0% |

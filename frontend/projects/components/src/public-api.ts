@@ -11,6 +11,8 @@ export * from './lib/footer/footer-link';
 export * from './lib/icon/icon';
 export * from './lib/icon/icon-name';
 export * from './lib/logo-mark/logo-mark';
+export * from './lib/wordmark/wordmark';
+export * from './lib/wordmark/wordmark-size';
 export * from './lib/person-item/person-item';
 export * from './lib/pop/pop-colour';
 export * from './lib/sidebar-nav/nav-group';

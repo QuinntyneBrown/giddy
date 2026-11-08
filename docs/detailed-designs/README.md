@@ -31,7 +31,7 @@ The web app talks only to the API. Long-running agent turns and outbound message
 
 ## Features
 
-47 features in 17 subsystems cover 87 of 87 L2 requirements.
+48 features in 17 subsystems cover 88 of 88 L2 requirements.
 
 | Subsystem | Feature | L2 requirements |
 |---|---|---|
@@ -81,6 +81,7 @@ The web app talks only to the API. Long-running agent turns and outbound message
 | Platform and cross-cutting concerns | [Responsive, themed application shell](platform/responsive-themed-shell/README.md) | `L2-084`, `L2-085`, `L2-086` |
 | Platform and cross-cutting concerns | [Loading, empty, error and offline states](platform/system-states/README.md) | `L2-087`, `L2-088`, `L2-089` |
 | Platform and cross-cutting concerns | [Localise for the GTA](platform/localise-for-gta/README.md) | `L2-091` |
+| Platform and cross-cutting concerns | [Logo and wordmark](platform/brand-logo/README.md) | `L2-096` |
 | Public website | [Landing page, help and legal](public-site/landing-help-and-legal/README.md) | `L2-092`, `L2-093`, `L2-094` |
 | Public website | [Marketing site](public-site/marketing-site/README.md) | `L2-095` |
 

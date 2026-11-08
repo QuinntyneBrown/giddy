@@ -1,0 +1,37 @@
+@startuml
+title Class structure — Logo and wordmark
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+package "@giddy/components" {
+  class WordmarkComponent <<svg[giddy-wordmark]>> {
+    + size : InputSignal<'sm' | 'md' | 'lg' | 'xl'>
+    + label : InputSignal<string>
+    # sizeClass : Signal<string>
+  }
+  class TopBarComponent <<header[giddy-top-bar]>> {
+    + brandLink : string
+    + brandHref : string | null
+    + brandLabel : string | null
+    + brandOnSmallScreensOnly : boolean
+  }
+  class SidebarNavComponent <<nav[giddy-sidebar-nav]>> {
+    + brandLink : string
+  }
+  class LogoMarkComponent <<svg[giddy-logo-mark]>> {
+    decorative symbol
+  }
+}
+package "marketing app" {
+  class MarketingPage
+}
+package "Giddy app" {
+  class AppShell
+}
+TopBarComponent --> WordmarkComponent : renders in brand link
+SidebarNavComponent --> WordmarkComponent : renders in brand link
+MarketingPage --> TopBarComponent : brandHref="#top"
+AppShell --> TopBarComponent
+AppShell --> SidebarNavComponent
+@enduml

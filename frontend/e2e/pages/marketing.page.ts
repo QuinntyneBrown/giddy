@@ -12,6 +12,7 @@ export class MarketingPage {
   readonly heroHeading: Locator;
   readonly header: Locator;
   readonly logoLink: Locator;
+  readonly logoWordmark: Locator;
   readonly sectionNavigation: Locator;
   readonly hero: Locator;
   readonly watch: Locator;
@@ -30,6 +31,7 @@ export class MarketingPage {
     this.heroHeading = page.getByRole('heading', { level: 1 });
     this.header = page.getByRole('banner');
     this.logoLink = this.header.getByRole('link', { name: 'Giddy, back to the top' });
+    this.logoWordmark = this.logoLink.getByRole('img', { name: 'Giddy', exact: true });
     this.sectionNavigation = page.getByRole('navigation', { name: 'Page sections' });
     this.hero = page.getByRole('region', { name: 'Parties they’ll flip for.' });
     this.watch = page.getByRole('region', { name: 'Giddy in twenty seconds' });

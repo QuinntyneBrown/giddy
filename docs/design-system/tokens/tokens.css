@@ -335,6 +335,9 @@
   --color-hero-to: var(--palette-pink-700);
   --color-fg-on-hero: var(--palette-white);
   --color-accent-press: var(--palette-grape-800);
+  /* Logo: the wordmark's letters and its balloon tittle. Brand art, not text; see foundations/logo.html. */
+  --color-logo-ink: var(--palette-grape-700);
+  --color-logo-tittle: var(--palette-pink-400);
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);   /* chunky "pressable" lip under primary buttons */
 
   color-scheme: light;
@@ -426,6 +429,8 @@
   --color-hero-from: var(--palette-grape-800);
   --color-hero-to: var(--palette-pink-800);
   --color-accent-press: var(--palette-grape-500);
+  --color-logo-ink: var(--palette-cream-50);
+  --color-logo-tittle: var(--palette-pink-400);
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);
   --color-focus-ring-offset: var(--color-bg-surface);
   --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
@@ -499,6 +504,8 @@
   --color-hero-from: var(--palette-grape-800);
   --color-hero-to: var(--palette-pink-800);
   --color-accent-press: var(--palette-grape-500);
+  --color-logo-ink: var(--palette-cream-50);
+  --color-logo-tittle: var(--palette-pink-400);
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);
   --color-focus-ring-offset: var(--color-bg-surface);
   --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
