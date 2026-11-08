@@ -1,5 +1,6 @@
 import { expect, test } from './fixtures/test';
 import { AppShellPage } from './pages/app-shell.page';
+import { MarketingPage } from './pages/marketing.page';
 
 // L2-096: the giddy wordmark is the brand in the app's top bar and sidebar.
 
@@ -47,4 +48,12 @@ test('turns the wordmark letters cream in the dark theme and keeps the pink ball
     ink: 'rgb(255, 249, 241)',
     tittle: 'rgb(255, 111, 168)',
   });
+});
+
+test('shows the giddy wordmark in the marketing site header', async ({ page }) => {
+  const site = new MarketingPage(page);
+  await site.useWidth(390);
+  await site.open();
+
+  await expect(site.logoWordmark).toBeVisible();
 });
