@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+title Component view — Logo and wordmark
+LAYOUT_LEFT_RIGHT()
+Person(parent, "Parent or visitor", "Sees the brand in the header and the browser tab")
+System_Boundary(web, "Giddy frontend workspace") {
+  Container_Boundary(lib, "@giddy/components") {
+    Component(wordmark, "WordmarkComponent", "svg[giddy-wordmark]", "The giddy wordmark, an image named Giddy")
+    Component(topbar, "TopBarComponent", "header[giddy-top-bar]", "Brand link shows the wordmark")
+    Component(sidebar, "SidebarNavComponent", "nav[giddy-sidebar-nav]", "Brand link shows the wordmark")
+  }
+  Container(app, "Giddy app", "Angular", "Shell composes the top bar and sidebar; serves favicon.svg, favicon.ico, apple-touch-icon.png")
+  Container(marketing, "Marketing site", "Angular", "Header is the top bar; serves the same icons")
+  ComponentDb(tokens, "Design-system tokens", "tokens.css, components.css", "Logo ink and tittle colours; the .wordmark class")
+}
+Rel(parent, app, "Uses")
+Rel(parent, marketing, "Reads")
+Rel(app, topbar, "Composes")
+Rel(app, sidebar, "Composes")
+Rel(marketing, topbar, "Composes")
+Rel(topbar, wordmark, "Renders")
+Rel(sidebar, wordmark, "Renders")
+Rel(wordmark, tokens, "Coloured by")
+@enduml
