@@ -15,7 +15,7 @@
     ><ng-container *ngTemplateOutlet="brand"
   /></a>
 }
-<ng-template #brand><svg giddy-logo-mark></svg>Giddy</ng-template>
+<ng-template #brand><svg giddy-wordmark></svg></ng-template>
 <ng-content select="[giddyTopBarNav]" />
 @if (searchLabel(); as label) {
   <form class="search topbar__search" role="search" (submit)="search($event, query.value)">

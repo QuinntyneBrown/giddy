@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ButtonComponent } from '../button/button';
 import { IconComponent } from '../icon/icon';
-import { LogoMarkComponent } from '../logo-mark/logo-mark';
+import { WordmarkComponent } from '../wordmark/wordmark';
 import { BadgeComponent } from '../badge/badge';
 import { NavGroup } from './nav-group';
 
@@ -17,7 +17,7 @@ import { NavGroup } from './nav-group';
     RouterLinkActive,
     ButtonComponent,
     IconComponent,
-    LogoMarkComponent,
+    WordmarkComponent,
     BadgeComponent,
   ],
   templateUrl: './sidebar-nav.html',
