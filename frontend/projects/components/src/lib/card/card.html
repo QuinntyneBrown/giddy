@@ -1,2 +1,6 @@
-<h2 class="card__title" [id]="headingId">{{ heading() }}</h2>
+@if (headingLevel() === 3) {
+  <h3 class="card__title" [id]="headingId">{{ heading() }}</h3>
+} @else {
+  <h2 class="card__title" [id]="headingId">{{ heading() }}</h2>
+}
 <ng-content />

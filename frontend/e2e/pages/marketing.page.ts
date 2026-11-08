@@ -20,6 +20,7 @@ export class MarketingPage {
   readonly transcript: Locator;
   readonly videoUnavailable: Locator;
   readonly posterStill: Locator;
+  readonly footer: Locator;
   private readonly apiRequests: string[] = [];
 
   constructor(private readonly page: Page) {
@@ -38,6 +39,7 @@ export class MarketingPage {
       .getByRole('status')
       .filter({ hasText: 'This browser can’t play the video.' });
     this.posterStill = this.watch.getByRole('img', { name: /Meet Giddy/ });
+    this.footer = page.getByRole('contentinfo');
     page.on('request', (request: Request) => {
       if (new URL(request.url()).pathname.startsWith('/api/')) this.apiRequests.push(request.url());
     });
@@ -74,6 +76,37 @@ export class MarketingPage {
 
   heroText(text: string): Locator {
     return this.hero.getByText(text, { exact: true });
+  }
+
+  /** A content section, by its id, such as `how` or `themes`. */
+  section(id: string): Locator {
+    return this.page.locator(`section#${id}`);
+  }
+
+  async sectionHeading(id: string): Promise<string> {
+    return ((await this.section(id).getByRole('heading', { level: 2 }).textContent()) ?? '').trim();
+  }
+
+  /** The level-three headings inside a section, in order. */
+  async itemHeadings(id: string): Promise<string[]> {
+    return (await this.section(id).getByRole('heading', { level: 3 }).allTextContents()).map((t) =>
+      t.trim(),
+    );
+  }
+
+  /** The list items inside a section, in order. */
+  async listItems(id: string): Promise<string[]> {
+    return (await this.section(id).getByRole('listitem').allTextContents()).map((t) =>
+      t.replace(/\s+/g, ' ').trim(),
+    );
+  }
+
+  sectionLink(id: string, name: string): Locator {
+    return this.section(id).getByRole('link', { name, exact: true });
+  }
+
+  footerLink(name: string): Locator {
+    return this.footer.getByRole('link', { name, exact: true });
   }
 
   /** Makes the pitch video fail to load, as a browser that cannot play it would. */

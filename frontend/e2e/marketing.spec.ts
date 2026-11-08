@@ -102,4 +102,85 @@ test.describe('Marketing site', () => {
     ).toBeVisible();
     expect(await site.accessibilityViolations('#watch')).toEqual([]);
   });
+
+  test('#how explains the three steps in order', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+
+    expect(await site.sectionHeading('how')).toBe('How Giddy works');
+    expect(await site.itemHeadings('how')).toEqual([
+      'Chat about your kid',
+      'Get a priced plan',
+      'Book, invite, enjoy',
+    ]);
+    const steps = await site.listItems('how');
+    steps.forEach((step, i) => expect(step).toContain(`Step ${i + 1}`));
+  });
+
+  test('#themes shows six popular themes', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+
+    expect(await site.sectionHeading('themes')).toBe('Popular themes');
+    expect(await site.itemHeadings('themes')).toEqual([
+      'Dino Dig',
+      'Outer Space',
+      'Under the Sea',
+      'Unicorn Rainbow',
+      'Superhero City',
+      'Mad Science',
+    ]);
+  });
+
+  test('#parents lists what parents get', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+
+    expect(await site.sectionHeading('parents')).toBe('What parents get');
+    expect(await site.listItems('parents')).toEqual([
+      'A budget that adds up every booking and cost as you go',
+      'Invitations with RSVPs and allergies collected in one list',
+      'A checklist with reminders, so nothing slips',
+      'A run sheet for the day that works even offline',
+      'Thank-you notes and a template for next year',
+    ]);
+  });
+
+  test('#where names the GTA areas covered', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+
+    expect(await site.sectionHeading('where')).toBe('Where we plan');
+    expect(await site.listItems('where')).toEqual([
+      'Toronto',
+      'Mississauga',
+      'Brampton',
+      'Markham',
+      'Vaughan',
+      'Richmond Hill',
+      'Oakville',
+      'Pickering',
+      'Ajax',
+      'Whitby',
+    ]);
+  });
+
+  test('#start and the footer close with links into the app', async ({ page }) => {
+    const site = new MarketingPage(page);
+    await site.open();
+
+    expect(await site.sectionHeading('start')).toBe('The next birthday is closer than you think');
+    await expect(site.sectionLink('start', 'Start planning free')).toHaveAttribute(
+      'href',
+      `${APP_ORIGIN}/sign-up`,
+    );
+    await expect(site.sectionLink('start', 'Sign in')).toHaveAttribute(
+      'href',
+      `${APP_ORIGIN}/sign-in`,
+    );
+    await expect(site.footer).toContainText('© 2026 Giddy · Made with confetti in Toronto');
+    await expect(site.footerLink('How it works')).toHaveAttribute('href', '#how');
+    await expect(site.footerLink('Watch the tour')).toHaveAttribute('href', '#watch');
+    await expect(site.footerLink('Sign in')).toHaveAttribute('href', `${APP_ORIGIN}/sign-in`);
+  });
 });

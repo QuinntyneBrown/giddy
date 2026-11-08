@@ -17,15 +17,20 @@
   }
   <span class="emoji" aria-hidden="true">{{ emoji() }}</span>
 </ng-template>
+<ng-template #title>
+  @if (link(); as to) {
+    <a class="tile__link" [routerLink]="to" [queryParams]="queryParams()">{{ heading() }}</a>
+  } @else {
+    {{ heading() }}
+  }
+</ng-template>
 <div class="tile__body">
   <div class="cluster cluster--between tile__head">
-    <h2 class="tile__title" [id]="headingId">
-      @if (link(); as to) {
-        <a class="tile__link" [routerLink]="to" [queryParams]="queryParams()">{{ heading() }}</a>
-      } @else {
-        {{ heading() }}
-      }
-    </h2>
+    @if (headingLevel() === 3) {
+      <h3 class="tile__title" [id]="headingId"><ng-container *ngTemplateOutlet="title" /></h3>
+    } @else {
+      <h2 class="tile__title" [id]="headingId"><ng-container *ngTemplateOutlet="title" /></h2>
+    }
     <ng-content select="[giddyTileAside]" />
   </div>
   <ng-content />

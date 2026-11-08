@@ -46,3 +46,31 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+.mk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-step {
+  order: -1;
+}
+
+.mk-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.mk-final {
+  text-align: center;
+}
+
+.mk-final .stack {
+  align-items: center;
+}
+
+.mk-final .cluster {
+  justify-content: center;
+}

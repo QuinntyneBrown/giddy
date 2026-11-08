@@ -56,4 +56,87 @@
       <p>Start planning free.</p>
     </figure>
   </section>
+
+  <section class="section" id="how" aria-labelledby="how-title">
+    <div class="mk-heading">
+      <h2 id="how-title">How Giddy works</h2>
+      <p>Three steps from “what should we do?” to cake time.</p>
+    </div>
+    <ol class="grid-3 mk-list">
+      <li giddy-card heading="Chat about your kid" [headingLevel]="3" pop="sun">
+        <p class="overline mk-step"><span class="emoji" aria-hidden="true">💬</span> Step 1</p>
+        <p class="text-muted">
+          Age, what they’re into, how many friends, your budget and neighbourhood. Talk like you
+          would to a friend.
+        </p>
+      </li>
+      <li giddy-card heading="Get a priced plan" [headingLevel]="3" pop="pink">
+        <p class="overline mk-step"><span class="emoji" aria-hidden="true">🎈</span> Step 2</p>
+        <p class="text-muted">
+          Giddy checks real availability and prices, then proposes a theme, venue, entertainer and
+          food that fit.
+        </p>
+      </li>
+      <li giddy-card heading="Book, invite, enjoy" [headingLevel]="3" pop="mint">
+        <p class="overline mk-step"><span class="emoji" aria-hidden="true">✅</span> Step 3</p>
+        <p class="text-muted">
+          Book in a tap, send invites, track RSVPs and allergies, and run the day from one sheet.
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section" id="themes" aria-labelledby="themes-title">
+    <div class="mk-heading">
+      <h2 id="themes-title">Popular themes</h2>
+      <p>A few of the parties GTA kids are asking for this season.</p>
+    </div>
+    <ul class="grid-3 mk-list">
+      @for (theme of themes; track theme.name) {
+        <li
+          giddy-tile
+          [heading]="theme.name"
+          [headingLevel]="3"
+          [emoji]="theme.emoji"
+          [pop]="theme.pop"
+        >
+          <p class="tile__meta">{{ theme.blurb }}</p>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section giddy-card class="section" id="parents" heading="What parents get">
+    <p class="text-muted">Everything for the party in one place, shared with your co-planner.</p>
+    <ul giddy-feature-list [features]="parentBenefits"></ul>
+  </section>
+
+  <section class="section" id="where" aria-labelledby="where-title">
+    <div class="mk-heading">
+      <h2 id="where-title">Where we plan</h2>
+      <p>Parties all over Toronto and the GTA.</p>
+    </div>
+    <ul class="mk-list mk-areas">
+      @for (area of areas; track area) {
+        <li giddy-chip>{{ area }}</li>
+      }
+    </ul>
+  </section>
+
+  <section giddy-hero class="section mk-final" id="start" aria-labelledby="start-title">
+    <div class="stack">
+      <h2 id="start-title">The next birthday is closer than you think</h2>
+      <p>Start a plan now and Giddy will remind you of every step.</p>
+      <div class="cluster">
+        <a giddy-button variant="primary" size="lg" [href]="signUpUrl">Start planning free</a>
+        <a giddy-button size="lg" [href]="signInUrl">Sign in</a>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer
+  giddy-footer
+  text="© 2026 Giddy · Made with confetti in Toronto"
+  [links]="footerLinks"
+></footer>
