@@ -5,7 +5,7 @@
 
 | Subsystem | Effort | Complete |
 |---|---|---|
-| [platform](platform.md) | 21 days | 5% |
+| [platform](platform.md) | 21 days | 10% |
 | [identity](identity.md) | 21 days | 0% |
 | [notifications](notifications.md) | 17 days | 0% |
 | [family](family.md) | 11 days | 0% |
