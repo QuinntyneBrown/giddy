@@ -1,0 +1,12 @@
+/* One-off layout of the marketing page; the components come from @giddy/components. */
+.mk-page {
+  padding-bottom: var(--space-12);
+}
+
+.mk-hero {
+  margin-top: var(--space-6);
+}
+
+.mk-hero h1 {
+  font: var(--text-display);
+}

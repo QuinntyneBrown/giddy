@@ -1,0 +1,10 @@
+/* Design-system styles come from @giddy/components (see angular.json). Site-wide rules only. */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
