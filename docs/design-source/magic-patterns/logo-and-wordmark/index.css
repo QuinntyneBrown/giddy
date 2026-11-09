@@ -1,0 +1,60 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORT — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORT MUST NEVER BE DELETED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss';
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+/* Giddy brand tokens, mirrored from docs/design-system/tokens/tokens.css */
+@theme {
+  --font-display: 'Baloo 2', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  --font-sans: 'Nunito', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+
+  --color-grape-50: #f4efff;
+  --color-grape-100: #e9dfff;
+  --color-grape-200: #d4c1ff;
+  --color-grape-300: #bb9dff;
+  --color-grape-400: #9d70ff;
+  --color-grape-600: #6c2fe0;
+  --color-grape-700: #5a22c4;
+  --color-grape-800: #46199c;
+  --color-grape-900: #321272;
+  --color-grape-950: #1d0b45;
+
+  --color-cream-50: #fff9f1;
+  --color-cream-100: #fbf1e3;
+  --color-cream-200: #f3e4cf;
+
+  --color-night-700: #3d3159;
+  --color-night-800: #2b2142;
+  --color-night-900: #1c1530;
+  --color-night-950: #130e22;
+
+  --color-ink: #1a1e26;
+  --color-ink-muted: #5e6675;
+
+  --color-sun-100: #fff1c2;
+  --color-sun-400: #ffc93c;
+  --color-sun-800: #6e4a00;
+  --color-pink-100: #ffe0ee;
+  --color-pink-400: #ff6fa8;
+  --color-pink-800: #9c1655;
+  --color-mint-100: #d3f6e8;
+  --color-mint-400: #3ccfa0;
+  --color-mint-800: #0d6447;
+  --color-sky-100: #dbeeff;
+  --color-sky-400: #4cb8ff;
+  --color-sky-800: #0b5690;
+  --color-orange-100: #ffe4d1;
+  --color-orange-400: #ff8a3d;
+  --color-orange-800: #943a00;
+
+  --color-danger: #a0221b;
+  --color-success: #1b6b3c;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-cream-50);
+  color: var(--color-ink);
+}

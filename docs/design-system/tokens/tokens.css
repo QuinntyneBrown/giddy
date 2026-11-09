@@ -130,8 +130,8 @@
   --palette-red-950: #3a110d;
 
   /* ---------- Primitives: typography ----------------------------------- */
-  --font-family-sans: ui-rounded, "SF Pro Rounded", "Nunito", "Varela Round", "Quicksand", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-family-display: ui-rounded, "SF Pro Rounded", "Nunito", "Baloo 2", "Fredoka", "Segoe UI", system-ui, sans-serif;
+  --font-family-sans: "Nunito", ui-rounded, "SF Pro Rounded", "Varela Round", "Quicksand", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-display: "Baloo 2", ui-rounded, "SF Pro Rounded", "Nunito", "Fredoka", "Segoe UI", system-ui, sans-serif;
   --font-family-mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 
   --font-size-xs: 0.75rem;    /* 12px  captions, badges */
@@ -338,6 +338,9 @@
   /* Logo: the wordmark's letters and its balloon tittle. Brand art, not text; see foundations/logo.html. */
   --color-logo-ink: var(--palette-grape-700);
   --color-logo-tittle: var(--palette-pink-400);
+  --color-mascot-face: var(--palette-cream-50);       /* happy and party face on the grape balloon */
+  --color-mascot-face-on-pop: var(--palette-night-950); /* sleepy and worried face on the sky and orange balloons */
+  --color-mascot-shine: var(--palette-white);         /* balloon highlight, drawn at 45% */
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);   /* chunky "pressable" lip under primary buttons */
 
   color-scheme: light;
@@ -431,6 +434,9 @@
   --color-accent-press: var(--palette-grape-500);
   --color-logo-ink: var(--palette-cream-50);
   --color-logo-tittle: var(--palette-pink-400);
+  --color-mascot-face: var(--palette-grape-950);
+  --color-mascot-face-on-pop: var(--palette-night-950);
+  --color-mascot-shine: var(--palette-white);
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);
   --color-focus-ring-offset: var(--color-bg-surface);
   --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
@@ -506,6 +512,9 @@
   --color-accent-press: var(--palette-grape-500);
   --color-logo-ink: var(--palette-cream-50);
   --color-logo-tittle: var(--palette-pink-400);
+  --color-mascot-face: var(--palette-grape-950);
+  --color-mascot-face-on-pop: var(--palette-night-950);
+  --color-mascot-shine: var(--palette-white);
   --shadow-press: 0 0.25rem 0 var(--color-accent-press);
   --color-focus-ring-offset: var(--color-bg-surface);
   --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);

@@ -149,15 +149,13 @@ body.pitch .words .kicker { font-size: 34px; }
 body.pitch .words h2 { font-size: 104px; line-height: 1.04; }
 body.pitch .words h2 em { font-style: normal; color: var(--slide-accent); }
 body.pitch .words p { font-size: 46px; color: var(--slide-muted); }
-body.pitch .mascot .balloon { fill: var(--color-pop-sun-solid); }
-body.pitch .mascot .shine { fill: var(--color-bg-surface); opacity: 0.6; }
-body.pitch .mascot .cheek { fill: var(--color-pop-pink-solid); opacity: 0.85; }
-body.pitch .mascot .face { fill: var(--color-fg-default); }
-body.pitch .mascot .smile { fill: none; stroke: var(--color-fg-default); stroke-width: 2.5; stroke-linecap: round; }
-body.pitch .mascot .knot { fill: var(--color-pop-orange-solid); }
-body.pitch .mascot .string { fill: none; stroke: var(--color-fg-on-hero); stroke-width: 2; stroke-linecap: round; }
-body.pitch .mascot .hat { fill: var(--color-pop-pink-solid); }
-body.pitch .mascot .hat-dot { fill: var(--color-pop-mint-solid); }
+/* Giddy as drawn in the Magic Patterns brand guidelines, in the pitch's sun colourway: a pop balloon takes the night face. */
+body.pitch .mascot .balloon, body.pitch .mascot .knot { fill: var(--color-pop-sun-solid); }
+body.pitch .mascot .string { fill: none; stroke: var(--color-pop-sun-solid); stroke-width: 2.4; stroke-linecap: round; }
+body.pitch .mascot .shine { fill: var(--color-mascot-shine); opacity: 0.45; }
+body.pitch .mascot .cheek { fill: var(--color-pop-pink-solid); }
+body.pitch .mascot .face { fill: var(--color-mascot-face-on-pop); }
+body.pitch .mascot .feature { fill: none; stroke: var(--color-mascot-face-on-pop); stroke-linecap: round; stroke-linejoin: round; }
 body.pitch .wordmark .mascot { width: 120px; height: 150px; }
 body.pitch .phones { display: flex; align-items: flex-start; gap: 40px; flex: none; }
 body.pitch .phones .phone-frame { width: 360px; }

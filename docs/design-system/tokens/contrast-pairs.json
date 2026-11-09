@@ -432,6 +432,30 @@
       "bg": "--color-bg-surface",
       "min": 3,
       "note": "wordmark letters (logotype; held to the 3:1 graphics bar)"
+    },
+    {
+      "fg": "--color-mascot-face",
+      "bg": "--color-accent",
+      "min": 3,
+      "note": "mascot face on the happy and party balloon (graphics)"
+    },
+    {
+      "fg": "--color-mascot-face-on-pop",
+      "bg": "--color-pop-sky-solid",
+      "min": 3,
+      "note": "mascot face on the sleepy balloon (graphics)"
+    },
+    {
+      "fg": "--color-mascot-face-on-pop",
+      "bg": "--color-pop-orange-solid",
+      "min": 3,
+      "note": "mascot face on the worried balloon (graphics)"
+    },
+    {
+      "fg": "--color-accent",
+      "bg": "--color-bg-canvas",
+      "min": 3,
+      "note": "mascot happy and party balloon on canvas (graphics)"
     }
   ]
 }

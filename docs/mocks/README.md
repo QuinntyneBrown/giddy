@@ -127,7 +127,7 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 - **Agent memory.** "Giddy knows" (chat) and "What Giddy remembers" (settings) assume Giddy keeps what it learns about the family between plans, and that the parent can delete each item.
 - **Guest-facing RSVP.** Guest parents reply without an account through a private link (`/rsvp/:token`).
 - **Notifications.** The mocks assume email, text and push, with quiet hours from 9 pm to 7 am.
-- **Fonts.** The mocks use the system rounded font stack (ui-rounded, SF Pro Rounded, Nunito when installed), so they work offline. A licensed brand font is still to be chosen.
+- **Fonts.** The brand faces are Baloo 2 (display and headings) and Nunito (body and UI), per the Magic Patterns “Giddy Brand Guidelines”. The mocks read them from the design-system tokens and fall back to the rounded system stack (ui-rounded, SF Pro Rounded), so no web font downloads and they work offline.
 
 ## Re-check and re-screenshot
 

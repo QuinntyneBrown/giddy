@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { MascotMood } from './mascot-mood';
 
 const labels: Record<MascotMood, string> = {
-  happy: 'Giddy the balloon',
-  party: 'Giddy celebrating',
-  sleepy: 'Giddy the balloon',
+  happy: 'Giddy looking happy',
+  party: 'Giddy looking ready to party',
+  sleepy: 'Giddy looking sleepy',
   worried: 'Giddy looking worried',
 };
 
-/** Giddy the balloon, in the mood that fits the moment. */
+/** Giddy the balloon, in the mood that fits the moment, drawn as in the Magic Patterns brand guidelines. */
 @Component({
   selector: 'svg[giddy-mascot]',
   templateUrl: './mascot.html',
@@ -16,7 +16,7 @@ const labels: Record<MascotMood, string> = {
   host: {
     class: 'mascot',
     role: 'img',
-    viewBox: '0 -8 64 80',
+    viewBox: '0 -12 64 84',
     '[class.mascot--sm]': "size() === 'sm'",
     '[class.mascot--lg]': "size() === 'lg'",
     '[class.mascot--xl]': "size() === 'xl'",
